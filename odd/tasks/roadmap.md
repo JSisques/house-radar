@@ -39,5 +39,14 @@ Notes:
 - The user authorized creating milestones, labels, a GitHub Project board and the issues in the public repository.
 - Process: (1) draft the full issue plan in `odd/tasks/roadmap-issues.md` (reviewable, versioned); (2) create everything in GitHub from that plan; (3) record created numbers back in the plan.
 
+### R4. Versioning model (2026-11-20)
+
+- One product version for the whole monorepo (user decision): `api`, `web`, `ingestion` and `docs` are released together under a single SemVer number and tag (e.g. `v1.4.0`), matching the deployment model (one Docker Compose stack, D8).
+- Internal packages (`building-blocks`, `shared-kernel`) are `private` and follow the product version; if one is ever published to npm, it can switch to an independent version without affecting the rest.
+- Versioning and releases belong to M0 · Foundation.
+- Rejected: independent versions per app/package (cross-version compatibility overhead without independent deployments or npm publishing).
+
 ## Pending discovery
+
+- Release tooling.
 - Docs output (roadmap page en + es).
