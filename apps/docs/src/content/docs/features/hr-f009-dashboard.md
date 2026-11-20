@@ -17,7 +17,7 @@ P1 (source section 9).
 
 - `apps/api`, bounded contexts `properties` (counts, distributions, price statistics) and `pricing-history` (evolution over time).
 - `apps/web`: dashboard screen and charts behind a charts adapter ([D10](/adr/d10-cross-cutting-architecture/)).
-- `packages/domain`: statistic definitions shared by API and web.
+- `packages/shared-kernel`: statistic definitions shared by API and web.
 
 ## Dependencies
 

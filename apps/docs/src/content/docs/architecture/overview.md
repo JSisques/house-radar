@@ -27,7 +27,8 @@ house-radar/
 | `apps/ingestion` | NestJS with DDD, BullMQ + Redis | [D4](/adr/d04-backend-framework/), [D7](/adr/d07-queues-and-scheduling/) |
 | `apps/web` | React + Vite (SPA), i18n-ready | [D5](/adr/d05-frontend-framework/), [D12](/adr/d12-web-internationalization/) |
 | `apps/docs` | Astro + Starlight | [D11](/adr/d11-documentation-portal/) |
-| `packages/domain` | Shared normalized model | [D1](/adr/d01-language/), [D2](/adr/d02-repository-strategy/) |
+| `packages/building-blocks` | Generic DDD building blocks (framework-free) | [D24](/adr/d24-own-building-blocks/) |
+| `packages/shared-kernel` | House Radar concepts shared by two or more contexts | [D24](/adr/d24-own-building-blocks/), [D1](/adr/d01-language/), [D2](/adr/d02-repository-strategy/) |
 | `infra` | Docker Compose | [D8](/adr/d08-deployment/) |
 
 Module boundaries are enforced by the architecture (packages and explicit dependencies) and verified in CI ([D16](/adr/d16-quality-and-workflow/)).

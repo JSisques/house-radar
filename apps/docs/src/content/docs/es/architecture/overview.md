@@ -27,7 +27,8 @@ house-radar/
 | `apps/ingestion` | NestJS con DDD, BullMQ + Redis | [D4](/es/adr/d04-backend-framework/), [D7](/es/adr/d07-queues-and-scheduling/) |
 | `apps/web` | React + Vite (SPA), preparado para i18n | [D5](/es/adr/d05-frontend-framework/), [D12](/es/adr/d12-web-internationalization/) |
 | `apps/docs` | Astro + Starlight | [D11](/es/adr/d11-documentation-portal/) |
-| `packages/domain` | Modelo normalizado compartido | [D1](/es/adr/d01-language/), [D2](/es/adr/d02-repository-strategy/) |
+| `packages/building-blocks` | Bloques DDD genéricos (sin dependencias de framework) | [D24](/es/adr/d24-own-building-blocks/) |
+| `packages/shared-kernel` | Conceptos de House Radar compartidos por dos o más contextos | [D24](/es/adr/d24-own-building-blocks/), [D1](/es/adr/d01-language/), [D2](/es/adr/d02-repository-strategy/) |
 | `infra` | Docker Compose | [D8](/es/adr/d08-deployment/) |
 
 Los límites entre módulos los impone la arquitectura (paquetes y dependencias explícitas) y se verifican en CI ([D16](/es/adr/d16-quality-and-workflow/)).

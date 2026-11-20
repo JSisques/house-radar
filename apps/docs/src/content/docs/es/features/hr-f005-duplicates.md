@@ -17,7 +17,7 @@ P0 (sección de origen 5).
 
 - `apps/api`, contextos delimitados `properties` (agregado propiedad, vinculación, pares descartados) y `listings` (datos que compara la detección).
 - `apps/web`: pantalla de revisión de duplicados y la lista de candidatos en la ficha de la propiedad.
-- `packages/domain`: reglas de candidatos y umbrales configurables.
+- `packages/shared-kernel`: reglas de candidatos y umbrales configurables.
 
 ## Dependencias
 

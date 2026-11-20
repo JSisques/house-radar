@@ -15,7 +15,7 @@ P0 (sección de origen 2).
 
 ## Módulos responsables
 
-- `packages/domain`: modelo normalizado, objetos de valor (precio, superficie, ubicación con precisión) y tipos de dato.
+- `packages/shared-kernel`: modelo normalizado, objetos de valor (precio, superficie, ubicación con precisión) y tipos de dato.
 - `apps/api`, contextos delimitados `listings` (anuncio, observaciones, estado) y `properties` (propiedad, consolidación de atributos, ubicación).
 - `apps/ingestion`: mapeo de la carga de cada conector al modelo normalizado.
 - `apps/web`: formulario de entrada manual, incluido el pin de ubicación.
@@ -36,7 +36,7 @@ P0 (sección de origen 2).
 
 ## Reglas de negocio
 
-- **HR-F002-BR1:** todo anuncio se normaliza a un modelo común, sea cual sea su fuente. El modelo se comparte mediante `packages/domain` ([D1](/es/adr/d01-language/), [D2](/es/adr/d02-repository-strategy/)).
+- **HR-F002-BR1:** todo anuncio se normaliza a un modelo común, sea cual sea su fuente. El modelo se comparte mediante `packages/shared-kernel` ([D1](/es/adr/d01-language/), [D2](/es/adr/d02-repository-strategy/)).
 - **HR-F002-BR2:** los campos generales son título, descripción, precio, superficie construida, superficie útil, superficie de terreno, número de habitaciones, número de baños, tipo de propiedad, estado de conservación y año de construcción cuando esté disponible.
 - **HR-F002-BR3:** las características adicionales son garaje, jardín, piscina, terraza, balcón, calefacción, ascensor, certificado energético, tipo de suelo, agua, electricidad y saneamiento.
 - **HR-F002-BR4:** todo campo admite un valor desconocido. La ausencia de un dato nunca significa que la propiedad carezca de esa característica, y los valores desconocidos nunca se infieren sin indicarlo.

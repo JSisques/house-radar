@@ -18,7 +18,7 @@ P0 (source section 8).
 - `apps/api`, bounded context `pricing-history`: observations, snapshots, variation calculations, and property-level series.
 - `apps/ingestion`: produces observations on each run.
 - `apps/web`: history section and chart on the property page, behind a charts adapter ([D10](/adr/d10-cross-cutting-architecture/)).
-- `packages/domain`: observation and variation definitions.
+- `packages/shared-kernel`: observation and variation definitions.
 
 ## Dependencies
 

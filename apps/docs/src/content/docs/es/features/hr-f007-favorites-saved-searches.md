@@ -17,7 +17,7 @@ P1 (sección de origen 7).
 
 - `apps/api`, contexto delimitado `users`: favoritos y búsquedas guardadas propiedad de un usuario; la autenticación y el usuario actual proceden del contexto `identity`.
 - `apps/web`: interruptor de favorito, lista de favoritos y pantallas de búsquedas guardadas.
-- `packages/domain`: definiciones de filtros y ordenación que almacena una búsqueda guardada.
+- `packages/shared-kernel`: definiciones de filtros y ordenación que almacena una búsqueda guardada.
 
 ## Dependencias
 

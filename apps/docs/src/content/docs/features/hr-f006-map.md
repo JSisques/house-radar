@@ -17,7 +17,7 @@ P1 (source section 6).
 
 - `apps/web`: map screen, map port (markers, clustering, area selection, movement events), MapLibre GL adapter, and the pin picker used by the manual import form.
 - `apps/api`, bounded context `properties`: spatial queries for the results shown on the map.
-- `packages/domain`: location and precision definitions.
+- `packages/shared-kernel`: location and precision definitions.
 
 ## Dependencies
 

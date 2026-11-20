@@ -17,7 +17,7 @@ P0 (source section 5).
 
 - `apps/api`, bounded contexts `properties` (property aggregate, linking, dismissed pairs) and `listings` (data compared by the detection).
 - `apps/web`: duplicate review screen and the candidate list on the property page.
-- `packages/domain`: candidate rules and configurable thresholds.
+- `packages/shared-kernel`: candidate rules and configurable thresholds.
 
 ## Dependencies
 

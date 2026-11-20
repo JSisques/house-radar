@@ -15,7 +15,7 @@ P0 (source section 2).
 
 ## Responsible modules
 
-- `packages/domain`: normalized model, value objects (price, area, location with precision), and data kinds.
+- `packages/shared-kernel`: normalized model, value objects (price, area, location with precision), and data kinds.
 - `apps/api`, bounded contexts `listings` (listing, observations, status) and `properties` (property, consolidation of attributes, location).
 - `apps/ingestion`: mapping of each connector payload to the normalized model.
 - `apps/web`: manual entry form, including the location pin.
@@ -36,7 +36,7 @@ P0 (source section 2).
 
 ## Business rules
 
-- **HR-F002-BR1:** every listing is normalized to one common model, whatever its source. The model is shared through `packages/domain` ([D1](/adr/d01-language/), [D2](/adr/d02-repository-strategy/)).
+- **HR-F002-BR1:** every listing is normalized to one common model, whatever its source. The model is shared through `packages/shared-kernel` ([D1](/adr/d01-language/), [D2](/adr/d02-repository-strategy/)).
 - **HR-F002-BR2:** the general fields are title, description, price, built area, usable area, plot area, number of bedrooms, number of bathrooms, property type, condition, and year of construction when available.
 - **HR-F002-BR3:** the additional features are garage, garden, swimming pool, terrace, balcony, heating, elevator, energy certificate, land type, water, electricity, and sanitation.
 - **HR-F002-BR4:** every field accepts an unknown value. The absence of a datum never means the property lacks that feature, and unknown values are never inferred without saying so.

@@ -17,7 +17,7 @@ P0 (sección de origen 4).
 
 - `apps/web`: pantalla de ficha de la propiedad y sus componentes.
 - `apps/api`, contextos delimitados `properties` (vista consolidada), `listings` (anuncios y observaciones) y `pricing-history` (histórico mostrado en la ficha).
-- `packages/domain`: reglas de consolidación y tipos de dato.
+- `packages/shared-kernel`: reglas de consolidación y tipos de dato.
 
 ## Dependencias
 

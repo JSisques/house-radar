@@ -17,7 +17,7 @@ P0 (source section 3).
 
 - `apps/api`, bounded context `properties`: search read model, filter and sort queries, spatial queries against PostGIS.
 - `apps/web`: search screen, filter panel, results list, and pagination.
-- `packages/domain`: filter and sort definitions shared by API and web.
+- `packages/shared-kernel`: filter and sort definitions shared by API and web.
 
 ## Dependencies
 

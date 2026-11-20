@@ -18,7 +18,7 @@ P0 (source section 1).
 - `apps/ingestion`: connectors (one per source), scheduled runs, retries, and run records.
 - `apps/api`, bounded contexts `ingestion` (sources, runs, manual import use case) and `listings` (listing identity and observations).
 - `apps/web`: manual import form and the "check listing" action.
-- `packages/domain`: normalized listing model shared by the modules above.
+- `packages/shared-kernel`: normalized listing model shared by the modules above.
 
 ## Dependencies
 

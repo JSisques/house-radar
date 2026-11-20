@@ -1,0 +1,41 @@
+name: Feature request
+description: Propose a vertical slice of work.
+title: "feat: "
+labels: ["type:feature"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem and outcome
+      description: What need does this cover, and what changes for the user?
+    validations:
+      required: true
+  - type: input
+    id: feature
+    attributes:
+      label: Related feature
+      description: The parent feature, for example HR-F003.
+      placeholder: HR-F003
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: One per line, in Given / When / Then form.
+      placeholder: |
+        Given ...
+        When ...
+        Then ...
+    validations:
+      required: true
+  - type: input
+    id: milestone
+    attributes:
+      label: Milestone
+      description: M0 to M6, if known.
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Alternatives, related ADRs, data source considerations.

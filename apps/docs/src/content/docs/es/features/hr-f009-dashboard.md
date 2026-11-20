@@ -17,7 +17,7 @@ P1 (sección de origen 9).
 
 - `apps/api`, contextos delimitados `properties` (recuentos, distribuciones, estadísticas de precio) y `pricing-history` (evolución en el tiempo).
 - `apps/web`: pantalla del dashboard y gráficos tras un adaptador de gráficos ([D10](/es/adr/d10-cross-cutting-architecture/)).
-- `packages/domain`: definiciones de estadísticas compartidas por API y web.
+- `packages/shared-kernel`: definiciones de estadísticas compartidas por API y web.
 
 ## Dependencias
 

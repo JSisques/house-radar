@@ -18,7 +18,7 @@ P0 (sección de origen 8).
 - `apps/api`, contexto delimitado `pricing-history`: observaciones, snapshots, cálculos de variación y series a nivel de propiedad.
 - `apps/ingestion`: produce observaciones en cada ejecución.
 - `apps/web`: sección de histórico y gráfico en la ficha de la propiedad, tras un adaptador de gráficos ([D10](/es/adr/d10-cross-cutting-architecture/)).
-- `packages/domain`: definiciones de observación y variación.
+- `packages/shared-kernel`: definiciones de observación y variación.
 
 ## Dependencias
 
