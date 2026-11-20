@@ -6,7 +6,7 @@ Define the code conventions for the House Radar monorepo (backend, frontend, sha
 
 ## Status
 
-Discovery in progress. Decisions are recorded here as they are taken; docs pages and ADRs are written once discovery closes.
+Discovery closed. Outputs T1-T3 delivered on branch `docs/code-conventions`; all checks green (see Verification).
 
 ## References
 
@@ -135,10 +135,27 @@ Refined:
 
 | ID | Task | Route | Status | Commit |
 |----|------|-------|--------|--------|
-| T1 | Docs page `architecture/conventions` (en + es) with C1–C12 detail; link from architecture overview | delegated (writer trigger: 2+ files) | [ ] | |
-| T2 | ADRs D24 own building blocks (`building-blocks` + `shared-kernel`) instead of the kit, D25 CQRS with `@nestjs/cqrs` + per-context structure, D26 TanStack Router, D27 react-i18next (en + es) + ADR index | delegated | [ ] | |
-| T3 | Agent skills `.claude/skills/house-radar-backend/` and `.claude/skills/house-radar-frontend/` (LLM-first, skill style guide), plus `AGENTS.md` registry and `CLAUDE.md` pointer | delegated | [ ] | |
+| T1 | Docs page `architecture/conventions` (en + es) with C1–C12 detail; link from architecture overview | delegated (writer trigger: 2+ files) | [x] | 4f8f005 |
+| T2 | ADRs D24 own building blocks (`building-blocks` + `shared-kernel`) instead of the kit, D25 CQRS with `@nestjs/cqrs` + per-context structure, D26 TanStack Router, D27 react-i18next (en + es) + ADR index | delegated | [x] | 5b0fed1 |
+| T3 | Agent skills `.claude/skills/house-radar-backend/` and `.claude/skills/house-radar-frontend/` (LLM-first, skill style guide), plus `AGENTS.md` registry and `CLAUDE.md` pointer | delegated | [x] | 060a6ff |
 
 Checks: `pnpm docs:test`, `pnpm docs:check-i18n`, `pnpm docs:check`, `pnpm docs:build`; skills: frontmatter valid, body within token budget, references resolve to local files. TDD (D14) not applicable: documentation and agent instructions.
-- Lint/format tooling details, import ordering.
-- Documentation output (docs page + ADRs).
+
+## Progress
+
+- T1 done (4f8f005): `architecture/conventions` en + es, linked from architecture overview.
+- T2 done (5b0fed1): ADRs D24-D27 en + es, both ADR indexes updated to D0-D27.
+- T3 done (060a6ff): skills `house-radar-backend` and `house-radar-frontend` (SKILL.md, assets, references), `AGENTS.md`, `CLAUDE.md`.
+
+## Verification
+
+- `pnpm docs:test`: 4 pass, 0 fail.
+- `pnpm docs:check-i18n`: parity OK, 55 pages x 1 locale.
+- `pnpm docs:check`: 0 errors, 0 warnings, 0 hints.
+- `pnpm docs:build`: 111 pages built.
+- Skills: frontmatter complete, bodies 333 and 359 words, references resolve to local files.
+- Not run: Prettier/ESLint are not installed yet; skill templates are not compiled (illustrative, base class names follow `building-blocks` once it exists).
+
+## Next step
+
+Open the PR for `docs/code-conventions`; scaffold the monorepo packages in a later feature.
