@@ -42,3 +42,5 @@ Checks: `pnpm docs:test`, `pnpm docs:check-i18n`, `pnpm docs:check`, `pnpm docs:
 - T1 done (commit d793e35): D37 (en + es) with both indexes (D0-D37), amendments appended to D3 and D17 (en + es), principle 7 made precise (en + es), source strategy updated (en + es), D37 added to HR-F001 related decisions (en + es). Route: delegated (writer).
 - Verification: `pnpm docs:test` 4/4 pass; `pnpm docs:check-i18n` OK (71 pages x 1 locale); `pnpm docs:check` 0 errors, 0 warnings, 0 hints; `pnpm docs:build` 143 pages built (only the pre-existing sitemap `site` warning).
 - Next: T2 (GitHub issue updates, pending user confirmation).
+
+- T2 done on GitHub (user-confirmed 2026-11-20): new M5 sub-issues of #4 — #132 Fotocasa detail-page fetcher with robots.txt policy (S-M5-18), #133 mapper to the normalized model (S-M5-19), #134 import with extraction (S-M5-20), #135 daily refresh of tracked listings (S-M5-21); all P1, on the project board. #107/#108 (idealista) marked optional, P0 → P2.

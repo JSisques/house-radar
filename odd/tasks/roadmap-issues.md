@@ -2657,6 +2657,10 @@ Project board: https://github.com/users/JSisques/projects/16 (linked to the repo
 | `S-M4-15` | #100 |
 | `S-M4-16` | #101 |
 | `S-M0-27` | #130 (added 2026-11-20, ADR D36) |
+| `S-M5-18` | #132 (added 2026-11-20, ADR D37) |
+| `S-M5-19` | #133 (added 2026-11-20, ADR D37) |
+| `S-M5-20` | #134 (added 2026-11-20, ADR D37) |
+| `S-M5-21` | #135 (added 2026-11-20, ADR D37) |
 | `S-M5-01` | #102 |
 | `S-M5-02` | #103 |
 | `S-M5-03` | #104 |
