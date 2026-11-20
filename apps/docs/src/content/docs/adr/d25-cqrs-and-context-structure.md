@@ -30,6 +30,7 @@ Details are in [Code conventions](/architecture/conventions/).
 - Dependency rules are checkable by ESLint ([D16](/adr/d16-quality-and-workflow/)).
 - More files per feature than a single service class.
 - The aggregate does not extend the framework's `AggregateRoot`, so command handlers publish the events it recorded ([D24](/adr/d24-own-building-blocks/)).
+- Superseded in part by [D31](/adr/d31-transactional-outbox/): handlers no longer publish events through the `EventBus`; the write repository persists them to an outbox in the same transaction as the aggregate.
 
 ## Alternatives considered
 

@@ -1,11 +1,11 @@
 ---
 title: "Registros de decisiones de arquitectura"
-description: "Índice de todas las decisiones de arquitectura D0 a D27."
+description: "Índice de todas las decisiones de arquitectura D0 a D32."
 sidebar:
   order: 0
 ---
 
-Decisiones de producto y técnicas tomadas antes de empezar el desarrollo. Cada decisión del registro se documenta como un ADR cuyo identificador coincide con el del registro (D0 a D27). La numeración de los ADR es el número de la decisión. Usa la [plantilla](/es/adr/template/) para nuevas decisiones.
+Decisiones de producto y técnicas tomadas antes de empezar el desarrollo. Cada decisión del registro se documenta como un ADR cuyo identificador coincide con el del registro (D0 a D32). La numeración de los ADR es el número de la decisión. Usa la [plantilla](/es/adr/template/) para nuevas decisiones.
 
 | ID | Decisión | Resultado | Fecha |
 | --- | --- | --- | --- |
@@ -37,3 +37,8 @@ Decisiones de producto y técnicas tomadas antes de empezar el desarrollo. Cada 
 | D25 | [CQRS y estructura de contextos](/es/adr/d25-cqrs-and-context-structure/) | CQRS con `@nestjs/cqrs` y estructura por contexto (`domain`, `application`, `infrastructure`, `transport`); los contextos se comunican mediante puertos y eventos. | 2026-11-20 |
 | D26 | [TanStack Router](/es/adr/d26-tanstack-router/) | TanStack Router en `apps/web`, con los parámetros de búsqueda tipados y validados con zod en la definición de la ruta. | 2026-11-20 |
 | D27 | [react-i18next](/es/adr/d27-react-i18next/) | `react-i18next` detrás del adaptador de i18n: un namespace por contexto, claves tipadas e `Intl` para el formateo. | 2026-11-20 |
+| D28 | [Mapa de bounded contexts](/es/adr/d28-bounded-context-map/) | Seis contextos (`ingestion`, `listings`, `properties`, `geography`, `identity`, `users`) con puertos y eventos explícitos; `pricing-history` no es un contexto. | 2026-11-20 |
+| D29 | [Límites de los agregados](/es/adr/d29-aggregate-boundaries/) | `Observation` y `ExtractionError` como agregados append-only propios, una `Property` mínima y los datos derivados de la consolidación en proyecciones. | 2026-11-20 |
+| D30 | [Un esquema de PostgreSQL por contexto](/es/adr/d30-schema-per-context/) | Un esquema por bounded context, sin claves foráneas entre esquemas y lecturas entre contextos mediante proyecciones. | 2026-11-20 |
+| D31 | [Outbox transaccional](/es/adr/d31-transactional-outbox/) | Los eventos de dominio se escriben en `outbox_event` en la transacción del agregado; un relay publica con BullMQ y los consumidores son idempotentes. | 2026-11-20 |
+| D32 | [Identificadores UUIDv7](/es/adr/d32-uuid-v7/) | UUIDv7 ordenado en el tiempo para IDs de agregados, eventos y outbox, generado con el paquete `uuid`. | 2026-11-20 |

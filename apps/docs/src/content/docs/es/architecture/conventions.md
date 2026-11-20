@@ -26,7 +26,7 @@ Bloques DDD genéricos, sin conceptos de House Radar.
 
 | Contenido | Regla |
 | --- | --- |
-| Base `AggregateRoot` | Mantiene su propio búfer de eventos: `record(event)` y `pullDomainEvents()`. La identidad es cualquier value object de identidad. Igualdad tipada y segura ante nulos. |
+| Base `AggregateRoot` | Mantiene su propio búfer de eventos: `record(event)`, `peekDomainEvents()` (lee sin vaciar) y `clearDomainEvents()` (lo llama el repositorio de escritura solo tras confirmar la transacción). Expone `version` (bloqueo optimista, [D23](/es/adr/d23-ingestion-concurrency-model/)) e `isNew()` (verdadero hasta el primer guardado); el repositorio de escritura llama a `markPersisted(version)` tras el commit para sincronizar la versión incrementada por la base de datos. La identidad es cualquier value object de identidad. Igualdad tipada y segura ante nulos. |
 | Base de value object | `validate()` obligatorio, una excepción tipada por value object, `toPrimitives()`. |
 | Value objects genéricos | String, Number, Uuid, Enum, Date y Boolean configurables por opciones. `DateValueObject` rechaza fechas inválidas y copia defensivamente. |
 | Eventos de dominio | Envoltorio con `schemaVersion`, `correlationId`, `causationId` y `occurredAt`; `generateEventMetadata()`. |
@@ -35,7 +35,7 @@ Bloques DDD genéricos, sin conceptos de House Radar.
 | Puertos de repositorio | Puertos de lectura y de escritura separados. |
 | `DomainException` | Lleva un `code` y una `cause` opcional. |
 
-Los UUID se generan con `globalThis.crypto.randomUUID()`, de modo que el paquete también funciona en el navegador (`apps/web`). Aquí nunca se añaden value objects específicos del proyecto.
+Los IDs son UUIDv7, generados con el paquete `uuid` (`v7()`), de modo que el paquete también funciona en el navegador (`apps/web`) ([D32](/es/adr/d32-uuid-v7/)). Aquí nunca se añaden value objects específicos del proyecto.
 
 ### `packages/shared-kernel` (`@house-radar/shared-kernel`)
 
@@ -88,13 +88,18 @@ src/
 │       │   ├── services/
 │       │   │   ├── write/
 │       │   │   └── read/assert-property-exists/
-│       │   ├── event-handlers/
-│       │   └── ports/property-gateway.port.ts
+│       │   │   └── project-listing-price-change/   # comando idempotente de proyección
+│       │   └── ports/
+│       │       ├── property-gateway.port.ts
+│       │       ├── transaction-manager.port.ts
+│       │       ├── processed-event-repository.port.ts
+│       │       └── property-view-projector.port.ts
 │       ├── infrastructure/
 │       │   ├── persistence/mikro-orm/{schemas,mappers,repositories}/
 │       │   ├── adapters/
-│       │   └── messaging/
+│       │   └── messaging/             # relay del outbox, implementaciones de puertos
 │       ├── transport/
+│       │   ├── messaging/consumers/   # consumidores BullMQ: evento -> comando
 │       │   ├── rest/{controllers,dtos,mappers}/
 │       │   └── exceptions/
 │       └── listings.module.ts
@@ -122,7 +127,10 @@ CQRS con `@nestjs/cqrs` ([D25](/es/adr/d25-cqrs-and-context-structure/)).
 - Los handlers pasan por repositorios y servicios. El transporte pasa solo por `CommandBus` y `QueryBus`.
 - Los servicios se dividen en `services/write/` y `services/read/`.
 - Los repositorios de escritura exponen solo `save`, `findById` y `delete`. Los de lectura son de solo lectura (`findById`, `findByCriteria`).
-- Los eventos de dominio los consumen handlers de eventos y proyecciones, por ejemplo el modelo de lectura del precio representativo ([D19](/es/adr/d19-search-read-model/)). El agregado registra eventos con `record()`; el handler del comando publica `pullDomainEvents()` en el `EventBus`.
+- Los eventos de dominio los consumen handlers de eventos y proyecciones, por ejemplo el modelo de lectura del precio representativo ([D19](/es/adr/d19-search-read-model/)). El agregado registra eventos con `record()`; los handlers nunca los publican ([D31](/es/adr/d31-transactional-outbox/)):
+  - El repositorio de escritura persiste el agregado y sus `peekDomainEvents()` en la tabla `outbox_event` del contexto, en la misma transacción (unit of work de MikroORM), y llama a `clearDomainEvents()` solo tras el commit, de modo que un guardado fallido y su reintento no pierden eventos.
+  - Un relay del outbox publica las filas pendientes mediante BullMQ y las marca como publicadas.
+  - Un consumidor BullMQ en `transport/messaging/consumers/` convierte el evento en un comando y lo envía por `CommandBus`. El handler del comando es idempotente mediante puertos: `ITransactionManager.run(fn)` e `IProcessedEventRepository.claim(eventId, consumer)` (`INSERT … ON CONFLICT DO NOTHING` sobre `processed_event`), y escribe las proyecciones a través de un puerto de proyector. La infraestructura implementa los puertos con MikroORM.
 
 ### Modelo de dominio
 
@@ -147,6 +155,8 @@ export const INFRASTRUCTURE_REPOSITORIES = [
 ### Persistencia
 
 MikroORM mapeado con `EntitySchema` ([D6](/es/adr/d06-persistence/)), de modo que las clases de dominio no llevan decoradores del ORM. Los schemas, mappers y repositorios viven en `infrastructure/persistence/mikro-orm/`. Los mappers traducen entre entidades del schema y agregados.
+
+Los repositorios de escritura actualizan a través de la entidad gestionada: la cargan con `LockMode.OPTIMISTIC` y `lockVersion` (la `version` del agregado) y después hacen `assign` del nuevo estado. Insertan una entidad nueva solo cuando `isNew()` es verdadero; persistir un objeto nuevo para una fila existente sería un `INSERT`.
 
 ### Transporte
 

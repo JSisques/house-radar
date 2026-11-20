@@ -23,7 +23,7 @@ DDD in `apps/api`, `apps/ingestion` ([D4](/adr/d04-backend-framework/)) and `app
 
 Two own packages, both framework-free TypeScript in strict mode.
 
-- `@house-radar/building-blocks`: generic DDD building blocks with no House Radar concepts. The aggregate keeps its own event buffer (`record()`, `pullDomainEvents()`) and infrastructure publishes to the Nest `EventBus`. It keeps the kit's value object base with mandatory `validate()`, event envelope, builder base, `Criteria` and separate read and write repository ports.
+- `@house-radar/building-blocks`: generic DDD building blocks with no House Radar concepts. The aggregate keeps its own event buffer (`record()`, `peekDomainEvents()`, `clearDomainEvents()`) and infrastructure publishes to the Nest `EventBus`. It keeps the kit's value object base with mandatory `validate()`, event envelope, builder base, `Criteria` and separate read and write repository ports.
 - `@house-radar/shared-kernel`: House Radar concepts used by two or more contexts (`Money`, `Area`, `GeoPoint`, closed catalogs, provenance and cross-context identities). It depends on `building-blocks`.
 
 Details are in [Code conventions](/architecture/conventions/).
@@ -35,6 +35,7 @@ Details are in [Code conventions](/architecture/conventions/).
 - Good ideas from the kit are ported, with fixes: typed null-safe equality, immutable `Criteria`, invalid dates rejected, `DomainException` with `code` and `cause`, no `any` in filters.
 - A value object starts in its context and moves to `shared-kernel` only when a second context needs it.
 - Fixes in the kit do not flow automatically to this project.
+- Superseded in part by [D31](/adr/d31-transactional-outbox/) and [D32](/adr/d32-uuid-v7/): events are no longer published to the `EventBus` by infrastructure after saving but persisted to an outbox, and UUIDs are v7 generated with the `uuid` package instead of `randomUUID()`.
 
 ## Alternatives considered
 

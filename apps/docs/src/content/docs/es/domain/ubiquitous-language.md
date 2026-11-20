@@ -9,6 +9,8 @@ Todos los anuncios se convierten a un modelo común, independientemente de su pr
 
 ## Propiedad frente a anuncio
 
+> Contextos, agregados y tablas construidos sobre estos términos: [Mapa de contextos](/es/architecture/context-map/), [Agregados](/es/domain/aggregates/), [Esquema de base de datos](/es/architecture/database-schema/).
+
 - **Propiedad**: el inmueble real.
 - **Anuncio**: la publicación sobre una propiedad en una fuente (portal) determinada.
 

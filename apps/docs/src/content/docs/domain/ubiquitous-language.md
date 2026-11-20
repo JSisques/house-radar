@@ -9,6 +9,8 @@ All listings are converted to a common model, regardless of where they come from
 
 ## Property vs listing
 
+> Contexts, aggregates and tables built on these terms: [Context map](/architecture/context-map/), [Aggregates](/domain/aggregates/), [Database schema](/architecture/database-schema/).
+
 - **Property**: the real estate asset itself.
 - **Listing**: an advertisement published about a property on a given source (portal).
 

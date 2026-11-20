@@ -1,8 +1,11 @@
 // Path: src/contexts/<context>/application/commands/<verb-noun>/<verb-noun>.handler.ts
 // Builders are stateful and never injected. Inject the stateless builder factory
 // and call create() on every execution, so no state survives between calls.
+// Handlers never publish events: the aggregate records them and the write repository
+// persists peekDomainEvents() into the outbox in the same transaction and clears them
+// after commit (D31).
 import { Inject } from '@nestjs/common';
-import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { DateValueObject } from '@house-radar/building-blocks';
 import { ListingId } from '@house-radar/shared-kernel';
@@ -27,14 +30,13 @@ export class ImportManualListingHandler
     private readonly listingWriteRepository: IListingWriteRepository,
     @Inject(LISTING_BUILDER_FACTORY_TOKEN)
     private readonly listingBuilderFactory: IListingBuilderFactory,
-    private readonly eventBus: EventBus,
   ) {}
 
   async execute(command: ImportManualListingCommand): Promise<{ id: string }> {
     const now = new DateValueObject(new Date());
     const listing = this.listingBuilderFactory
       .create()
-      .withId(ListingId.generate())
+      .withId(ListingId.generate()) // UUIDv7 via the `uuid` package (D32)
       .withCreatedAt(now)
       .withUpdatedAt(now)
       .withSourceUrl(command.sourceUrl)
@@ -44,7 +46,6 @@ export class ImportManualListingHandler
     listing.create();
 
     await this.listingWriteRepository.save(listing);
-    await this.eventBus.publishAll(listing.pullDomainEvents());
 
     return { id: listing.id.value };
   }

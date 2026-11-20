@@ -91,4 +91,6 @@ P0 (source section 1).
 
 ## Related decisions
 
-[D3](/adr/d03-source-strategy/), [D7](/adr/d07-queues-and-scheduling/), [D10](/adr/d10-cross-cutting-architecture/), [D17](/adr/d17-manual-import-assisted-form/), [D20](/adr/d20-listing-consolidation-rules/), [D23](/adr/d23-ingestion-concurrency-model/).
+[D3](/adr/d03-source-strategy/), [D7](/adr/d07-queues-and-scheduling/), [D10](/adr/d10-cross-cutting-architecture/), [D17](/adr/d17-manual-import-assisted-form/), [D20](/adr/d20-listing-consolidation-rules/), [D23](/adr/d23-ingestion-concurrency-model/), [D28](/adr/d28-bounded-context-map/), [D31](/adr/d31-transactional-outbox/).
+
+See also: [Context map](/architecture/context-map/), [Database schema](/architecture/database-schema/).

@@ -32,9 +32,11 @@ house-radar/
 
 Module boundaries are enforced by the architecture (packages and explicit dependencies) and verified in CI ([D16](/adr/d16-quality-and-workflow/)).
 
-## Bounded context candidates
+## Bounded contexts
 
-Decision [D4](/adr/d04-backend-framework/) organizes the backend by bounded contexts. Examples listed in the decision log:
+Decision [D4](/adr/d04-backend-framework/) organizes the backend by bounded contexts, and [D28](/adr/d28-bounded-context-map/) fixes the map: `ingestion`, `listings`, `properties`, `geography`, `identity` and `users`. See [Context map](/architecture/context-map/), [Aggregates](/domain/aggregates/) and [Database schema](/architecture/database-schema/).
+
+The candidates listed in the decision log were:
 
 - `listings`
 - `properties`
@@ -42,7 +44,7 @@ Decision [D4](/adr/d04-backend-framework/) organizes the backend by bounded cont
 - `ingestion`
 - `users`
 
-Decision [D13](/adr/d13-users-and-authentication/) names the `identity` bounded context for authentication.
+Decision [D13](/adr/d13-users-and-authentication/) names the `identity` bounded context for authentication. `pricing-history` did not become a context: price history is the observations of `listings` ([D28](/adr/d28-bounded-context-map/)).
 
 Each context has domain, application, and infrastructure layers. The domain does not depend on NestJS: decorators, modules, and dependency injection are limited to the application and infrastructure layers.
 

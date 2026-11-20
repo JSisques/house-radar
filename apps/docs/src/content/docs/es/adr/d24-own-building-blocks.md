@@ -23,7 +23,7 @@ El DDD en `apps/api`, `apps/ingestion` ([D4](/es/adr/d04-backend-framework/)) y 
 
 Dos paquetes propios, ambos TypeScript sin framework y en modo estricto.
 
-- `@house-radar/building-blocks`: bloques DDD genéricos sin conceptos de House Radar. El agregado mantiene su propio búfer de eventos (`record()`, `pullDomainEvents()`) y la infraestructura publica en el `EventBus` de Nest. Conserva del kit la base de value object con `validate()` obligatorio, el envoltorio de eventos, la base de builder, `Criteria` y los puertos de repositorio de lectura y escritura separados.
+- `@house-radar/building-blocks`: bloques DDD genéricos sin conceptos de House Radar. El agregado mantiene su propio búfer de eventos (`record()`, `peekDomainEvents()`, `clearDomainEvents()`) y la infraestructura publica en el `EventBus` de Nest. Conserva del kit la base de value object con `validate()` obligatorio, el envoltorio de eventos, la base de builder, `Criteria` y los puertos de repositorio de lectura y escritura separados.
 - `@house-radar/shared-kernel`: conceptos de House Radar usados por dos o más contextos (`Money`, `Area`, `GeoPoint`, catálogos cerrados, procedencia e identidades entre contextos). Depende de `building-blocks`.
 
 Los detalles están en [Convenciones de código](/es/architecture/conventions/).
@@ -35,6 +35,7 @@ Los detalles están en [Convenciones de código](/es/architecture/conventions/).
 - Las buenas ideas del kit se portan con correcciones: igualdad tipada y segura ante nulos, `Criteria` inmutable, fechas inválidas rechazadas, `DomainException` con `code` y `cause`, sin `any` en los filtros.
 - Un value object nace en su contexto y pasa a `shared-kernel` solo cuando un segundo contexto lo necesita.
 - Las correcciones del kit no llegan automáticamente a este proyecto.
+- Sustituida en parte por [D31](/es/adr/d31-transactional-outbox/) y [D32](/es/adr/d32-uuid-v7/): la infraestructura ya no publica los eventos en el `EventBus` tras guardar, sino que se persisten en un outbox, y los UUID son v7 generados con el paquete `uuid` en lugar de `randomUUID()`.
 
 ## Alternativas consideradas
 

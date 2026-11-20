@@ -86,4 +86,6 @@ P0 (sección de origen 5).
 
 ## Decisiones relacionadas
 
-[D4](/es/adr/d04-backend-framework/), [D19](/es/adr/d19-search-read-model/), [D20](/es/adr/d20-listing-consolidation-rules/), [D21](/es/adr/d21-duplicate-detection-policy/).
+[D4](/es/adr/d04-backend-framework/), [D19](/es/adr/d19-search-read-model/), [D20](/es/adr/d20-listing-consolidation-rules/), [D21](/es/adr/d21-duplicate-detection-policy/), [D28](/es/adr/d28-bounded-context-map/), [D29](/es/adr/d29-aggregate-boundaries/).
+
+Véase también: [Agregados](/es/domain/aggregates/), [Mapa de contextos](/es/architecture/context-map/).

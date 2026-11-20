@@ -84,4 +84,6 @@ P0 (sección de origen 2).
 
 ## Decisiones relacionadas
 
-[D1](/es/adr/d01-language/), [D2](/es/adr/d02-repository-strategy/), [D6](/es/adr/d06-persistence/), [D12](/es/adr/d12-web-internationalization/), [D18](/es/adr/d18-location-pin-declared-precision/), [D19](/es/adr/d19-search-read-model/), [D20](/es/adr/d20-listing-consolidation-rules/).
+[D1](/es/adr/d01-language/), [D2](/es/adr/d02-repository-strategy/), [D6](/es/adr/d06-persistence/), [D12](/es/adr/d12-web-internationalization/), [D18](/es/adr/d18-location-pin-declared-precision/), [D19](/es/adr/d19-search-read-model/), [D20](/es/adr/d20-listing-consolidation-rules/), [D28](/es/adr/d28-bounded-context-map/), [D29](/es/adr/d29-aggregate-boundaries/), [D30](/es/adr/d30-schema-per-context/).
+
+Véase también: [Agregados](/es/domain/aggregates/), [Esquema de base de datos](/es/architecture/database-schema/).
