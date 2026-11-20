@@ -17,7 +17,7 @@ P1 (source section 7).
 
 - `apps/api`, bounded context `users`: favorites and saved searches owned by a user; authentication and the current user come from the `identity` context.
 - `apps/web`: favorite toggle, favorites list, and saved searches screens.
-- `packages/domain`: filter and sort definitions that a saved search stores.
+- `packages/shared-kernel`: filter and sort definitions that a saved search stores.
 
 ## Dependencies
 

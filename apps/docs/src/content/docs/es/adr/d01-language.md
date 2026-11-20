@@ -28,3 +28,7 @@ Las consecuencias se comparten con [D2](/es/adr/d02-repository-strategy/).
 ## Alternativas consideradas
 
 - Python para ingestion: se mantiene como opción en V2 si se justifica.
+
+## Actualización (2026-11-20)
+
+El paquete compartido `packages/domain` mencionado arriba se sustituyó por dos paquetes sin dependencias de framework, `packages/building-blocks` (bloques DDD genéricos) y `packages/shared-kernel` (conceptos de House Radar compartidos por dos o más contextos); véase [D24](/es/adr/d24-own-building-blocks/). Los datos que se comparten con la web llegan mediante el cliente OpenAPI ([D22](/es/adr/d22-api-style/)).

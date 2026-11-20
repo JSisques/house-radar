@@ -104,4 +104,4 @@ Las estadísticas deben indicar el tamaño y la procedencia de la muestra. Los p
 
 ## Modelo compartido
 
-El modelo de dominio normalizado se comparte como paquete interno, `packages/domain`, tipado de punta a punta ([D1 y D2](/es/adr/d02-repository-strategy/)).
+El modelo de dominio normalizado se comparte como paquete interno, `packages/shared-kernel`, tipado de punta a punta ([D1 y D2](/es/adr/d02-repository-strategy/)).

@@ -24,3 +24,7 @@ Monorepo único `house-radar` (pnpm workspaces + Turborepo) que incluye código,
 - La ingestion es una aplicación independiente: podría reescribirse en otro lenguaje sin afectar al resto si se respeta su contrato.
 
 Las consecuencias se comparten con [D1](/es/adr/d01-language/).
+
+## Actualización (2026-11-20)
+
+El paquete compartido `packages/domain` mencionado arriba se sustituyó por dos paquetes sin dependencias de framework, `packages/building-blocks` (bloques DDD genéricos) y `packages/shared-kernel` (conceptos de House Radar compartidos por dos o más contextos); véase [D24](/es/adr/d24-own-building-blocks/). Los datos que se comparten con la web llegan mediante el cliente OpenAPI ([D22](/es/adr/d22-api-style/)).

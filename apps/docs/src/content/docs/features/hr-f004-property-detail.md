@@ -17,7 +17,7 @@ P0 (source section 4).
 
 - `apps/web`: property detail screen and its components.
 - `apps/api`, bounded contexts `properties` (consolidated view), `listings` (listings and observations), and `pricing-history` (history shown on the page).
-- `packages/domain`: consolidation rules and data kinds.
+- `packages/shared-kernel`: consolidation rules and data kinds.
 
 ## Dependencies
 

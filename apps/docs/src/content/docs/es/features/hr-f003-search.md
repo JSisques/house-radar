@@ -17,7 +17,7 @@ P0 (sección de origen 3).
 
 - `apps/api`, contexto delimitado `properties`: modelo de lectura de la búsqueda, consultas de filtrado y ordenación, consultas espaciales contra PostGIS.
 - `apps/web`: pantalla de búsqueda, panel de filtros, lista de resultados y paginación.
-- `packages/domain`: definiciones de filtros y ordenación compartidas por API y web.
+- `packages/shared-kernel`: definiciones de filtros y ordenación compartidas por API y web.
 
 ## Dependencias
 

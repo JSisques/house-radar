@@ -104,4 +104,4 @@ Statistics must indicate the size and origin of the sample. Advertised prices ar
 
 ## Shared model
 
-The normalized domain model is shared as an internal package, `packages/domain`, typed end to end ([D1 and D2](/adr/d02-repository-strategy/)).
+The normalized domain model is shared as an internal package, `packages/shared-kernel`, typed end to end ([D1 and D2](/adr/d02-repository-strategy/)).

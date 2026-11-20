@@ -17,7 +17,7 @@ P1 (sección de origen 6).
 
 - `apps/web`: pantalla del mapa, puerto de mapa (marcadores, clustering, selección de área, eventos de movimiento), adaptador MapLibre GL y el selector de pin que usa el formulario de importación manual.
 - `apps/api`, contexto delimitado `properties`: consultas espaciales para los resultados mostrados en el mapa.
-- `packages/domain`: definiciones de ubicación y precisión.
+- `packages/shared-kernel`: definiciones de ubicación y precisión.
 
 ## Dependencias
 

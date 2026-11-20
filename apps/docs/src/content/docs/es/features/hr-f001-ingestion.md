@@ -18,7 +18,7 @@ P0 (sección de origen 1).
 - `apps/ingestion`: conectores (uno por fuente), ejecuciones programadas, reintentos y registros de ejecución.
 - `apps/api`, contextos delimitados `ingestion` (fuentes, ejecuciones, caso de uso de importación manual) y `listings` (identidad de anuncios y observaciones).
 - `apps/web`: formulario de importación manual y la acción «comprobar anuncio».
-- `packages/domain`: modelo normalizado de anuncio compartido por los módulos anteriores.
+- `packages/shared-kernel`: modelo normalizado de anuncio compartido por los módulos anteriores.
 
 ## Dependencias
 
