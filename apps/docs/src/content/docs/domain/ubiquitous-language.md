@@ -50,6 +50,46 @@ Listing title, description, price, built area, usable area, plot area, number of
 
 Garage, garden, swimming pool, terrace, balcony, heating, elevator, energy certificate, land type, water, electricity, and sanitation.
 
+## Observation
+
+An **observation** is a dated record of what House Radar saw about a listing at a point in time: price, whether the listing was still active, and the check date. Observations are created by automatic runs or by the manual "check listing" action ([D20](/adr/d20-listing-consolidation-rules/)). Price history is built from observations.
+
+## Listing status lifecycle
+
+A listing is in one of three states:
+
+| Status | Meaning |
+| --- | --- |
+| `active` | Seen as available at its last observation. |
+| `disappeared` | No longer available: marked by the user (manual sources) or not seen in N consecutive runs (automatic sources; N is configurable, default 3). |
+| `unknown` | Not enough evidence to say, for example before the first check. |
+
+Only `active` listings contribute to the representative price and to statistics.
+
+## Location precision
+
+The location of a property is a pin on a map with a declared precision ([D18](/adr/d18-location-pin-declared-precision/)):
+
+| Precision | Meaning |
+| --- | --- |
+| `exact` | The pin marks the property itself. |
+| `approximate` | The pin is near the property but not on it. |
+| `municipality` | The pin only identifies the municipality. |
+
+Municipality and province are derived from the pin against official IGN boundaries. The postal code is entered by hand.
+
+## Representative price
+
+The **representative price** of a property is the lowest price among its `active` listings. Search results show it as "N listings, from X €" ([D19](/adr/d19-search-read-model/)). A property without active listings has no representative price.
+
+## Attribute conflict
+
+An **attribute conflict** appears when the listings of a property disagree on an attribute. The property shows the most recent observed value, flags the conflict, and shows each value with its source ([D20](/adr/d20-listing-consolidation-rules/)).
+
+## Duplicate candidate and resolution
+
+A **duplicate candidate** is a pair of listings that the system suggests may belong to the same property. A pair is a candidate when it has the same source and external identifier, or when the distance is under 100 m, the built areas differ by at most 5 %, and the bedroom count is the same (configurable thresholds). The system never merges automatically. The user resolves each candidate as **same property** (link) or **different property** (dismiss, remembered) ([D21](/adr/d21-duplicate-detection-policy/)).
+
 ## Price history
 
 Price history is a core feature (P0). It records snapshots of listings, price changes, relevant feature changes, and disappeared listings.

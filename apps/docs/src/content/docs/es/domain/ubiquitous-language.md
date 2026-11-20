@@ -50,6 +50,46 @@ Título del anuncio, descripción, precio, superficie construida, superficie út
 
 Garaje, jardín, piscina, terraza, balcón, calefacción, ascensor, certificado energético, tipo de suelo, agua, electricidad y saneamiento.
 
+## Observación
+
+Una **observación** es un registro fechado de lo que House Radar vio sobre un anuncio en un momento dado: precio, si el anuncio seguía activo y fecha de comprobación. Las observaciones las crean las ejecuciones automáticas o la acción manual «comprobar anuncio» ([D20](/es/adr/d20-listing-consolidation-rules/)). El histórico de precios se construye a partir de observaciones.
+
+## Ciclo de vida del estado del anuncio
+
+Un anuncio se encuentra en uno de tres estados:
+
+| Estado | Significado |
+| --- | --- |
+| `active` | Visto como disponible en su última observación. |
+| `disappeared` | Ya no está disponible: lo marca el usuario (fuentes manuales) o no se ha visto en N ejecuciones consecutivas (fuentes automáticas; N es configurable, 3 por defecto). |
+| `unknown` | No hay evidencia suficiente para decirlo, por ejemplo antes de la primera comprobación. |
+
+Solo los anuncios `active` contribuyen al precio representativo y a las estadísticas.
+
+## Precisión de la ubicación
+
+La ubicación de una propiedad es un pin en un mapa con una precisión declarada ([D18](/es/adr/d18-location-pin-declared-precision/)):
+
+| Precisión | Significado |
+| --- | --- |
+| `exact` | El pin marca la propiedad en sí. |
+| `approximate` | El pin está cerca de la propiedad, pero no sobre ella. |
+| `municipality` | El pin solo identifica el municipio. |
+
+El municipio y la provincia se derivan del pin contra los límites oficiales del IGN. El código postal se introduce a mano.
+
+## Precio representativo
+
+El **precio representativo** de una propiedad es el menor precio entre sus anuncios `active`. Los resultados de búsqueda lo muestran como «N anuncios, desde X €» ([D19](/es/adr/d19-search-read-model/)). Una propiedad sin anuncios activos no tiene precio representativo.
+
+## Conflicto de atributos
+
+Un **conflicto de atributos** aparece cuando los anuncios de una propiedad discrepan en un atributo. La propiedad muestra el valor observado más reciente, señala el conflicto y muestra cada valor con su fuente ([D20](/es/adr/d20-listing-consolidation-rules/)).
+
+## Candidato a duplicado y resolución
+
+Un **candidato a duplicado** es un par de anuncios que el sistema sugiere que podrían pertenecer a la misma propiedad. Un par es candidato cuando tiene la misma fuente e identificador externo, o cuando la distancia es inferior a 100 m, las superficies construidas difieren como máximo un 5 % y el número de habitaciones es el mismo (umbrales configurables). El sistema nunca fusiona automáticamente. El usuario resuelve cada candidato como **misma propiedad** (vínculo) o **propiedad distinta** (descarte, que se recuerda) ([D21](/es/adr/d21-duplicate-detection-policy/)).
+
 ## Histórico de precios
 
 El histórico de precios es una funcionalidad central (P0). Registra snapshots de los anuncios, cambios de precio, cambios relevantes de características y anuncios desaparecidos.

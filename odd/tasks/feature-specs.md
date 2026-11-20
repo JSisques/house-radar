@@ -39,7 +39,7 @@ Front matter unchanged in shape. Sections: Summary; Priority; Responsible module
 | ID | Task | Route | Status | Commit |
 |----|------|-------|--------|--------|
 | T1 | ADRs D17–D21 + ADR index (en + es) | delegated (writer trigger: 2+ files) | [x] | |
-| T2 | Domain page update (en + es) | delegated | [ ] | |
+| T2 | Domain page update (en + es) | delegated | [x] | |
 | T3 | HR-F001 ingestion, HR-F002 normalization (en + es) | delegated | [ ] | |
 | T4 | HR-F003 search, HR-F004 detail, HR-F005 duplicates, HR-F008 price history (en + es) | delegated | [ ] | |
 | T5 | HR-F006 map, HR-F007 favorites & saved searches, HR-F009 dashboard (en + es) | delegated | [ ] | |
@@ -59,7 +59,8 @@ TDD (D14) applies to production code; this is documentation content, verified by
 
 - Branch `docs/feature-specs` created from `main` (6f28a98).
 - T1 done: ADRs D17-D21 (en + es) and index updated.
+- T2 done: domain page (en + es) extended.
 
 ## Next step
 
-T2.
+T3.
