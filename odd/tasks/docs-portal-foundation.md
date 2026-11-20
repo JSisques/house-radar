@@ -50,6 +50,14 @@ Out of scope: application code (api, web, ingestion), CI workflows, Docker Compo
 
 RDD mode: on (default). Assess per work-unit commit.
 
+- Full branch (main..a05e198): tier high (`process_boundary`, package.json scripts); consent granted; START stopped with `lens_context_budget_exceeded` (95 files / ~7.7k lines). No authority created.
+- Reduced candidate T1+T2 (main..1c7e911, executable/config scope): consent granted; 4-lens review **approved and acknowledged** (lineage review-d6853c83df2a2fc8). T3–T5 are passive content verified structurally (astro check, build, en/es parity, internal links).
+- Advisory findings (non-blocking):
+  - `.gitignore` lost `.env` protection → already fixed in a05e198.
+  - Hero links to missing pages at T2 → resolved by T3/T4 on HEAD.
+  - Reference draft note about provisional `house-radar-docs` repo is stale → follow-up.
+  - No automated en/es parity check → follow-up (candidate for CI under D16).
+
 ## Progress / Evidence
 
 - Branch `docs/portal-foundation` created from `main` (e05273d chore: initialize repository).
