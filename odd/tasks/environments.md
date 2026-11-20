@@ -40,6 +40,29 @@ Define environments, deployment, secrets and backups before M4, so issues #100 (
 - `.env.example` in the repository documents every variable without values.
 - Rejected: `.env` only on the server (not versioned or documented, lost with the server); SOPS + age (extra tool and key management, too much ceremony for a disposable staging).
 
+### E5. Deployment flow, health checks and rollback (2026-11-20)
+
+1. Migrations first, in an ephemeral container with the new image (MikroORM). If they fail, the deploy stops and the previous version keeps running. Destructive migrations are allowed in staging (E2), never in production.
+2. Every service declares its own Docker Compose healthcheck and the deploy runs `docker compose up -d --wait`: Compose waits until all blocking services are `healthy`; a timeout fails the command and triggers the rollback. The same healthchecks work locally.
+
+| Service | Check | Blocks the deploy |
+|---|---|---|
+| `postgres` | `pg_isready` + PostGIS extension available | Yes |
+| `redis` | `PING` | Yes |
+| `api` | `/health` (terminus): Postgres, Redis, migrations up to date | Yes |
+| `ingestion` | own `/health`: Redis and BullMQ worker connections | Yes |
+| outbox relay | own `/health`: can read the outbox and publish to BullMQ | Yes |
+| `web` | serves `index.html` and exposes the deployed version (`/version.json` with the SHA) | Yes |
+| Observability (Grafana, Prometheus, Loki, Tempo, OTel Collector) | readiness endpoints | No — warning only |
+
+3. End-to-end smoke test: one request through the web to the API confirming the served SHA is the new one (pieces are connected, not only alive).
+4. Rollback: the server keeps the SHA of the last healthy version; if the new one fails, the workflow redeploys it and finishes red, so GitHub notifies that the merge broke staging.
+5. Concurrency: Actions `concurrency` group per environment; consecutive merges deploy one after another, never overlapping.
+
+- Observability does not block: a slow Grafana must not roll back a healthy app (false positive); the workflow reports it as a warning and D15 alerts cover the rest.
+- Health checks were extended from API-only to every service at the user's request.
+
 ## Pending discovery
-- Health check / rollback on failed staging deploy.
+
+- Docs portal hosting (public).
 - Output: ADR(s), operations page, issue updates (#100, #101, #41).
