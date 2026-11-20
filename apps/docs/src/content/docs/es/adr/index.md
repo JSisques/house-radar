@@ -1,11 +1,11 @@
 ---
 title: "Registros de decisiones de arquitectura"
-description: "Índice de todas las decisiones de arquitectura D0 a D23."
+description: "Índice de todas las decisiones de arquitectura D0 a D27."
 sidebar:
   order: 0
 ---
 
-Decisiones de producto y técnicas tomadas antes de empezar el desarrollo. Cada decisión del registro se documenta como un ADR cuyo identificador coincide con el del registro (D0 a D23). La numeración de los ADR es el número de la decisión. Usa la [plantilla](/es/adr/template/) para nuevas decisiones.
+Decisiones de producto y técnicas tomadas antes de empezar el desarrollo. Cada decisión del registro se documenta como un ADR cuyo identificador coincide con el del registro (D0 a D27). La numeración de los ADR es el número de la decisión. Usa la [plantilla](/es/adr/template/) para nuevas decisiones.
 
 | ID | Decisión | Resultado | Fecha |
 | --- | --- | --- | --- |
@@ -33,3 +33,7 @@ Decisiones de producto y técnicas tomadas antes de empezar el desarrollo. Cada 
 | D21 | [Política de detección de duplicados](/es/adr/d21-duplicate-detection-policy/) | El sistema sugiere candidatos y nunca fusiona automáticamente; el usuario resuelve cada uno. Los umbrales son configurables. | 2026-11-20 |
 | D22 | [Estilo de API](/es/adr/d22-api-style/) | REST sobre HTTP descrita por un contrato OpenAPI; la web usa un cliente TypeScript tipado generado, detrás de un puerto. | 2026-11-20 |
 | D23 | [Modelo de concurrencia de la ingesta](/es/adr/d23-ingestion-concurrency-model/) | Escalar el trabajo, no un worker por fuente: workers idénticos y sin estado, fan-out por anuncio, una cola con límite de tasa por fuente e idempotencia (restricción única, observaciones append-only, bloqueo optimista) en lugar de bloqueos distribuidos. | 2026-11-20 |
+| D24 | [Bloques base propios](/es/adr/d24-own-building-blocks/) | Dos paquetes propios sin framework (`building-blocks`, `shared-kernel`) en lugar del kit DDD externo del autor, que acopla el dominio a NestJS y TypeORM. | 2026-11-20 |
+| D25 | [CQRS y estructura de contextos](/es/adr/d25-cqrs-and-context-structure/) | CQRS con `@nestjs/cqrs` y estructura por contexto (`domain`, `application`, `infrastructure`, `transport`); los contextos se comunican mediante puertos y eventos. | 2026-11-20 |
+| D26 | [TanStack Router](/es/adr/d26-tanstack-router/) | TanStack Router en `apps/web`, con los parámetros de búsqueda tipados y validados con zod en la definición de la ruta. | 2026-11-20 |
+| D27 | [react-i18next](/es/adr/d27-react-i18next/) | `react-i18next` detrás del adaptador de i18n: un namespace por contexto, claves tipadas e `Intl` para el formateo. | 2026-11-20 |
