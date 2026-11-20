@@ -25,7 +25,8 @@ P0 (source section 1).
 - [HR-F002](/features/hr-f002-normalization/): every ingested listing is converted to the normalized model.
 - [HR-F008](/features/hr-f008-price-history/): runs and manual checks create the observations the history is built from.
 - [HR-F012](/features/hr-f012-admin-observability/): run status, errors, and retries are shown to the administrator.
-- ADRs: [D3](/adr/d03-source-strategy/), [D7](/adr/d07-queues-and-scheduling/), [D10](/adr/d10-cross-cutting-architecture/), [D17](/adr/d17-manual-import-assisted-form/), [D20](/adr/d20-listing-consolidation-rules/).
+- [Ingestion concurrency](/architecture/ingestion-concurrency/): how workers scale without collisions.
+- ADRs: [D3](/adr/d03-source-strategy/), [D7](/adr/d07-queues-and-scheduling/), [D10](/adr/d10-cross-cutting-architecture/), [D17](/adr/d17-manual-import-assisted-form/), [D20](/adr/d20-listing-consolidation-rules/), [D23](/adr/d23-ingestion-concurrency-model/).
 
 ## User stories
 
@@ -90,4 +91,4 @@ P0 (source section 1).
 
 ## Related decisions
 
-[D3](/adr/d03-source-strategy/), [D7](/adr/d07-queues-and-scheduling/), [D10](/adr/d10-cross-cutting-architecture/), [D17](/adr/d17-manual-import-assisted-form/), [D20](/adr/d20-listing-consolidation-rules/).
+[D3](/adr/d03-source-strategy/), [D7](/adr/d07-queues-and-scheduling/), [D10](/adr/d10-cross-cutting-architecture/), [D17](/adr/d17-manual-import-assisted-form/), [D20](/adr/d20-listing-consolidation-rules/), [D23](/adr/d23-ingestion-concurrency-model/).

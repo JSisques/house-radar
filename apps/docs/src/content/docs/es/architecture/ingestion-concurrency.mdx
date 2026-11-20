@@ -1,0 +1,47 @@
+---
+title: Concurrencia de la ingesta
+description: Cómo escalan los workers de ingesta sin colisiones y cómo se respetan las cuotas por fuente.
+sidebar:
+  order: 2
+---
+
+import IngestionFlowDiagram from '../../../../components/IngestionFlowDiagram.astro';
+
+Decisión [D23](/es/adr/d23-ingestion-concurrency-model/): escalar el trabajo, no «un worker por fuente». La planificación se separa de la ejecución, el trabajo de una sola fuente se divide en jobs pequeños y la base de datos hace inofensiva cualquier duplicación concurrente. La tecnología de colas viene de [D7](/es/adr/d07-queues-and-scheduling/).
+
+## Diagrama
+
+<IngestionFlowDiagram
+  title="Flujo de concurrencia de la ingesta"
+  desc="Un planificador encola jobs sync-source en colas BullMQ por fuente dentro de Redis. El job sync-source genera jobs fetch-listing (fan-out). Varias réplicas de workers de ingesta sin estado los consumen, llaman a adaptadores de conector que hablan con las APIs externas de las fuentes y escriben en PostgreSQL con PostGIS mediante upsert por fuente e ID externo, observaciones append-only y bloqueo optimista."
+/>
+
+## Flujo paso a paso
+
+1. **Planificar.** El planificador registra jobs repetibles de BullMQ. Cada disparo encola `sync-source(<source>)` en la cola de esa fuente (por ejemplo `queue:idealista`). El planificador nunca ejecuta la ingesta por sí mismo.
+2. **Una cola por fuente.** Cada fuente tiene su propia cola en Redis con su propio limitador de tasa. Añadir una fuente supone registrar una cola más.
+3. **Reclamar.** Un worker de ingesta toma un job de una cola. BullMQ lo mueve a activo de forma atómica con un lock, de modo que dos workers nunca reciben el mismo job a la vez.
+4. **Fan-out.** `sync-source` llama a `discover()` del conector y encola un `fetch-listing(<source>, <externalId>)` por anuncio. Los IDs de job son deterministas (`fetch:<source>:<externalId>:<runId>`), por lo que un anuncio no se encola dos veces en una ejecución.
+5. **Obtener.** Cualquier worker consume cada job `fetch-listing` y llama a `fetch(externalId)` del conector. Los conectores son adaptadores de un mismo puerto y devuelven el modelo normalizado ([D10](/es/adr/d10-cross-cutting-architecture/)).
+6. **Persistir.** El worker hace upsert del anuncio por `(source, external_id)`, añade una observación y, si hace falta, actualiza el agregado Property con bloqueo optimista ([D6](/es/adr/d06-persistence/)).
+7. **Recuperar.** Si un worker muere, su lock caduca y otro worker reintenta el job (recuperación de jobs estancados).
+
+## Por qué las colisiones son inofensivas
+
+En lugar de prevenir cada posible colisión con bloqueos distribuidos hechos a mano, el diseño consigue que una ejecución repetida o concurrente produzca el mismo estado final. La idempotencia se aplica en tres niveles:
+
+| Nivel | Mecanismo | Efecto de una colisión |
+| --- | --- | --- |
+| Job | ID de job determinista (`fetch:<source>:<externalId>:<runId>`) | El mismo job no se encola dos veces en una ejecución. |
+| Anuncio | Unicidad `(source, external_id)` más upsert | El mismo anuncio se actualiza, nunca se duplica (enmienda de [D21](/es/adr/d21-duplicate-detection-policy/)). |
+| Histórico y agregado | Observaciones append-only, únicas por `(listing, run)`; bloqueo optimista en Property (`version` de MikroORM) | Una observación repetida se rechaza; una actualización concurrente de Property falla y se reintenta en lugar de sobrescribir. |
+
+## Escalado
+
+- **Más rendimiento:** ejecutar más réplicas idénticas con `docker compose up --scale ingestion=N` ([D8](/es/adr/d08-deployment/)). No cambia ninguna configuración por fuente.
+- **Cuotas:** el limitador de BullMQ es global por cola y compartido por todos los workers, de modo que la cuota de cada fuente se mantiene sea cual sea `N`.
+- **Una sola fuente grande:** el fan-out permite que los `N` workers se repartan sus jobs `fetch-listing`.
+- **No se usa:** los grupos de BullMQ (una sola cola con límites por grupo) son una funcionalidad de pago de la versión Pro; una cola por fuente da el mismo resultado.
+- **Visibilidad:** las colas y los jobs se observan como describe [D15](/es/adr/d15-observability/).
+
+Relacionado: [HR-F001](/es/features/hr-f001-ingestion/), [D7](/es/adr/d07-queues-and-scheduling/), [D23](/es/adr/d23-ingestion-concurrency-model/).

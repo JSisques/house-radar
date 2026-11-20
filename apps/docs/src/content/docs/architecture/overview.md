@@ -58,6 +58,10 @@ Examples in the decision log:
 - OpenTelemetry instrumentation behind an adapter ([D15](/adr/d15-observability/)).
 - MikroORM mapped with `EntitySchema`, so domain entities do not depend on it ([D6](/adr/d06-persistence/)).
 
+## Ingestion concurrency
+
+How ingestion workers scale without collisions and respect per-source quotas is described in [Ingestion concurrency](/architecture/ingestion-concurrency/) ([D23](/adr/d23-ingestion-concurrency-model/)).
+
 ## Runtime services
 
 All services run with Docker Compose ([D8](/adr/d08-deployment/)).

@@ -58,6 +58,10 @@ Ejemplos del registro de decisiones:
 - Instrumentación OpenTelemetry detrás de un adaptador ([D15](/es/adr/d15-observability/)).
 - MikroORM mapeado con `EntitySchema`, de modo que las entidades de dominio no dependen de él ([D6](/es/adr/d06-persistence/)).
 
+## Concurrencia de la ingesta
+
+Cómo escalan los workers de ingesta sin colisiones y respetan las cuotas por fuente se describe en [Concurrencia de la ingesta](/es/architecture/ingestion-concurrency/) ([D23](/es/adr/d23-ingestion-concurrency-model/)).
+
 ## Servicios en ejecución
 
 Todos los servicios se ejecutan con Docker Compose ([D8](/es/adr/d08-deployment/)).

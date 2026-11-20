@@ -1,0 +1,47 @@
+---
+title: Ingestion concurrency
+description: How ingestion workers scale without collisions and how per-source quotas are respected.
+sidebar:
+  order: 2
+---
+
+import IngestionFlowDiagram from '../../../components/IngestionFlowDiagram.astro';
+
+Decision [D23](/adr/d23-ingestion-concurrency-model/): scale work, not "one worker per source". Scheduling is separated from execution, the work of a single source is split into small jobs, and the database makes any concurrent duplication harmless. The queue technology comes from [D7](/adr/d07-queues-and-scheduling/).
+
+## Diagram
+
+<IngestionFlowDiagram
+  title="Ingestion concurrency flow"
+  desc="A scheduler enqueues sync-source jobs into per-source BullMQ queues in Redis. The sync-source job fans out fetch-listing jobs. Several stateless ingestion worker replicas consume them, call connector adapters that talk to external source APIs, and write to PostgreSQL with PostGIS using an upsert on source and external ID, append-only observations, and optimistic locking."
+/>
+
+## Flow step by step
+
+1. **Schedule.** The scheduler registers BullMQ repeatable jobs. Each firing enqueues `sync-source(<source>)` in that source's queue (for example `queue:idealista`). The scheduler never runs ingestion itself.
+2. **Queue per source.** Every source has its own queue in Redis with its own rate limiter. Adding a source means registering one more queue.
+3. **Claim.** An ingestion worker takes a job from a queue. BullMQ moves it to active atomically with a lock, so two workers never receive the same job at the same time.
+4. **Fan-out.** `sync-source` calls the connector's `discover()` and enqueues one `fetch-listing(<source>, <externalId>)` per listing. Job IDs are deterministic (`fetch:<source>:<externalId>:<runId>`), so a listing is not enqueued twice in a run.
+5. **Fetch.** Any worker consumes each `fetch-listing` job and calls the connector's `fetch(externalId)`. Connectors are adapters of one port and return the normalized model ([D10](/adr/d10-cross-cutting-architecture/)).
+6. **Persist.** The worker upserts the listing by `(source, external_id)`, appends an observation, and, when needed, updates the Property aggregate with optimistic locking ([D6](/adr/d06-persistence/)).
+7. **Recover.** If a worker dies, its lock expires and another worker retries the job (stalled job recovery).
+
+## Why collisions are harmless
+
+Instead of preventing every possible collision with hand-made distributed locks, the design makes a repeated or concurrent execution produce the same final state. Idempotency applies at three levels:
+
+| Level | Mechanism | Effect of a collision |
+| --- | --- | --- |
+| Job | Deterministic job ID (`fetch:<source>:<externalId>:<runId>`) | The same job is not enqueued twice within a run. |
+| Listing | Unique `(source, external_id)` plus upsert | The same listing is updated, never duplicated ([D21](/adr/d21-duplicate-detection-policy/) amendment). |
+| History and aggregate | Append-only observations, unique per `(listing, run)`; optimistic locking on Property (MikroORM `version`) | A repeated observation is rejected; a concurrent Property update fails and is retried instead of overwriting. |
+
+## Scaling
+
+- **More throughput:** run more identical replicas with `docker compose up --scale ingestion=N` ([D8](/adr/d08-deployment/)). No per-source configuration changes.
+- **Quotas:** the BullMQ rate limiter is global per queue and shared by all workers, so each source's quota holds whatever `N` is.
+- **Single large source:** fan-out lets all `N` workers share its `fetch-listing` jobs.
+- **Not used:** BullMQ groups (single queue with per-group limits) are a paid Pro feature; one queue per source gives the same result.
+- **Visibility:** queues and jobs are observed as described in [D15](/adr/d15-observability/).
+
+Related: [HR-F001](/features/hr-f001-ingestion/), [D7](/adr/d07-queues-and-scheduling/), [D23](/adr/d23-ingestion-concurrency-model/).
