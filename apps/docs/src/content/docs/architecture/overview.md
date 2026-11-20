@@ -62,6 +62,10 @@ Examples in the decision log:
 
 How ingestion workers scale without collisions and respect per-source quotas is described in [Ingestion concurrency](/architecture/ingestion-concurrency/) ([D23](/adr/d23-ingestion-concurrency-model/)).
 
+## Code conventions
+
+Structure, layering, naming, testing and tooling rules for backend, frontend and shared packages are in [Code conventions](/architecture/conventions/).
+
 ## Runtime services
 
 All services run with Docker Compose ([D8](/adr/d08-deployment/)).

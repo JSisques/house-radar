@@ -62,6 +62,10 @@ Ejemplos del registro de decisiones:
 
 Cómo escalan los workers de ingesta sin colisiones y respetan las cuotas por fuente se describe en [Concurrencia de la ingesta](/es/architecture/ingestion-concurrency/) ([D23](/es/adr/d23-ingestion-concurrency-model/)).
 
+## Convenciones de código
+
+Las reglas de estructura, capas, nomenclatura, testing y herramientas para backend, frontend y paquetes compartidos están en [Convenciones de código](/es/architecture/conventions/).
+
 ## Servicios en ejecución
 
 Todos los servicios se ejecutan con Docker Compose ([D8](/es/adr/d08-deployment/)).

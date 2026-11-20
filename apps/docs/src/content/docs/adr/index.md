@@ -1,11 +1,11 @@
 ---
 title: "Architecture decision records"
-description: "Index of all architecture decisions D0 to D23."
+description: "Index of all architecture decisions D0 to D27."
 sidebar:
   order: 0
 ---
 
-Product and technical decisions taken before development started. Each decision in the decision log is documented as an ADR whose identifier matches the log (D0 to D23). The ADR numbering is the decision number. Use the [template](/adr/template/) for new decisions.
+Product and technical decisions taken before development started. Each decision in the decision log is documented as an ADR whose identifier matches the log (D0 to D27). The ADR numbering is the decision number. Use the [template](/adr/template/) for new decisions.
 
 | ID | Decision | Result | Date |
 | --- | --- | --- | --- |
@@ -33,3 +33,7 @@ Product and technical decisions taken before development started. Each decision 
 | D21 | [Duplicate detection policy](/adr/d21-duplicate-detection-policy/) | The system suggests candidates and never merges automatically; the user resolves each one. Thresholds are configurable. | 2026-11-20 |
 | D22 | [API style](/adr/d22-api-style/) | REST over HTTP described by an OpenAPI contract; the web uses a generated typed TypeScript client behind a port. | 2026-11-20 |
 | D23 | [Ingestion concurrency model](/adr/d23-ingestion-concurrency-model/) | Scale work, not workers per source: stateless identical workers, fan-out per listing, one rate-limited queue per source, and idempotency (unique constraint, append-only observations, optimistic locking) instead of distributed locks. | 2026-11-20 |
+| D24 | [Own building blocks](/adr/d24-own-building-blocks/) | Two own framework-free packages (`building-blocks`, `shared-kernel`) instead of the author's external DDD kit, which couples the domain to NestJS and TypeORM. | 2026-11-20 |
+| D25 | [CQRS and context structure](/adr/d25-cqrs-and-context-structure/) | CQRS with `@nestjs/cqrs` and a per-context layout (`domain`, `application`, `infrastructure`, `transport`); contexts talk through ports and events. | 2026-11-20 |
+| D26 | [TanStack Router](/adr/d26-tanstack-router/) | TanStack Router in `apps/web`, with search params typed and validated with zod in the route definition. | 2026-11-20 |
+| D27 | [react-i18next](/adr/d27-react-i18next/) | `react-i18next` behind the i18n adapter: one namespace per context, typed keys, and `Intl` for formatting. | 2026-11-20 |
