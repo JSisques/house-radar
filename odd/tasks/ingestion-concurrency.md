@@ -36,6 +36,9 @@ Principle: make concurrent duplication harmless (idempotency) instead of relying
 - T2 done (2f8089a): architecture page en + es, `IngestionFlowDiagram.astro` inline SVG component, linked from overview and HR-F001.
 - Verification: `pnpm docs:test` pass (4/4), `pnpm docs:check-i18n` OK (50 pages x 1 locale), `pnpm docs:check` 0 errors, `pnpm docs:build` 101 pages built; svg with title/desc present in built en and es pages.
 
+- 329d208: diagram boxes widened after visual check (headless Chrome, light/dark, en/es).
+- Review: medium risk (`IngestionFlowDiagram.astro`), consent granted, **approved and acknowledged**. Warnings fixed in 8c4e3c1: BullMQ custom job IDs cannot contain `:` (now `fetch.<source>.<externalId>.<runId>`); "never the same job" corrected to at-least-once delivery. Suggestions not applied: static SVG ids (component used once per page), retry of rejected observations.
+
 ## Next step
 
 Open a PR from `docs/ingestion-concurrency` to `main` (user decision).
