@@ -86,9 +86,16 @@ identity ──(event: AccountCreated)──▶ users
 
 - `Municipality` (INE code, name, province, boundary polygon) and `Province`: read-only, loaded from IGN by an import script; Galicia only in the MVP.
 
+### M5. Database layout (2026-11-20)
+
+- One PostgreSQL schema per bounded context (user decision): `ingestion`, `listings`, `properties`, `geography`, `identity`, `users`. No foreign keys across schemas; contexts reference each other by ID. Each context owns its migrations and permissions. Cross-context reads go through projections (M3), never cross-schema `JOIN`s.
+- Defaults (not contested): money as `bigint` cents; locations as `geography(Point, 4326)` (radius in metres with `ST_DWithin`); municipality boundaries as `geometry(MultiPolygon, 4326)` (point-in-polygon); unknown values as `NULL` plus an origin column (`declared` / `calculated` / `inferred`) where the origin matters (D20, product principle 4).
+
 ## Pending discovery
 
-- PostgreSQL + PostGIS schema.
+- Event delivery reliability (in-process vs outbox).
+- Identifier format.
+- Table-level schema.
 - Read models / projections.
 - PostgreSQL + PostGIS schema.
 - Output: docs pages + ADRs.
