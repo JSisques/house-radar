@@ -84,4 +84,6 @@ P0 (source section 2).
 
 ## Related decisions
 
-[D1](/adr/d01-language/), [D2](/adr/d02-repository-strategy/), [D6](/adr/d06-persistence/), [D12](/adr/d12-web-internationalization/), [D18](/adr/d18-location-pin-declared-precision/), [D19](/adr/d19-search-read-model/), [D20](/adr/d20-listing-consolidation-rules/).
+[D1](/adr/d01-language/), [D2](/adr/d02-repository-strategy/), [D6](/adr/d06-persistence/), [D12](/adr/d12-web-internationalization/), [D18](/adr/d18-location-pin-declared-precision/), [D19](/adr/d19-search-read-model/), [D20](/adr/d20-listing-consolidation-rules/), [D28](/adr/d28-bounded-context-map/), [D29](/adr/d29-aggregate-boundaries/), [D30](/adr/d30-schema-per-context/).
+
+See also: [Aggregates](/domain/aggregates/), [Database schema](/architecture/database-schema/).

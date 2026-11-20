@@ -83,4 +83,6 @@ P0 (source section 8).
 
 ## Related decisions
 
-[D3](/adr/d03-source-strategy/), [D6](/adr/d06-persistence/), [D10](/adr/d10-cross-cutting-architecture/), [D12](/adr/d12-web-internationalization/), [D20](/adr/d20-listing-consolidation-rules/).
+[D3](/adr/d03-source-strategy/), [D6](/adr/d06-persistence/), [D10](/adr/d10-cross-cutting-architecture/), [D12](/adr/d12-web-internationalization/), [D20](/adr/d20-listing-consolidation-rules/), [D28](/adr/d28-bounded-context-map/), [D29](/adr/d29-aggregate-boundaries/).
+
+See also: [Aggregates](/domain/aggregates/), [Context map](/architecture/context-map/).

@@ -1,0 +1,76 @@
+---
+title: Context map
+description: The six bounded contexts of the backend, what each one owns and how they communicate.
+sidebar:
+  order: 4
+---
+
+import ContextMapDiagram from '../../../components/ContextMapDiagram.astro';
+
+Decision [D28](/adr/d28-bounded-context-map/): the backend has six bounded contexts. Each one owns its data and its language, and contexts talk only through ports and domain events ([D25](/adr/d25-cqrs-and-context-structure/)). Aggregates are described in [Aggregates](/domain/aggregates/) and tables in [Database schema](/architecture/database-schema/).
+
+## Diagram
+
+<ContextMapDiagram
+  title="Bounded context map"
+  desc="Six bounded contexts. Identity sends the AccountCreated event to users. Ingestion calls the RecordObservation port of listings. Listings sends the events ListingObserved, ListingPriceChanged and ListingDisappeared to properties. Users calls the AssertPropertyExists port of properties. Properties calls the ResolveMunicipality port of geography."
+/>
+
+## Contexts
+
+| Context | Responsibility | Main aggregates |
+| --- | --- | --- |
+| `ingestion` | Sources, runs and connectors ([D23](/adr/d23-ingestion-concurrency-model/)) | `Source`, `IngestionRun` |
+| `listings` | Listings and what was observed about each one | `Listing`, `Observation` |
+| `properties` | Real properties, consolidation and duplicates | `Property`, `DuplicateCandidate` |
+| `geography` | Municipalities and provinces (IGN boundaries, [D18](/adr/d18-location-pin-declared-precision/)) | Read-only reference data |
+| `identity` | Account, credentials, session and lockout ([D13](/adr/d13-users-and-authentication/)) | `Account` |
+| `users` | Profile, preferences, favorites and saved searches | `UserProfile`, `Favorite`, `SavedSearch` |
+
+### `ingestion`
+
+Knows the sources, runs the connectors and records each run and its extraction errors. It does not interpret what it collects: it hands every normalized listing to `listings` through the `RecordObservation` port. When a run closes it reports which listings of the source were not seen.
+
+### `listings`
+
+Owns the listing and its observations. Receives observations from `ingestion`, decides price and status changes (including disappearance after N missed runs, [D20](/adr/d20-listing-consolidation-rules/)) and emits `ListingObserved`, `ListingPriceChanged` and `ListingDisappeared` for `properties`.
+
+### `properties`
+
+Owns the real property, the link between properties and listings, and duplicate candidates ([D21](/adr/d21-duplicate-detection-policy/)). Reacts to `listings` events to keep its projections (search view, price evolution) up to date. Calls `geography` through `ResolveMunicipality` to place a property in a municipality.
+
+### `geography`
+
+Read-only reference data: provinces and municipalities with their IGN boundaries, loaded by an import script (Galicia only in the MVP). Answers point-in-polygon queries.
+
+### `identity`
+
+Account, credentials, lockout after repeated failures and role. Sessions are infrastructure (Redis), not an aggregate. Emits `AccountCreated`.
+
+### `users`
+
+Profile, favorites and saved searches of an account. Creates the profile when it receives `AccountCreated`, validates that a property exists through `AssertPropertyExists` before saving a favorite, and re-points favorites when two properties merge.
+
+## Relationships
+
+| From | To | Mechanism | Notes |
+| --- | --- | --- | --- |
+| `ingestion` | `listings` | Port `RecordObservation` | Synchronous command; idempotent upsert ([D23](/adr/d23-ingestion-concurrency-model/)). |
+| `listings` | `properties` | Events `ListingObserved`, `ListingPriceChanged`, `ListingDisappeared` | Asynchronous, through the transactional outbox ([D31](/adr/d31-transactional-outbox/)). |
+| `properties` | `geography` | Port `ResolveMunicipality` | Synchronous query. |
+| `users` | `properties` | Port `AssertPropertyExists` | Synchronous query. |
+| `identity` | `users` | Event `AccountCreated` | Asynchronous. |
+
+Ports live in `application/ports/` of the calling context and are implemented by adapters in its `infrastructure/adapters/`. No foreign keys cross contexts at the database level ([D30](/adr/d30-schema-per-context/)).
+
+## Why `pricing-history` is not a context
+
+[D4](/adr/d04-backend-framework/) listed `pricing-history` as a candidate. It is not a context because the price history of a listing is its own observations ([D20](/adr/d20-listing-consolidation-rules/)), which `listings` already owns and keeps forever. A separate context would duplicate those observations and require keeping two stores in sync. The evolution of a property's lowest active price is derived data, so it is a projection inside `properties`.
+
+## Why `geography` is a context
+
+Point-in-polygon municipality resolution needs its own reference data (IGN boundaries) loaded by its own import. Keeping it apart avoids mixing read-only reference data with the consolidation model of `properties`, which changes often.
+
+## Not a context: the dashboard
+
+The dashboard (HR-F009) is not a context. It is a set of queries over the read models of `properties`.

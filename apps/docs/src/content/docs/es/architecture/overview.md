@@ -32,9 +32,11 @@ house-radar/
 
 Los límites entre módulos los impone la arquitectura (paquetes y dependencias explícitas) y se verifican en CI ([D16](/es/adr/d16-quality-and-workflow/)).
 
-## Candidatos a bounded contexts
+## Bounded contexts
 
-La decisión [D4](/es/adr/d04-backend-framework/) organiza el backend por bounded contexts. Ejemplos del registro de decisiones:
+La decisión [D4](/es/adr/d04-backend-framework/) organiza el backend por bounded contexts, y [D28](/es/adr/d28-bounded-context-map/) fija el mapa: `ingestion`, `listings`, `properties`, `geography`, `identity` y `users`. Véanse [Mapa de contextos](/es/architecture/context-map/), [Agregados](/es/domain/aggregates/) y [Esquema de base de datos](/es/architecture/database-schema/).
+
+Los candidatos del registro de decisiones eran:
 
 - `listings`
 - `properties`
@@ -42,7 +44,7 @@ La decisión [D4](/es/adr/d04-backend-framework/) organiza el backend por bounde
 - `ingestion`
 - `users`
 
-La decisión [D13](/es/adr/d13-users-and-authentication/) nombra el bounded context `identity` para la autenticación.
+La decisión [D13](/es/adr/d13-users-and-authentication/) nombra el bounded context `identity` para la autenticación. `pricing-history` no llegó a ser un contexto: el histórico de precios son las observaciones de `listings` ([D28](/es/adr/d28-bounded-context-map/)).
 
 Cada contexto tiene capas de dominio, aplicación e infraestructura. El dominio no depende de NestJS: decoradores, módulos e inyección de dependencias se limitan a las capas de aplicación e infraestructura.
 

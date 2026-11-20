@@ -86,4 +86,6 @@ P0 (source section 5).
 
 ## Related decisions
 
-[D4](/adr/d04-backend-framework/), [D19](/adr/d19-search-read-model/), [D20](/adr/d20-listing-consolidation-rules/), [D21](/adr/d21-duplicate-detection-policy/).
+[D4](/adr/d04-backend-framework/), [D19](/adr/d19-search-read-model/), [D20](/adr/d20-listing-consolidation-rules/), [D21](/adr/d21-duplicate-detection-policy/), [D28](/adr/d28-bounded-context-map/), [D29](/adr/d29-aggregate-boundaries/).
+
+See also: [Aggregates](/domain/aggregates/), [Context map](/architecture/context-map/).

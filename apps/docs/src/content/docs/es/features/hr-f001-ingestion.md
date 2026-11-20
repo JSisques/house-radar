@@ -91,4 +91,6 @@ P0 (sección de origen 1).
 
 ## Decisiones relacionadas
 
-[D3](/es/adr/d03-source-strategy/), [D7](/es/adr/d07-queues-and-scheduling/), [D10](/es/adr/d10-cross-cutting-architecture/), [D17](/es/adr/d17-manual-import-assisted-form/), [D20](/es/adr/d20-listing-consolidation-rules/), [D23](/es/adr/d23-ingestion-concurrency-model/).
+[D3](/es/adr/d03-source-strategy/), [D7](/es/adr/d07-queues-and-scheduling/), [D10](/es/adr/d10-cross-cutting-architecture/), [D17](/es/adr/d17-manual-import-assisted-form/), [D20](/es/adr/d20-listing-consolidation-rules/), [D23](/es/adr/d23-ingestion-concurrency-model/), [D28](/es/adr/d28-bounded-context-map/), [D31](/es/adr/d31-transactional-outbox/).
+
+Véase también: [Mapa de contextos](/es/architecture/context-map/), [Esquema de base de datos](/es/architecture/database-schema/).

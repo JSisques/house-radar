@@ -83,4 +83,6 @@ P0 (sección de origen 8).
 
 ## Decisiones relacionadas
 
-[D3](/es/adr/d03-source-strategy/), [D6](/es/adr/d06-persistence/), [D10](/es/adr/d10-cross-cutting-architecture/), [D12](/es/adr/d12-web-internationalization/), [D20](/es/adr/d20-listing-consolidation-rules/).
+[D3](/es/adr/d03-source-strategy/), [D6](/es/adr/d06-persistence/), [D10](/es/adr/d10-cross-cutting-architecture/), [D12](/es/adr/d12-web-internationalization/), [D20](/es/adr/d20-listing-consolidation-rules/), [D28](/es/adr/d28-bounded-context-map/), [D29](/es/adr/d29-aggregate-boundaries/).
+
+Véase también: [Agregados](/es/domain/aggregates/), [Mapa de contextos](/es/architecture/context-map/).

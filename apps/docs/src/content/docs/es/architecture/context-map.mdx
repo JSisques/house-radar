@@ -1,0 +1,76 @@
+---
+title: Mapa de contextos
+description: Los seis bounded contexts del backend, qué posee cada uno y cómo se comunican.
+sidebar:
+  order: 4
+---
+
+import ContextMapDiagram from '../../../../components/ContextMapDiagram.astro';
+
+Decisión [D28](/es/adr/d28-bounded-context-map/): el backend tiene seis bounded contexts. Cada uno posee sus datos y su lenguaje, y los contextos se comunican solo mediante puertos y eventos de dominio ([D25](/es/adr/d25-cqrs-and-context-structure/)). Los agregados se describen en [Agregados](/es/domain/aggregates/) y las tablas en [Esquema de base de datos](/es/architecture/database-schema/).
+
+## Diagrama
+
+<ContextMapDiagram
+  title="Mapa de bounded contexts"
+  desc="Seis bounded contexts. Identity envía el evento AccountCreated a users. Ingestion llama al puerto RecordObservation de listings. Listings envía los eventos ListingObserved, ListingPriceChanged y ListingDisappeared a properties. Users llama al puerto AssertPropertyExists de properties. Properties llama al puerto ResolveMunicipality de geography."
+/>
+
+## Contextos
+
+| Contexto | Responsabilidad | Agregados principales |
+| --- | --- | --- |
+| `ingestion` | Fuentes, ejecuciones y conectores ([D23](/es/adr/d23-ingestion-concurrency-model/)) | `Source`, `IngestionRun` |
+| `listings` | Anuncios y lo observado sobre cada uno | `Listing`, `Observation` |
+| `properties` | Propiedades reales, consolidación y duplicados | `Property`, `DuplicateCandidate` |
+| `geography` | Municipios y provincias (límites del IGN, [D18](/es/adr/d18-location-pin-declared-precision/)) | Datos de referencia de solo lectura |
+| `identity` | Cuenta, credenciales, sesión y bloqueo ([D13](/es/adr/d13-users-and-authentication/)) | `Account` |
+| `users` | Perfil, preferencias, favoritos y búsquedas guardadas | `UserProfile`, `Favorite`, `SavedSearch` |
+
+### `ingestion`
+
+Conoce las fuentes, ejecuta los conectores y registra cada ejecución y sus errores de extracción. No interpreta lo que recoge: entrega cada anuncio normalizado a `listings` mediante el puerto `RecordObservation`. Al cerrar una ejecución informa de qué anuncios de la fuente no se vieron.
+
+### `listings`
+
+Posee el anuncio y sus observaciones. Recibe observaciones de `ingestion`, decide los cambios de precio y de estado (incluida la desaparición tras N ejecuciones sin verlo, [D20](/es/adr/d20-listing-consolidation-rules/)) y emite `ListingObserved`, `ListingPriceChanged` y `ListingDisappeared` para `properties`.
+
+### `properties`
+
+Posee la propiedad real, el vínculo entre propiedades y anuncios y los candidatos a duplicado ([D21](/es/adr/d21-duplicate-detection-policy/)). Reacciona a los eventos de `listings` para mantener al día sus proyecciones (vista de búsqueda, evolución del precio). Llama a `geography` mediante `ResolveMunicipality` para situar una propiedad en un municipio.
+
+### `geography`
+
+Datos de referencia de solo lectura: provincias y municipios con sus límites del IGN, cargados por un script de importación (solo Galicia en el MVP). Responde consultas de punto en polígono.
+
+### `identity`
+
+Cuenta, credenciales, bloqueo tras fallos repetidos y rol. Las sesiones son infraestructura (Redis), no un agregado. Emite `AccountCreated`.
+
+### `users`
+
+Perfil, favoritos y búsquedas guardadas de una cuenta. Crea el perfil al recibir `AccountCreated`, valida que una propiedad existe mediante `AssertPropertyExists` antes de guardar un favorito y reasigna los favoritos cuando dos propiedades se fusionan.
+
+## Relaciones
+
+| Origen | Destino | Mecanismo | Notas |
+| --- | --- | --- | --- |
+| `ingestion` | `listings` | Puerto `RecordObservation` | Comando síncrono; upsert idempotente ([D23](/es/adr/d23-ingestion-concurrency-model/)). |
+| `listings` | `properties` | Eventos `ListingObserved`, `ListingPriceChanged`, `ListingDisappeared` | Asíncrono, mediante el outbox transaccional ([D31](/es/adr/d31-transactional-outbox/)). |
+| `properties` | `geography` | Puerto `ResolveMunicipality` | Consulta síncrona. |
+| `users` | `properties` | Puerto `AssertPropertyExists` | Consulta síncrona. |
+| `identity` | `users` | Evento `AccountCreated` | Asíncrono. |
+
+Los puertos viven en `application/ports/` del contexto que llama y los implementan adaptadores en su `infrastructure/adapters/`. Ninguna clave foránea cruza contextos en la base de datos ([D30](/es/adr/d30-schema-per-context/)).
+
+## Por qué `pricing-history` no es un contexto
+
+[D4](/es/adr/d04-backend-framework/) enumeró `pricing-history` como candidato. No es un contexto porque el histórico de precios de un anuncio son sus propias observaciones ([D20](/es/adr/d20-listing-consolidation-rules/)), que `listings` ya posee y conserva para siempre. Un contexto separado duplicaría esas observaciones y obligaría a mantener dos almacenes sincronizados. La evolución del precio activo más bajo de una propiedad es un dato derivado, por lo que es una proyección dentro de `properties`.
+
+## Por qué `geography` es un contexto
+
+La resolución de municipio por punto en polígono necesita sus propios datos de referencia (límites del IGN) cargados por su propia importación. Mantenerlo aparte evita mezclar datos de referencia de solo lectura con el modelo de consolidación de `properties`, que cambia a menudo.
+
+## No es un contexto: el dashboard
+
+El dashboard (HR-F009) no es un contexto. Es un conjunto de consultas sobre los modelos de lectura de `properties`.
