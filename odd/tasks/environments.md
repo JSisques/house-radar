@@ -95,3 +95,5 @@ Checks: `pnpm docs:test`, `pnpm docs:check-i18n`, `pnpm docs:check`, `pnpm docs:
 - [x] T2: `operations/environments` (en + es), linked from `operations/overview` and `product/roadmap`; roadmap M4 rationale updated; R7 appended to `odd/tasks/roadmap.md`: `de90cf8` (`docs: add environments operations page and update roadmap`).
 - [ ] T3: GitHub issue updates (pending, parent).
 - Checks observed: `pnpm docs:test`, `docs:check-i18n` (70 pages x 1 locale), `docs:check` (0 errors) and `docs:build` (141 pages) all passed.
+
+- T3 done on GitHub (user-confirmed 2026-11-20): #100 retitled "[M4] Deploy to staging" with E3–E5 criteria, "Needs definition" removed; #101 retitled "Production backups and recovery (post-publication)", milestone removed, P0 → P2; #41 registry = GHCR, healthchecks and `/version.json` added; new #130 "[M0] Publish the docs portal on Cloudflare Pages with PR previews" (S-M0-27), sub-issue of #3, added to the project board.
