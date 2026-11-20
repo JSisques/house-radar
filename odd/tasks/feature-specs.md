@@ -44,6 +44,8 @@ Front matter unchanged in shape. Sections: Summary; Priority; Responsible module
 | T4 | HR-F003 search, HR-F004 detail, HR-F005 duplicates, HR-F008 price history (en + es) | delegated | [x] | a217c27 |
 | T5 | HR-F006 map, HR-F007 favorites & saved searches, HR-F009 dashboard (en + es) | delegated | [x] | 447da9f |
 | T6 | HR-F010 users, HR-F011 notifications, HR-F012 admin & observability (en + es); features index update | delegated | [x] | 3360ae3 |
+| T7 | Apply resolved open questions + D21 amendment (en + es) | delegated | [x] | e04d8c1, 6abfd1a |
+| T8 | ADR D22 API style (REST + OpenAPI) + index; align HR-F012-BR4 alert wording with D15 | inline (2 mechanical files + index) | [x] | 06baf69 |
 
 ## Acceptance criteria
 
@@ -66,6 +68,8 @@ TDD (D14) applies to production code; this is documentation content, verified by
 - T6 done: HR-F010, HR-F011, HR-F012 (en + es) and features index updated.
 - T7 done: user-accepted answers (2026-11-20) applied as business rules and acceptance criteria in HR-F001..F010 and HR-F012 (en + es); open questions removed except HR-F011 (post-MVP). D21 amended (same source + external identifier is not a candidate; municipality criterion for non-exact precision) in ADR, domain page and HR-F005.
 - Verification: docs:test, docs:check-i18n, docs:check, docs:build pass; no "To be defined" left in features.
+- Review: full branch (main..677b90e) medium risk, consent granted, START stopped with `lens_context_budget_exceeded` (41 files / ~3k lines). Reduced candidate T1 (b448791, ADRs D17–D21 incl. flagged `d20`) reviewed in a detached worktree: **approved and acknowledged** (lineage review-b535bb63a908e022). Advisory findings on D21 lines 19–20 led to the D21 amendment in T7.
+- T8 done: D22 (REST + OpenAPI, user decision 2026-11-20) en + es, ADR index D0–D22; HR-F012-BR4 now names the three D15 alerts. Verified: i18n parity 48 pages, astro check 0 errors, build complete.
 
 ## Next step
 
