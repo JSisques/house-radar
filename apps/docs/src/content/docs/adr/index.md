@@ -1,11 +1,11 @@
 ---
 title: "Architecture decision records"
-description: "Index of all architecture decisions D0 to D27."
+description: "Index of all architecture decisions D0 to D32."
 sidebar:
   order: 0
 ---
 
-Product and technical decisions taken before development started. Each decision in the decision log is documented as an ADR whose identifier matches the log (D0 to D27). The ADR numbering is the decision number. Use the [template](/adr/template/) for new decisions.
+Product and technical decisions taken before development started. Each decision in the decision log is documented as an ADR whose identifier matches the log (D0 to D32). The ADR numbering is the decision number. Use the [template](/adr/template/) for new decisions.
 
 | ID | Decision | Result | Date |
 | --- | --- | --- | --- |
@@ -37,3 +37,8 @@ Product and technical decisions taken before development started. Each decision 
 | D25 | [CQRS and context structure](/adr/d25-cqrs-and-context-structure/) | CQRS with `@nestjs/cqrs` and a per-context layout (`domain`, `application`, `infrastructure`, `transport`); contexts talk through ports and events. | 2026-11-20 |
 | D26 | [TanStack Router](/adr/d26-tanstack-router/) | TanStack Router in `apps/web`, with search params typed and validated with zod in the route definition. | 2026-11-20 |
 | D27 | [react-i18next](/adr/d27-react-i18next/) | `react-i18next` behind the i18n adapter: one namespace per context, typed keys, and `Intl` for formatting. | 2026-11-20 |
+| D28 | [Bounded context map](/adr/d28-bounded-context-map/) | Six contexts (`ingestion`, `listings`, `properties`, `geography`, `identity`, `users`) with explicit ports and events; `pricing-history` is not a context. | 2026-11-20 |
+| D29 | [Aggregate boundaries](/adr/d29-aggregate-boundaries/) | `Observation` and `ExtractionError` as own append-only aggregates, a minimal `Property`, and derived consolidation data in projections. | 2026-11-20 |
+| D30 | [One PostgreSQL schema per context](/adr/d30-schema-per-context/) | One schema per bounded context, no cross-schema foreign keys, and cross-context reads through projections. | 2026-11-20 |
+| D31 | [Transactional outbox](/adr/d31-transactional-outbox/) | Domain events are written to `outbox_event` in the aggregate's transaction; a relay publishes through BullMQ and consumers are idempotent. | 2026-11-20 |
+| D32 | [UUIDv7 identifiers](/adr/d32-uuid-v7/) | Time-ordered UUIDv7 for aggregate, event and outbox IDs, generated with the `uuid` package. | 2026-11-20 |
