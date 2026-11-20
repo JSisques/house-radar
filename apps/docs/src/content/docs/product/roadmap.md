@@ -18,7 +18,7 @@ The roadmap turns the features [HR-F001 to HR-F012](/features/) and the technica
 | M1 · Walking skeleton | Cross every layer with one real flow | Manual import (assisted form), `Listing` and `Observation`, `Property` 1:1, detail page, basic list | [HR-F001](/features/hr-f001-ingestion/) (manual part), [HR-F002](/features/hr-f002-normalization/), [HR-F004](/features/hr-f004-property-detail/) (basic) |
 | M2 · Search & map | The real search | `geography` (IGN import), all filters, typed URL, MapLibre map with clustering | [HR-F003](/features/hr-f003-search/), [HR-F006](/features/hr-f006-map/) |
 | M3 · History & duplicates | The differentiating value | Check listing, history and chart, disappeared listings, duplicate candidates and resolution | [HR-F005](/features/hr-f005-duplicates/), [HR-F008](/features/hr-f008-price-history/) |
-| M4 · Users | Complete personal product, running on the own server | Authentication with a seeded account, favorites, saved searches, preferences; production deployment with Docker Compose and backups | [HR-F007](/features/hr-f007-favorites-saved-searches/), [HR-F010](/features/hr-f010-users/) |
+| M4 · Users | Complete personal product, running on a disposable staging server | Authentication with a seeded account, favorites, saved searches, preferences; staging deployment with Docker Compose | [HR-F007](/features/hr-f007-favorites-saved-searches/), [HR-F010](/features/hr-f010-users/) |
 | M5 · Automated ingestion | Data without manual work | idealista connector (if the key was granted), runs, retries, automatic disappearance, ingestion panel and alerts | [HR-F001](/features/hr-f001-ingestion/) (automatic part), [HR-F012](/features/hr-f012-admin-observability/) |
 | M6 · Dashboard → Release 1.0 | Close the MVP | Statistics and dashboard, runbooks, acceptance of the product scope and the 1.0.0 cut | [HR-F009](/features/hr-f009-dashboard/) |
 
@@ -31,7 +31,7 @@ Milestones are ordered by dependency and risk, not by feature number.
 - M0 is large on purpose: without `building-blocks`, the outbox and the CI boundary checks, the first aggregate would be written without the agreed rules.
 - M1 comes before the full search: if the end-to-end skeleton breaks, it breaks on one flow, not on twenty filters.
 - Search and map (M2) come before history (M3), which depends on observations that M1 already produces.
-- Deployment and backups are in M4, together with authentication: nothing is exposed to the network without authentication, and from M4 House Radar runs on the server with real data and starts accumulating history, its main asset. Production alerting follows in M5.
+- Deployment is in M4, together with authentication: M4 deploys to a disposable staging server reachable only through Tailscale, so the app runs in a real environment ([D35](/adr/d35-environments-and-staging-deployment/)). Real history accumulation and backups start with production, which is defined when the product is published. Production alerting follows in M5. See [Environments and deployment](/operations/environments/).
 - Automated ingestion (M5) depends on an idealista key that may not be granted, so it does not block the rest of the product.
 - Runbooks and the 1.0 cut close the roadmap in M6.
 
@@ -78,11 +78,6 @@ Everything is sliced up front: all seven milestones have their vertical-slice is
 | No milestone (HR-F011) | 1 | 0 |
 | **Total** | **13** | **112** |
 
-## Needs definition before starting
+## Needs definition
 
-Production deployment ([#100](https://github.com/JSisques/house-radar/issues/100)) and backups ([#101](https://github.com/JSisques/house-radar/issues/101)) are in M4 and must be clarified before M4 work begins:
-
-- The deployment procedure to the own server with Docker Compose ([D8](/adr/d08-deployment/)).
-- The environments involved.
-- Secrets management.
-- The backup and recovery strategy.
+The staging deployment ([#100](https://github.com/JSisques/house-radar/issues/100)) is defined in [Environments and deployment](/operations/environments/). Backups ([#101](https://github.com/JSisques/house-radar/issues/101)) are production work: they leave M4 and are designed with production, when the product is published.

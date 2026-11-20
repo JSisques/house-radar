@@ -11,7 +11,7 @@ Decisión [D8](/es/adr/d08-deployment/): servidor propio con Docker Compose. El 
 
 Servicios del Compose: PostgreSQL + PostGIS, Redis, OpenTelemetry Collector, Prometheus, Loki, Tempo y Grafana (véase la [visión general de la arquitectura](/es/architecture/overview/)).
 
-Procedimiento de despliegue y entornos: **por definir.**
+Los entornos, el procedimiento de despliegue en staging y los secretos se describen en [Entornos y despliegue](/es/operations/environments/) ([D35](/es/adr/d35-environments-and-staging-deployment/)). La producción aún no está definida.
 
 ## Observabilidad
 
@@ -41,4 +41,4 @@ Umbrales y canales de notificación: **por definir.**
 
 ## Copias de seguridad y recuperación
 
-**Por definir.**
+Requisito de producción, que se define junto con la producción. Los datos de staging son desechables y no tienen copias de seguridad ([D35](/es/adr/d35-environments-and-staging-deployment/)).
