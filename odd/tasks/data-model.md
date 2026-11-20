@@ -61,9 +61,34 @@ identity ──(event: AccountCreated)──▶ users
 - **`DuplicateCandidate`** — pair of listings with status `suggested` / `linked` / `dismissed`; a dismissed pair is never suggested again (D21).
 - **Projections (read models)** updated from `listings` events: `property_search_view` (consolidated attributes with conflicts per D20, representative price per D19, municipality, location) used by search, detail and dashboard; lowest-active-price evolution per property. Reason: the aggregate protects invariants; derived data is computed for reading and can be rebuilt from events and observations if consolidation rules change.
 
+### M4. Remaining contexts (2026-11-20)
+
+**`ingestion`**
+
+- `Source`: id (`idealista`, `manual`…), kind (`api` / `feed` / `manual`), enabled flag. Cadence and rate limit come from deployment configuration.
+- `IngestionRun`: source, start/end, status (`running` / `succeeded` / `partial` / `failed`), counters (discovered, processed, failed). Emits `IngestionRunCompleted`, `IngestionRunFailed` (feed D15 alerts).
+- `ExtractionError`: separate append-only record referenced by `runId` (a run may accumulate many errors; same reasoning as `Observation`).
+- Disappearance: when a run closes, `ingestion` tells `listings` which listings of that source were not seen. `Listing` keeps a `missedRuns` counter reset by every observation; at N = 3 (D20) it becomes `disappeared`. `listings` decides (its invariant); `ingestion` only reports.
+
+**`identity`**
+
+- `Account`: email, password hash, failed attempts, `lockedUntil`, role (single role, prepared for more). Enforces 15-minute lock after 5 failures.
+- Sessions are infrastructure (Redis), not an aggregate.
+
+**`users`**
+
+- `UserProfile`: same ID as `Account`, time zone.
+- `Favorite`: own aggregate, unique `(user, property)`.
+- `SavedSearch`: name unique per user; filters as a value object (same search params validated by TanStack Router).
+- Property merge: `users` listens to `PropertiesMerged` and re-points favorites from the removed property to the surviving one, deduplicating.
+
+**`geography`**
+
+- `Municipality` (INE code, name, province, boundary polygon) and `Province`: read-only, loaded from IGN by an import script; Galicia only in the MVP.
+
 ## Pending discovery
 
-- Aggregates for `ingestion`, `identity`, `users`; `geography` reference data.
+- PostgreSQL + PostGIS schema.
 - Read models / projections.
 - PostgreSQL + PostGIS schema.
 - Output: docs pages + ADRs.
