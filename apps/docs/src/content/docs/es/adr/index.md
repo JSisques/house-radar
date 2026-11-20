@@ -1,11 +1,11 @@
 ---
 title: "Registros de decisiones de arquitectura"
-description: "Índice de todas las decisiones de arquitectura D0 a D22."
+description: "Índice de todas las decisiones de arquitectura D0 a D23."
 sidebar:
   order: 0
 ---
 
-Decisiones de producto y técnicas tomadas antes de empezar el desarrollo. Cada decisión del registro se documenta como un ADR cuyo identificador coincide con el del registro (D0 a D22). La numeración de los ADR es el número de la decisión. Usa la [plantilla](/es/adr/template/) para nuevas decisiones.
+Decisiones de producto y técnicas tomadas antes de empezar el desarrollo. Cada decisión del registro se documenta como un ADR cuyo identificador coincide con el del registro (D0 a D23). La numeración de los ADR es el número de la decisión. Usa la [plantilla](/es/adr/template/) para nuevas decisiones.
 
 | ID | Decisión | Resultado | Fecha |
 | --- | --- | --- | --- |
@@ -32,3 +32,4 @@ Decisiones de producto y técnicas tomadas antes de empezar el desarrollo. Cada 
 | D20 | [Reglas de consolidación de anuncios](/es/adr/d20-listing-consolidation-rules/) | Conflictos señalados con el valor más reciente, histórico de precios por anuncio, observaciones manuales, reglas de desaparición, precio por m² solo con superficie construida y estadísticas sobre propiedades activas con tamaño de muestra. | 2026-11-20 |
 | D21 | [Política de detección de duplicados](/es/adr/d21-duplicate-detection-policy/) | El sistema sugiere candidatos y nunca fusiona automáticamente; el usuario resuelve cada uno. Los umbrales son configurables. | 2026-11-20 |
 | D22 | [Estilo de API](/es/adr/d22-api-style/) | REST sobre HTTP descrita por un contrato OpenAPI; la web usa un cliente TypeScript tipado generado, detrás de un puerto. | 2026-11-20 |
+| D23 | [Modelo de concurrencia de la ingesta](/es/adr/d23-ingestion-concurrency-model/) | Escalar el trabajo, no un worker por fuente: workers idénticos y sin estado, fan-out por anuncio, una cola con límite de tasa por fuente e idempotencia (restricción única, observaciones append-only, bloqueo optimista) en lugar de bloqueos distribuidos. | 2026-11-20 |
