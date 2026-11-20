@@ -32,7 +32,13 @@ Build a **Fotocasa detail-page connector**, scoped to what the portal publishes 
 
 | ID | Task | Route | Status | Commit |
 |----|------|-------|--------|--------|
-| T1 | ADR D37 Fotocasa detail-page connector (en + es) + index; amendment notes appended to D3 and D17 (en + es); principle 7 precision on `product/principles` (en + es); `sources/source-strategy` (en + es) updated; HR-F001 related decisions | delegated (writer trigger: 2+ files) | [ ] | |
+| T1 | ADR D37 Fotocasa detail-page connector (en + es) + index; amendment notes appended to D3 and D17 (en + es); principle 7 precision on `product/principles` (en + es); `sources/source-strategy` (en + es) updated; HR-F001 related decisions | delegated (writer trigger: 2+ files) | [x] | d793e35 |
 | T2 | GitHub issue updates (to be confirmed by the user): new M5 slices for the Fotocasa detail connector; idealista slices #107/#108 marked optional | inline (gh) | [ ] | |
 
 Checks: `pnpm docs:test`, `pnpm docs:check-i18n`, `pnpm docs:check`, `pnpm docs:build`.
+
+## Progress
+
+- T1 done (commit d793e35): D37 (en + es) with both indexes (D0-D37), amendments appended to D3 and D17 (en + es), principle 7 made precise (en + es), source strategy updated (en + es), D37 added to HR-F001 related decisions (en + es). Route: delegated (writer).
+- Verification: `pnpm docs:test` 4/4 pass; `pnpm docs:check-i18n` OK (71 pages x 1 locale); `pnpm docs:check` 0 errors, 0 warnings, 0 hints; `pnpm docs:build` 143 pages built (only the pre-existing sitemap `site` warning).
+- Next: T2 (GitHub issue updates, pending user confirmation).
