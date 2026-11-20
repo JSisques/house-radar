@@ -64,3 +64,9 @@ Notes:
 
 - None for the issue plan. Docs output: roadmap page (en + es) and ADR D33.
 - Docs output (roadmap page en + es).
+
+## Progress
+
+- [x] ADR D33 versioning and releases (en + es, index updated): commit `46775c3` (`docs: add adr d33 versioning and releases`).
+- [x] Roadmap page `product/roadmap.md` (en + es), linked from MVP scope and features index: commit `e60306e` (`docs: add roadmap page`).
+- Checks observed: `pnpm docs:test`, `docs:check-i18n`, `docs:check`, `docs:build` all passed.
