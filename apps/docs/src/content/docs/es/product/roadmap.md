@@ -18,7 +18,7 @@ El roadmap convierte las funcionalidades [HR-F001 a HR-F012](/es/features/) y la
 | M1 · Walking skeleton | Atravesar todas las capas con un flujo real | Importación manual (formulario asistido), `Listing` y `Observation`, `Property` 1:1, página de detalle, listado básico | [HR-F001](/es/features/hr-f001-ingestion/) (parte manual), [HR-F002](/es/features/hr-f002-normalization/), [HR-F004](/es/features/hr-f004-property-detail/) (básico) |
 | M2 · Search & map | La búsqueda real | `geography` (importación del IGN), todos los filtros, URL tipada, mapa MapLibre con clustering | [HR-F003](/es/features/hr-f003-search/), [HR-F006](/es/features/hr-f006-map/) |
 | M3 · History & duplicates | El valor diferencial | Comprobar anuncio, histórico y gráfica, anuncios desaparecidos, candidatos a duplicado y su resolución | [HR-F005](/es/features/hr-f005-duplicates/), [HR-F008](/es/features/hr-f008-price-history/) |
-| M4 · Users | Producto personal completo, ejecutándose en el servidor propio | Autenticación con cuenta creada por seed, favoritos, búsquedas guardadas, preferencias; despliegue de producción con Docker Compose y copias de seguridad | [HR-F007](/es/features/hr-f007-favorites-saved-searches/), [HR-F010](/es/features/hr-f010-users/) |
+| M4 · Users | Producto personal completo, ejecutándose en un servidor de staging desechable | Autenticación con cuenta creada por seed, favoritos, búsquedas guardadas, preferencias; despliegue en staging con Docker Compose | [HR-F007](/es/features/hr-f007-favorites-saved-searches/), [HR-F010](/es/features/hr-f010-users/) |
 | M5 · Automated ingestion | Datos sin trabajo manual | Conector de idealista (si se concedió la clave), ejecuciones, reintentos, desaparición automática, panel de ingestion y alertas | [HR-F001](/es/features/hr-f001-ingestion/) (parte automática), [HR-F012](/es/features/hr-f012-admin-observability/) |
 | M6 · Dashboard → Release 1.0 | Cerrar el MVP | Estadísticas y dashboard, runbooks, aceptación del alcance del producto y corte de la 1.0.0 | [HR-F009](/es/features/hr-f009-dashboard/) |
 
@@ -31,7 +31,7 @@ Los milestones se ordenan por dependencias y riesgo, no por número de funcional
 - M0 es grande a propósito: sin `building-blocks`, el outbox y las comprobaciones de límites en CI, el primer agregado se escribiría sin las reglas acordadas.
 - M1 va antes que la búsqueda completa: si el esqueleto de punta a punta falla, falla en un solo flujo y no en veinte filtros.
 - Búsqueda y mapa (M2) van antes que el histórico (M3), que depende de las observaciones que M1 ya produce.
-- El despliegue y las copias de seguridad están en M4, junto con la autenticación: nada se expone a la red sin autenticación, y desde M4 House Radar se ejecuta en el servidor con datos reales y empieza a acumular histórico, su principal activo. Las alertas de producción llegan en M5.
+- El despliegue está en M4, junto con la autenticación: M4 despliega en un servidor de staging desechable accesible solo por Tailscale, de modo que la aplicación se ejecuta en un entorno real ([D35](/es/adr/d35-environments-and-staging-deployment/)). La acumulación del histórico real y las copias de seguridad empiezan con producción, que se define cuando se publique el producto. Las alertas de producción llegan en M5. Véase [Entornos y despliegue](/es/operations/environments/).
 - La ingestion automática (M5) depende de una clave de idealista que puede no concederse, por lo que no bloquea el resto del producto.
 - Los runbooks y el corte de la 1.0 cierran el roadmap en M6.
 
@@ -78,11 +78,6 @@ Todo se divide en slices desde el principio: los siete milestones tienen sus iss
 | Sin milestone (HR-F011) | 1 | 0 |
 | **Total** | **13** | **112** |
 
-## Requiere definición antes de empezar
+## Requiere definición
 
-El despliegue de producción ([#100](https://github.com/JSisques/house-radar/issues/100)) y las copias de seguridad ([#101](https://github.com/JSisques/house-radar/issues/101)) están en M4 y deben aclararse antes de empezar el trabajo de M4:
-
-- El procedimiento de despliegue en el servidor propio con Docker Compose ([D8](/es/adr/d08-deployment/)).
-- Los entornos implicados.
-- La gestión de secretos.
-- La estrategia de copias de seguridad y recuperación.
+El despliegue en staging ([#100](https://github.com/JSisques/house-radar/issues/100)) está definido en [Entornos y despliegue](/es/operations/environments/). Las copias de seguridad ([#101](https://github.com/JSisques/house-radar/issues/101)) son trabajo de producción: salen de M4 y se diseñan con la producción, cuando se publique el producto.

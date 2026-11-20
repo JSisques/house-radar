@@ -11,7 +11,7 @@ Decision [D8](/adr/d08-deployment/): own server with Docker Compose. Deployment 
 
 Services in the Compose setup: PostgreSQL + PostGIS, Redis, OpenTelemetry Collector, Prometheus, Loki, Tempo, and Grafana (see the [architecture overview](/architecture/overview/)).
 
-Deployment procedure and environments: **To be defined.**
+Environments, the staging deployment procedure and secrets are described in [Environments and deployment](/operations/environments/) ([D35](/adr/d35-environments-and-staging-deployment/)). Production is not defined yet.
 
 ## Observability
 
@@ -41,4 +41,4 @@ Thresholds and notification channels: **To be defined.**
 
 ## Backups and recovery
 
-**To be defined.**
+A production requirement, defined together with production. Staging data is disposable and is not backed up ([D35](/adr/d35-environments-and-staging-deployment/)).

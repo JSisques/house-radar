@@ -70,3 +70,9 @@ Notes:
 - [x] ADR D33 versioning and releases (en + es, index updated): commit `46775c3` (`docs: add adr d33 versioning and releases`).
 - [x] Roadmap page `product/roadmap.md` (en + es), linked from MVP scope and features index: commit `e60306e` (`docs: add roadmap page`).
 - Checks observed: `pnpm docs:test`, `docs:check-i18n`, `docs:check`, `docs:build` all passed.
+
+### R7. Deployment in M4 targets disposable staging (2026-11-20)
+
+- Supersedes the rationale of R6: M4 deploys to a disposable staging server (see E2 in `odd/tasks/environments.md`), not to a production environment with real data.
+- Backups (S-M4-16, #101) move out of M4 to future production work, designed when the product is published (E7). Real history accumulation starts with production.
+- The "Needs definition" note of the roadmap page no longer lists #100 (defined in `operations/environments`); #101 is described as production work.
