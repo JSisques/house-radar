@@ -99,9 +99,57 @@ identity ──(event: AccountCreated)──▶ users
 - Rejected: in-process publication after commit + periodic projection rebuild (a crash between commit and publish leaves projections silently stale for hours, contradicting product principle 1).
 - Follow-up: update conventions (C2/C4/C6, D25) and the backend skill templates — handlers no longer call `eventBus.publishAll(pullDomainEvents())`; the write repository / unit of work persists pulled events into the outbox within the transaction.
 
+### M7. Identifiers: UUIDv7 (2026-11-20)
+
+- All aggregate IDs, event IDs and outbox rows use UUIDv7 (user decision): time-ordered, so inserts append to the B-tree index (no fragmentation on ever-growing append-only tables: `observation`, `outbox_event`, `extraction_error`), still globally unique and generated anywhere; ordering by ID equals ordering by creation.
+- Generated with the `uuid` package (`v7()`), which works in Node and the browser. Supersedes the C6 note about `globalThis.crypto.randomUUID()` (v4) in `building-blocks`.
+- Column type: native `uuid`.
+
+### M8. Table-level schema (derived from M1–M7; reviewed in the PR)
+
+All tables: `id uuid primary key` (v7) unless stated, `created_at timestamptz not null`, `updated_at timestamptz not null` on mutable rows. Enums as `text` + `check` constraints (closed catalogs from the feature specs). No cross-schema foreign keys.
+
+**`ingestion`**
+
+- `source` (`id text pk`, e.g. `idealista`; `kind`; `enabled`).
+- `ingestion_run` (`source_id`, `started_at`, `finished_at`, `status`, `discovered_count`, `processed_count`, `failed_count`); index `(source_id, started_at desc)`.
+- `extraction_error` (`run_id`, `external_id null`, `message`, `occurred_at`); append-only; index `(run_id)`.
+
+**`listings`**
+
+- `listing`: provenance (`source_id`, `external_id null`, `url`, `normalized_url`); declared attributes (`property_type`, `condition`, `built_area_m2`, `usable_area_m2`, `plot_area_m2`, `bedrooms`, `bathrooms`, `year_built`, nullable boolean features `has_garage` / `has_garden` / `has_pool` / `has_terrace` / `has_balcony` / `has_elevator` / `has_heating`, `energy_certificate`, `title`, `description`), each nullable with `<attr>_origin` where relevant; `location geography(Point,4326)`, `location_precision`, `postal_code null`; `current_price_cents bigint`, `status`, `missed_runs int`, `published_at null`, `first_seen_at`, `last_checked_at`, `version int` (optimistic locking, D23). Unique `(source_id, external_id)` where `external_id is not null`; unique `(normalized_url)` for manual listings; GiST index on `location`.
+- `observation`: `listing_id`, `run_id null` (manual checks), `price_cents`, `status`, `observed_at`; append-only; unique `(listing_id, run_id)` where `run_id is not null`; index `(listing_id, observed_at)`.
+- `listing_correction`: audit of descriptive corrections (`listing_id`, `field`, `old_value`, `new_value`, `corrected_at`).
+
+**`properties`**
+
+- `property`: `chosen_location geography(Point,4326)`, `chosen_location_precision`, `version int`.
+- `property_listing`: `property_id` (fk, same schema), `listing_id` unique (a listing belongs to exactly one property).
+- `duplicate_candidate`: `listing_a_id`, `listing_b_id` (ordered pair, `a < b`), `status`, `reason`, `resolved_at null`; unique `(listing_a_id, listing_b_id)`.
+- `property_search_view` (projection): `property_id pk`, consolidated attributes, `conflicts jsonb`, `representative_price_cents null`, `active_listing_count`, `listing_count`, `municipality_code`, `province_code`, `location geography`, `location_precision`, `price_per_m2_cents null`, `first_seen_at`, `last_updated_at`; search indexes (GiST `location`, btree on price, areas, type, municipality).
+- `property_price_point` (projection): `property_id`, `observed_at`, `lowest_active_price_cents`; index `(property_id, observed_at)`.
+- `processed_event` (consumer idempotency): `event_id`, `consumer`, `processed_at`; pk `(event_id, consumer)`.
+
+**`geography`**
+
+- `province` (`code text pk`, `name`).
+- `municipality` (`code text pk` INE, `name`, `province_code`, `boundary geometry(MultiPolygon,4326)`); GiST index on `boundary`.
+
+**`identity`**
+
+- `account`: `email` unique (lower-cased), `password_hash`, `role`, `failed_sign_in_attempts`, `locked_until null`.
+
+**`users`**
+
+- `user_profile`: `id` = account id, `time_zone`.
+- `favorite`: `user_id`, `property_id`; unique `(user_id, property_id)`.
+- `saved_search`: `user_id`, `name`, `filters jsonb`; unique `(user_id, name)`.
+- `processed_event` (same shape as in `properties`).
+
+**Outbox** (in every schema that emits events: `ingestion`, `listings`, `properties`, `identity`)
+
+- `outbox_event`: `id` = event ID (v7), `aggregate_type`, `aggregate_id`, `event_type`, `schema_version`, `payload jsonb`, `metadata jsonb` (correlation/causation), `occurred_at`, `published_at null`; partial index on `occurred_at` where `published_at is null`.
+
 ## Pending discovery
-- Identifier format.
-- Table-level schema.
-- Read models / projections.
-- PostgreSQL + PostGIS schema.
-- Output: docs pages + ADRs.
+
+- None. Next: output (docs pages, ADRs, conventions and skill updates for M6/M7).
