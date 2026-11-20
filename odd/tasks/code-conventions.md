@@ -122,8 +122,13 @@ Refined:
 - Prices, areas and dates are formatted with the native `Intl` API (`Intl.NumberFormat` with `currency: 'EUR'`, `Intl.DateTimeFormat`) inside the adapter.
 - Adding Galician or Catalan means adding translation files only.
 
+### C12. Lint and format tooling
+
+- ESLint (flat config) + Prettier across the monorepo (user decision 2026-11-20). ESLint enforces architecture boundaries with `eslint-plugin-boundaries` (core of D10/C5); Prettier only formats. Speed handled by lint-staged (changed files only) and Turborepo caching.
+- Defaults (proposed, not contested): Prettier `singleQuote`, `trailingComma: all` (as in gardenia); import ordering with `eslint-plugin-simple-import-sort` (builtins → external → `@house-radar/*` → internal aliases → same-directory relative); husky + lint-staged on pre-commit; commitlint on commit-msg.
+
 ## Pending discovery
 
-- Tooling: lint/format stack, import ordering.
+- None. Next: write the conventions page (en + es) and ADRs for the structural decisions.
 - Lint/format tooling details, import ordering.
 - Documentation output (docs page + ADRs).
