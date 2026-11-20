@@ -29,8 +29,8 @@ Out of scope: application code (api, web, ingestion), CI workflows, Docker Compo
 | ID | Task | Route | Status | Commit |
 |----|------|-------|--------|--------|
 | T1 | Monorepo root: `package.json` (private, workspaces, `packageManager`), `pnpm-workspace.yaml`, `.nvmrc`, root `README.md` | delegated (writer trigger: 2+ files) | [x] | 4f42380 |
-| T2 | Scaffold Starlight in `apps/docs` with i18n (`root` = en, `es`), sidebar groups, site title | delegated | [x] | (pending) |
-| T3 | Product + domain + sources pages (en + es) | delegated | [ ] | |
+| T2 | Scaffold Starlight in `apps/docs` with i18n (`root` = en, `es`), sidebar groups, site title | delegated | [x] | 1c7e911 |
+| T3 | Product + domain + sources pages (en + es) | delegated | [x] | (pending) |
 | T4 | ADR template + ADR 0000–0016 (en + es) | delegated | [ ] | |
 | T5 | Features (HR-F001…HR-F012 from sections 1–12), architecture overview, operations placeholder (en + es) | delegated | [ ] | |
 
@@ -55,7 +55,8 @@ RDD mode: on (default). Assess per work-unit commit.
 - Branch `docs/portal-foundation` created from `main` (e05273d chore: initialize repository).
 - T1: monorepo root created; Node 24 LTS chosen for `.nvmrc` and engines (installed 26.7.0; Astro 7 requires >=22.23.4).
 - T2: Astro 7.4.13 + Starlight 0.43.1 scaffolded in `apps/docs`; TypeScript pinned to 5.9.3 (`@astrojs/check` volar needs TS<7). Hashes are recorded in the following commit (a commit cannot contain its own hash).
+- T3: product, domain and sources pages added (en + es). Links to ADR slugs (`/adr/dNN-...`) resolve once T4 lands.
 
 ## Next step
 
-T3.
+T4.
