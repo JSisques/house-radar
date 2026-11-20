@@ -32,7 +32,7 @@ Out of scope: application code (api, web, ingestion), CI workflows, Docker Compo
 | T2 | Scaffold Starlight in `apps/docs` with i18n (`root` = en, `es`), sidebar groups, site title | delegated | [x] | 1c7e911 |
 | T3 | Product + domain + sources pages (en + es) | delegated | [x] | 096f737 |
 | T4 | ADR template + ADR 0000–0016 (en + es) | delegated | [x] | fbcd48d |
-| T5 | Features (HR-F001…HR-F012 from sections 1–12), architecture overview, operations placeholder (en + es) | delegated | [x] | (pending) |
+| T5 | Features (HR-F001…HR-F012 from sections 1–12), architecture overview, operations placeholder (en + es) | delegated | [x] | 495777e |
 
 ## Acceptance criteria
 
