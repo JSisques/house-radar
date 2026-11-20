@@ -1,0 +1,15 @@
+{
+  "name": "house-radar",
+  "private": true,
+  "description": "House Radar: real estate discovery and analysis platform.",
+  "packageManager": "pnpm@10.34.6",
+  "engines": {
+    "node": ">=24",
+    "pnpm": ">=10.34.6"
+  },
+  "scripts": {
+    "docs:dev": "pnpm --filter docs dev",
+    "docs:build": "pnpm --filter docs build",
+    "docs:check": "pnpm --filter docs exec astro check"
+  }
+}
