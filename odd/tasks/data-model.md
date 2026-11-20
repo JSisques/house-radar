@@ -6,7 +6,7 @@ Design the domain model before code: bounded context map, aggregates with invari
 
 ## Status
 
-Discovery in progress. Decisions are recorded here as they are taken.
+Discovery complete; output tasks T1-T3 done (see Tasks). Pending: PR review.
 
 ## Decisions taken (user-approved)
 
@@ -158,8 +158,20 @@ All tables: `id uuid primary key` (v7) unless stated, `created_at timestamptz no
 
 | ID | Task | Route | Status | Commit |
 |----|------|-------|--------|--------|
-| T1 | ADRs D28 bounded context map, D29 aggregate boundaries (own `Observation`, minimal `Property` + projections), D30 schema per context, D31 transactional outbox, D32 UUIDv7 (en + es) + ADR index | delegated (writer trigger: 2+ files) | [ ] | |
-| T2 | Docs pages `architecture/context-map` (with SVG diagram component, like `IngestionFlowDiagram`) and `domain/aggregates` + `architecture/database-schema` (en + es); link from overview, domain page and relevant features | delegated | [ ] | |
-| T3 | Conventions + skill alignment with M6/M7: handlers no longer publish to `EventBus`; write repositories persist pulled events into the outbox within the transaction; relay publishes through BullMQ; consumers idempotent via `processed_event`; UUIDv7 via `uuid` in `building-blocks`. Update `architecture/conventions` (en + es), D25/D24 consequences notes, `.claude/skills/house-radar-backend` (SKILL.md + templates) | delegated | [ ] | |
+| T1 | ADRs D28 bounded context map, D29 aggregate boundaries (own `Observation`, minimal `Property` + projections), D30 schema per context, D31 transactional outbox, D32 UUIDv7 (en + es) + ADR index | delegated (writer trigger: 2+ files) | [x] | 5fe38ce |
+| T2 | Docs pages `architecture/context-map` (with SVG diagram component, like `IngestionFlowDiagram`) and `domain/aggregates` + `architecture/database-schema` (en + es); link from overview, domain page and relevant features | delegated | [x] | 4056280 |
+| T3 | Conventions + skill alignment with M6/M7: handlers no longer publish to `EventBus`; write repositories persist pulled events into the outbox within the transaction; relay publishes through BullMQ; consumers idempotent via `processed_event`; UUIDv7 via `uuid` in `building-blocks`. Update `architecture/conventions` (en + es), D25/D24 consequences notes, `.claude/skills/house-radar-backend` (SKILL.md + templates) | delegated | [x] | 3db9484 |
 
 Checks: `pnpm docs:test`, `pnpm docs:check-i18n`, `pnpm docs:check`, `pnpm docs:build`; diagram verified visually (headless Chrome, light/dark). TDD (D14) not applicable: documentation.
+
+## Progress and verification
+
+- T1 5fe38ce: ADRs D28-D32 (en + es) and both ADR indexes (D0 to D32).
+- T2 4056280: `ContextMapDiagram.astro`, `architecture/context-map`, `domain/aggregates`, `architecture/database-schema` (en + es); linked from overview, ubiquitous language and HR-F001/F002/F005/F008. Diagram checked visually in headless Chrome (dark theme; text fits in boxes).
+- T3 3db9484: conventions (en + es), D24/D25 superseded notes (en + es), `odd/tasks/code-conventions.md` update note, backend skill (SKILL.md 500 words; handler and spec templates without EventBus; new `write-repository` and `event-consumer` templates).
+- `pnpm docs:test`: 4 pass, 0 fail. `pnpm docs:check-i18n`: parity OK, 63 pages x 1 locale. `pnpm docs:check`: 0 errors, 0 warnings, 0 hints. `pnpm docs:build`: 127 pages built. Built `context-map` pages (en, es) contain `<svg` with `id="cmd-title"`.
+- Not run: light-theme visual check; skill templates are illustrative and not compiled.
+
+## Next step
+
+Open the PR for `docs/data-model` (about 400+ changed lines: apply the delivery strategy, `ask-on-risk`).
