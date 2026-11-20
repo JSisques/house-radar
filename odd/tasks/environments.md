@@ -83,8 +83,15 @@ Define environments, deployment, secrets and backups before M4, so issues #100 (
 
 | ID | Task | Route | Status | Commit |
 |----|------|-------|--------|--------|
-| T1 | ADR D35 environments, staging deployment and secrets (E1–E5, E7) and ADR D36 docs hosting on Cloudflare Pages (E6), en + es, ADR index | delegated (writer trigger: 2+ files) | [ ] | |
-| T2 | Page `operations/environments` (en + es): environments table, staging deploy flow with health checks and rollback, secrets, docs hosting, production pending; link from `operations/overview` and `product/roadmap`; update roadmap page and `odd/tasks/roadmap.md` (R7: M4 deploy targets disposable staging, backups out of M4) | delegated | [ ] | |
+| T1 | ADR D35 environments, staging deployment and secrets (E1–E5, E7) and ADR D36 docs hosting on Cloudflare Pages (E6), en + es, ADR index | delegated (writer trigger: 2+ files) | [x] | `fa9dd2a` |
+| T2 | Page `operations/environments` (en + es): environments table, staging deploy flow with health checks and rollback, secrets, docs hosting, production pending; link from `operations/overview` and `product/roadmap`; update roadmap page and `odd/tasks/roadmap.md` (R7: M4 deploy targets disposable staging, backups out of M4) | delegated | [x] | `de90cf8` |
 | T3 | GitHub issue updates (user-confirmed): #100 retitled to staging deployment with E3–E5 criteria, "Needs definition" removed; #101 retitled to production backups, removed from M4, marked post-publication; #41 GHCR registry; new M0 slice for the docs portal on Cloudflare Pages with PR previews | inline (gh) | [ ] | |
 
 Checks: `pnpm docs:test`, `pnpm docs:check-i18n`, `pnpm docs:check`, `pnpm docs:build`.
+
+## Progress
+
+- [x] T1: ADR D35 and D36 (en + es, index D0–D36): `fa9dd2a` (`docs: add adrs d35-d36 environments and docs hosting`).
+- [x] T2: `operations/environments` (en + es), linked from `operations/overview` and `product/roadmap`; roadmap M4 rationale updated; R7 appended to `odd/tasks/roadmap.md`: `de90cf8` (`docs: add environments operations page and update roadmap`).
+- [ ] T3: GitHub issue updates (pending, parent).
+- Checks observed: `pnpm docs:test`, `docs:check-i18n` (70 pages x 1 locale), `docs:check` (0 errors) and `docs:build` (141 pages) all passed.
