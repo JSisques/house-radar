@@ -88,7 +88,7 @@ Un **conflicto de atributos** aparece cuando los anuncios de una propiedad discr
 
 ## Candidato a duplicado y resolución
 
-Un **candidato a duplicado** es un par de anuncios que el sistema sugiere que podrían pertenecer a la misma propiedad. Un par es candidato cuando tiene la misma fuente e identificador externo, o cuando la distancia es inferior a 100 m, las superficies construidas difieren como máximo un 5 % y el número de habitaciones es el mismo (umbrales configurables). El sistema nunca fusiona automáticamente. El usuario resuelve cada candidato como **misma propiedad** (vínculo) o **propiedad distinta** (descarte, que se recuerda) ([D21](/es/adr/d21-duplicate-detection-policy/)).
+Un **candidato a duplicado** es un par de anuncios que el sistema sugiere que podrían pertenecer a la misma propiedad. Un par es candidato cuando las ubicaciones son cercanas (distancia inferior a 100 m cuando ambas tienen precisión `exact`; el mismo municipio cuando alguna precisión no es `exact`), las superficies construidas difieren como máximo un 5 % y el número de habitaciones es el mismo (umbrales configurables). La misma fuente e identificador externo no es un candidato: es el mismo anuncio y la ingesta lo actualiza. El sistema nunca fusiona automáticamente. El usuario resuelve cada candidato como **misma propiedad** (vínculo) o **propiedad distinta** (descarte, que se recuerda) ([D21](/es/adr/d21-duplicate-detection-policy/)).
 
 ## Histórico de precios
 

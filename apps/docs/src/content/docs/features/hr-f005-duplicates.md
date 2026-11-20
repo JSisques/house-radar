@@ -36,8 +36,8 @@ P0 (source section 5).
 ## Business rules
 
 - **HR-F005-BR1:** the system suggests candidates and never merges automatically. Every link between listings comes from an explicit user action ([D21](/adr/d21-duplicate-detection-policy/)).
-- **HR-F005-BR2:** a pair of listings is a candidate when they have the same source and the same external identifier.
-- **HR-F005-BR3:** a pair of listings is also a candidate when the distance between their locations is under 100 m, their built areas differ by at most 5 %, and they have the same number of bedrooms.
+- **HR-F005-BR2:** the same source and the same external identifier is not a duplicate candidate: it is the same listing, and ingestion updates it ([HR-F001-BR5](/features/hr-f001-ingestion/)). Candidates only arise between distinct listings.
+- **HR-F005-BR3:** a pair of listings is a candidate when the distance between their locations is under 100 m, their built areas differ by at most 5 %, and they have the same number of bedrooms. When the location precision of either listing is not `exact`, the 100 m criterion is replaced by "same municipality"; the built area and bedroom criteria still apply.
 - **HR-F005-BR4:** the thresholds (100 m and 5 %) are configurable.
 - **HR-F005-BR5:** unknown values never count as a match. A listing without location, built area, or bedrooms cannot be a candidate through BR3.
 - **HR-F005-BR6:** the user resolves a candidate as "same property", which links the listings to one property, or as "different property", which dismisses the pair.
@@ -49,7 +49,7 @@ P0 (source section 5).
 
 ## Acceptance criteria
 
-- **HR-F005-AC1:** Given two listings with the same source and external identifier, When detection runs, Then they appear as a candidate pair.
+- **HR-F005-AC1:** Given an ingestion that delivers a source and external identifier of an existing listing, When detection runs, Then the existing listing is updated and no candidate pair is created for it.
 - **HR-F005-AC2:** Given two listings 80 m apart with built areas of 100 m² and 104 m² and 3 bedrooms each, When detection runs, Then they appear as a candidate pair.
 - **HR-F005-AC3:** Given two listings 120 m apart with the same area and bedrooms, When detection runs, Then they are not a candidate pair.
 - **HR-F005-AC4:** Given two listings with built areas of 100 m² and 106 m², When detection runs, Then they are not a candidate through the location criterion.
@@ -60,6 +60,8 @@ P0 (source section 5).
 - **HR-F005-AC9:** Given a dismissed pair, When detection runs again, Then the pair is not suggested again.
 - **HR-F005-AC10:** Given a threshold changed in the configuration, When detection runs, Then the new threshold is applied.
 - **HR-F005-AC11:** Given a very strong match, When detection runs, Then no listing is linked until the user resolves the candidate.
+- **HR-F005-AC12:** Given two listings in the same municipality, one of them with `approximate` precision, with built areas of 100 m² and 104 m² and 3 bedrooms each, When detection runs, Then they appear as a candidate pair whatever the distance between their pins.
+- **HR-F005-AC13:** Given two listings in different municipalities, one of them with `approximate` precision, with the same built area and bedrooms, When detection runs, Then they are not a candidate pair.
 
 ## Edge cases
 

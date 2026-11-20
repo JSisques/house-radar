@@ -36,8 +36,8 @@ P0 (sección de origen 5).
 ## Reglas de negocio
 
 - **HR-F005-BR1:** el sistema sugiere candidatos y nunca fusiona automáticamente. Todo vínculo entre anuncios procede de una acción explícita del usuario ([D21](/es/adr/d21-duplicate-detection-policy/)).
-- **HR-F005-BR2:** un par de anuncios es candidato cuando tienen la misma fuente y el mismo identificador externo.
-- **HR-F005-BR3:** un par de anuncios también es candidato cuando la distancia entre sus ubicaciones es inferior a 100 m, sus superficies construidas difieren como máximo un 5 % y tienen el mismo número de habitaciones.
+- **HR-F005-BR2:** la misma fuente y el mismo identificador externo no es un candidato a duplicado: es el mismo anuncio y la ingesta lo actualiza ([HR-F001-BR5](/es/features/hr-f001-ingestion/)). Los candidatos solo surgen entre anuncios distintos.
+- **HR-F005-BR3:** un par de anuncios es candidato cuando la distancia entre sus ubicaciones es inferior a 100 m, sus superficies construidas difieren como máximo un 5 % y tienen el mismo número de habitaciones. Cuando la precisión de la ubicación de alguno de los anuncios no es `exact`, el criterio de 100 m se sustituye por «mismo municipio»; los criterios de superficie construida y de habitaciones se mantienen.
 - **HR-F005-BR4:** los umbrales (100 m y 5 %) son configurables.
 - **HR-F005-BR5:** los valores desconocidos nunca cuentan como coincidencia. Un anuncio sin ubicación, superficie construida o habitaciones no puede ser candidato mediante BR3.
 - **HR-F005-BR6:** el usuario resuelve un candidato como «misma propiedad», lo que vincula los anuncios a una única propiedad, o como «propiedad distinta», lo que descarta el par.
@@ -49,7 +49,7 @@ P0 (sección de origen 5).
 
 ## Criterios de aceptación
 
-- **HR-F005-AC1:** Dados dos anuncios con la misma fuente y el mismo identificador externo, Cuando se ejecuta la detección, Entonces aparecen como un par candidato.
+- **HR-F005-AC1:** Dada una ingesta que entrega una fuente y un identificador externo de un anuncio existente, Cuando se ejecuta la detección, Entonces se actualiza el anuncio existente y no se crea ningún par candidato para él.
 - **HR-F005-AC2:** Dados dos anuncios a 80 m de distancia con superficies construidas de 100 m² y 104 m² y 3 habitaciones cada uno, Cuando se ejecuta la detección, Entonces aparecen como un par candidato.
 - **HR-F005-AC3:** Dados dos anuncios a 120 m de distancia con la misma superficie y habitaciones, Cuando se ejecuta la detección, Entonces no son un par candidato.
 - **HR-F005-AC4:** Dados dos anuncios con superficies construidas de 100 m² y 106 m², Cuando se ejecuta la detección, Entonces no son candidatos por el criterio de ubicación.
@@ -60,6 +60,8 @@ P0 (sección de origen 5).
 - **HR-F005-AC9:** Dado un par descartado, Cuando la detección se ejecuta de nuevo, Entonces el par no se vuelve a sugerir.
 - **HR-F005-AC10:** Dado un umbral modificado en la configuración, Cuando se ejecuta la detección, Entonces se aplica el nuevo umbral.
 - **HR-F005-AC11:** Dada una coincidencia muy fuerte, Cuando se ejecuta la detección, Entonces ningún anuncio se vincula hasta que el usuario resuelve el candidato.
+- **HR-F005-AC12:** Dados dos anuncios en el mismo municipio, uno de ellos con precisión `approximate`, con superficies construidas de 100 m² y 104 m² y 3 habitaciones cada uno, Cuando se ejecuta la detección, Entonces aparecen como un par candidato sea cual sea la distancia entre sus pines.
+- **HR-F005-AC13:** Dados dos anuncios en municipios distintos, uno de ellos con precisión `approximate`, con la misma superficie construida y las mismas habitaciones, Cuando se ejecuta la detección, Entonces no son un par candidato.
 
 ## Casos límite
 

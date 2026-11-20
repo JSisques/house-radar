@@ -88,7 +88,7 @@ An **attribute conflict** appears when the listings of a property disagree on an
 
 ## Duplicate candidate and resolution
 
-A **duplicate candidate** is a pair of listings that the system suggests may belong to the same property. A pair is a candidate when it has the same source and external identifier, or when the distance is under 100 m, the built areas differ by at most 5 %, and the bedroom count is the same (configurable thresholds). The system never merges automatically. The user resolves each candidate as **same property** (link) or **different property** (dismiss, remembered) ([D21](/adr/d21-duplicate-detection-policy/)).
+A **duplicate candidate** is a pair of listings that the system suggests may belong to the same property. A pair is a candidate when the locations are close (distance under 100 m when both have `exact` precision; the same municipality when either precision is not `exact`), the built areas differ by at most 5 %, and the bedroom count is the same (configurable thresholds). The same source and external identifier is not a candidate: it is the same listing and ingestion updates it. The system never merges automatically. The user resolves each candidate as **same property** (link) or **different property** (dismiss, remembered) ([D21](/adr/d21-duplicate-detection-policy/)).
 
 ## Price history
 
