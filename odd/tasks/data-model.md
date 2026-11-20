@@ -40,9 +40,23 @@ identity ──(event: AccountCreated)──▶ users
 - `listings` → `properties`: domain events (representative price, attribute conflicts and duplicate candidates react to listing changes).
 - Dashboard (HR-F009) is not a context: queries over `properties` read models.
 
+### M2. `listings` aggregates (2026-11-20)
+
+**`Listing`** — the advertisement and its current state.
+
+- Identity: `ListingId` + provenance (`SourceId`, optional `ExternalId`, `ListingUrl`). Uniqueness: `(source, external_id)` (D23); manual listings: normalized URL.
+- Current state: declared attributes as `Known<T> | Unknown` (type, areas, bedrooms, bathrooms, condition, features, energy certificate…), `GeoPoint` + `LocationPrecision`, current price, status (`active` / `disappeared` / `unknown`), last checked date.
+- Invariants: price and status change only through a new observation; a disappeared listing observed again becomes `active`; descriptive corrections are audited.
+- Events: `ListingObserved`, `ListingPriceChanged`, `ListingDisappeared`, `ListingReappeared`, `ListingDetailsCorrected`.
+
+**`Observation`** — its own aggregate (user decision), referenced by `ListingId`.
+
+- Immutable, append-only: price, status, observed date, run that produced it. Unique per `(listing, run)` (D23).
+- Reason: observations are kept forever (an active listing checked daily accumulates hundreds per year); inside `Listing` the aggregate would grow without bound. `Observation` is immutable and shares no invariant with `Listing` except "written together", which the handler guarantees by persisting both in the same transaction (small aggregates referenced by ID).
+
 ## Pending discovery
 
-- Aggregates per context (invariants, value objects, events).
+- Aggregates for `properties`, `ingestion`, `identity`, `users`; `geography` reference data.
 - Read models / projections.
 - PostgreSQL + PostGIS schema.
 - Output: docs pages + ADRs.
