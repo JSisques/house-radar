@@ -15,8 +15,8 @@ Add the standard repository files (license, contributing guide, code of conduct,
 
 | ID | Task | Route | Status | Commit |
 |----|------|-------|--------|--------|
-| T1 | `LICENSE` (official AGPL-3.0 text from the GitHub licenses API) + `license` field in package.json files | inline | [ ] | |
-| T2 | `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `.github/ISSUE_TEMPLATE/*`, `.github/pull_request_template.md`, `.github/workflows/codeql.yml` | delegated (writer trigger: 2+ files) | [ ] | |
-| T3 | README rewrite | delegated | [ ] | |
+| T1 | `LICENSE` (official AGPL-3.0 text from the GitHub licenses API) + `license` field in package.json files | inline | [x] | e0e3065 |
+| T2 | `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `.github/ISSUE_TEMPLATE/*`, `.github/pull_request_template.md`, `.github/workflows/codeql.yml` | delegated (writer trigger: 2+ files) | [x] | 33b5f6d |
+| T3 | README rewrite | delegated | [x] | 460c808 |
 
 Checks: `pnpm docs:test`, `pnpm docs:check-i18n`, `pnpm docs:check`, `pnpm docs:build`; YAML of workflows and issue forms parses; CodeQL workflow runs green on the PR.
