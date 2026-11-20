@@ -1,11 +1,11 @@
 ---
 title: "Registros de decisiones de arquitectura"
-description: "Índice de todas las decisiones de arquitectura D0 a D34."
+description: "Índice de todas las decisiones de arquitectura D0 a D36."
 sidebar:
   order: 0
 ---
 
-Decisiones de producto y técnicas tomadas antes de empezar el desarrollo. Cada decisión del registro se documenta como un ADR cuyo identificador coincide con el del registro (D0 a D34). La numeración de los ADR es el número de la decisión. Usa la [plantilla](/es/adr/template/) para nuevas decisiones.
+Decisiones de producto y técnicas tomadas antes de empezar el desarrollo. Cada decisión del registro se documenta como un ADR cuyo identificador coincide con el del registro (D0 a D36). La numeración de los ADR es el número de la decisión. Usa la [plantilla](/es/adr/template/) para nuevas decisiones.
 
 | ID | Decisión | Resultado | Fecha |
 | --- | --- | --- | --- |
@@ -44,3 +44,5 @@ Decisiones de producto y técnicas tomadas antes de empezar el desarrollo. Cada 
 | D32 | [Identificadores UUIDv7](/es/adr/d32-uuid-v7/) | UUIDv7 ordenado en el tiempo para IDs de agregados, eventos y outbox, generado con el paquete `uuid`. | 2026-11-20 |
 | D33 | [Versionado y releases](/es/adr/d33-versioning-and-releases/) | Una única versión de producto para el monorepo con release-please (Release PR, `0.x` hasta la Release 1.0) e imágenes Docker etiquetadas con versión y SHA del commit. | 2026-11-20 |
 | D34 | [Dirección visual](/es/adr/d34-visual-direction/) | «Folla catastral»: identidad de ficha de topógrafo con paleta gris niebla fría, tres tipografías y una trama cartográfica que dibuja los valores desconocidos en lugar de ocultarlos. | 2026-11-20 |
+| D35 | [Entornos y despliegue en staging](/es/adr/d35-environments-and-staging-deployment/) | Local, CI, un staging desechable accesible solo por Tailscale y una producción sin definir; imágenes en GHCR, despliegue automático al fusionar, secretos en GitHub Environments, health checks por servicio y rollback. | 2026-11-20 |
+| D36 | [Alojamiento de la documentación en Cloudflare Pages](/es/adr/d36-docs-hosting-cloudflare-pages/) | El portal de documentación se publica en Cloudflare Pages en la raíz de su dominio pages.dev, con una previsualización por pull request. | 2026-11-20 |
