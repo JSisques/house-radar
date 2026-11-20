@@ -129,6 +129,16 @@ Refined:
 
 ## Pending discovery
 
-- None. Next: write the conventions page (en + es) and ADRs for the structural decisions.
+- None.
+
+## Tasks (output)
+
+| ID | Task | Route | Status | Commit |
+|----|------|-------|--------|--------|
+| T1 | Docs page `architecture/conventions` (en + es) with C1–C12 detail; link from architecture overview | delegated (writer trigger: 2+ files) | [ ] | |
+| T2 | ADRs D24 own building blocks (`building-blocks` + `shared-kernel`) instead of the kit, D25 CQRS with `@nestjs/cqrs` + per-context structure, D26 TanStack Router, D27 react-i18next (en + es) + ADR index | delegated | [ ] | |
+| T3 | Agent skills `.claude/skills/house-radar-backend/` and `.claude/skills/house-radar-frontend/` (LLM-first, skill style guide), plus `AGENTS.md` registry and `CLAUDE.md` pointer | delegated | [ ] | |
+
+Checks: `pnpm docs:test`, `pnpm docs:check-i18n`, `pnpm docs:check`, `pnpm docs:build`; skills: frontmatter valid, body within token budget, references resolve to local files. TDD (D14) not applicable: documentation and agent instructions.
 - Lint/format tooling details, import ordering.
 - Documentation output (docs page + ADRs).
