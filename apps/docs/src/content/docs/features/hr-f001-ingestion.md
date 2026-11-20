@@ -48,6 +48,12 @@ P0 (source section 1).
 - **HR-F001-BR10:** images are only stored or displayed when the source terms allow it; otherwise only the link to the original listing is kept.
 - **HR-F001-BR11:** manual listings have no automatic status checks. The user records a new observation with "check listing" (price, still active, check date) or marks the listing as `disappeared` ([D20](/adr/d20-listing-consolidation-rules/)).
 - **HR-F001-BR12:** every ingested listing records its source, original URL, external identifier when known, date added, and date of last update.
+- **HR-F001-BR13:** a manual listing without an external identifier gets an internal UUID as its identity.
+- **HR-F001-BR14:** when a manual listing is imported, its URL is normalized by removing the query string and the fragment. Importing again a URL whose normalized form matches an existing manual listing warns the user and offers "check listing" instead of creating a new listing.
+- **HR-F001-BR15:** automatic sources run once a day by default.
+- **HR-F001-BR16:** temporary errors are retried 3 times with exponential backoff by default.
+- **HR-F001-BR17:** the run cadence, the number of retries, and the backoff are configurable.
+- **HR-F001-BR18:** photos uploaded by the user to a manual listing are out of scope for the MVP (post-MVP).
 
 ## Acceptance criteria
 
@@ -61,6 +67,11 @@ P0 (source section 1).
 - **HR-F001-AC8:** Given an active manual listing, When the user runs "check listing" with a new price, Then an observation is recorded with the new price, status, and check date, and the date of last check is updated.
 - **HR-F001-AC9:** Given a source whose terms do not allow storing images, When a listing is ingested, Then no image is stored and the link to the original listing is kept.
 - **HR-F001-AC10:** Given a source that has not been authorized, When an administrator tries to enable it, Then it stays disabled.
+- **HR-F001-AC11:** Given a manual listing without an external identifier, When it is saved, Then it gets an internal UUID as its identity.
+- **HR-F001-AC12:** Given an existing manual listing with URL `https://example.com/home/1?ref=a#photos`, When the user imports `https://example.com/home/1`, Then the user is warned and offered "check listing", and no new listing is created.
+- **HR-F001-AC13:** Given an automatic source with the default configuration, When a temporary error occurs, Then the operation is retried up to 3 times with exponential backoff.
+- **HR-F001-AC14:** Given an automatic source with the default configuration, When a day has passed since its last run, Then a new run starts.
+- **HR-F001-AC15:** Given a changed cadence, retry count, or backoff in the configuration, When the next run is scheduled, Then the new values are applied.
 
 ## Edge cases
 
@@ -76,12 +87,6 @@ P0 (source section 1).
 - Extracting any content from the page behind a manual URL.
 - Scraping portals without authorization.
 - Importing from several automatic sources at the same time (only manual import is active until the idealista key is granted).
-
-## Open questions
-
-- What identifier does a manual listing use when the user cannot supply an external identifier, and how is the same URL matched on re-import?
-- What are the default retry limits, backoff, and run cadence for automatic sources?
-- Can the user attach their own photos to a manual listing?
 
 ## Related decisions
 

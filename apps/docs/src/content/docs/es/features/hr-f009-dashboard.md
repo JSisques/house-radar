@@ -46,6 +46,9 @@ P1 (sección de origen 9).
 - **HR-F009-BR9:** las estadísticas por municipio agrupan las propiedades activas por municipio derivado, cada una con su propio tamaño de muestra.
 - **HR-F009-BR10:** no se muestra ninguna estadística sin datos; un conjunto de datos vacío muestra un estado vacío, nunca ceros presentados como resultados.
 - **HR-F009-BR11:** todas las etiquetas, formatos numéricos y formatos de moneda son español primero y traducibles ([D12](/es/adr/d12-web-internationalization/)); los gráficos ofrecen una alternativa textual.
+- **HR-F009-BR12:** un «anuncio nuevo» es un anuncio observado por primera vez en los últimos 7 días.
+- **HR-F009-BR13:** el gráfico de evolución de precios representa la mediana.
+- **HR-F009-BR14:** cuando una estadística abarca menos de 5 propiedades, se muestra con una advertencia de muestra pequeña; nunca se oculta.
 
 ## Criterios de aceptación
 
@@ -60,6 +63,9 @@ P1 (sección de origen 9).
 - **HR-F009-AC9:** Dado un anuncio que desaparece, Cuando se recalcula el dashboard, Entonces deja de contar como activo y la propiedad sale de las estadísticas si no tiene otro anuncio activo.
 - **HR-F009-AC10:** Dadas observaciones a lo largo del tiempo, Cuando se muestra el dashboard, Entonces el gráfico de evolución de precios muestra la serie y la fecha de la primera observación.
 - **HR-F009-AC11:** Dada la ausencia de datos recopilados, Cuando se muestra el dashboard, Entonces se muestra un estado vacío en lugar de valores cero.
+- **HR-F009-AC12:** Dados un anuncio observado por primera vez hace 5 días y otro hace 10 días, Cuando se muestra el número de anuncios nuevos, Entonces solo cuenta el primero.
+- **HR-F009-AC13:** Dadas observaciones de precio a lo largo del tiempo, Cuando se muestra el gráfico de evolución de precios, Entonces representa la mediana.
+- **HR-F009-AC14:** Dada una estadística calculada sobre 4 propiedades, Cuando se muestra, Entonces aparece con una advertencia de muestra pequeña.
 
 ## Casos límite
 
@@ -75,12 +81,6 @@ P1 (sección de origen 9).
 - Estimación del valor de mercado y rentabilidad de inversión ([fuera de alcance](/es/product/out-of-scope/)).
 - Dashboards definidos por el usuario o métricas personalizadas.
 - Exportar estadísticas.
-
-## Preguntas abiertas
-
-- ¿Qué período define un «anuncio nuevo» en el dashboard?
-- ¿Qué agregado (media o mediana) representa el gráfico de evolución de precios?
-- ¿Existe un tamaño mínimo de muestra por debajo del cual una estadística por municipio se oculta o se marca?
 
 ## Decisiones relacionadas
 

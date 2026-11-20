@@ -53,6 +53,9 @@ Consulta también la [visión general de operaciones](/es/operations/overview/).
 - **HR-F012-BR11:** los logs y las métricas nunca contienen contraseñas, tokens ni otros secretos.
 - **HR-F012-BR12:** las herramientas de observabilidad se acceden mediante adaptadores, de modo que pueden sustituirse sin cambiar el código de la aplicación ([D10](/es/adr/d10-cross-cutting-architecture/)).
 - **HR-F012-BR13 (P2):** el área de administración muestra los valores efectivos de la configuración operativa, como el número de ejecuciones sin ver un anuncio que lo marca como desaparecido (3 por defecto) ([D20](/es/adr/d20-listing-consolidation-rules/)).
+- **HR-F012-BR14:** hay un único rol en el MVP: todo usuario autenticado es administrador. El modelo de roles queda preparado para roles futuros.
+- **HR-F012-BR15:** las alertas de la primera versión son exactamente tres ([D15](/es/adr/d15-observability/)): ingesta sin ejecuciones correctas, tasa de errores de extracción y health checks caídos.
+- **HR-F012-BR16:** los ajustes operativos (el umbral de desaparición y los umbrales de detección de duplicados) son configuración de despliegue, mediante variables de entorno, en el MVP; no se editan en el área de administración.
 
 ## Criterios de aceptación
 
@@ -68,6 +71,8 @@ Consulta también la [visión general de operaciones](/es/operations/overview/).
 - **HR-F012-AC10 (P2):** Dada una fuente habilitada, Cuando el administrador la deshabilita, Entonces no se inicia ninguna ejecución programada para ella.
 - **HR-F012-AC11 (P2):** Dados errores de extracción, Cuando el administrador abre la vista de errores, Entonces cada error muestra su fuente, hora y causa.
 - **HR-F012-AC12:** Dada una petición de inicio de sesión con una contraseña, Cuando se inspeccionan los logs, Entonces la contraseña no aparece.
+- **HR-F012-AC13:** Dado cualquier usuario autenticado, Cuando abre el área de administración, Entonces tiene acceso de administrador.
+- **HR-F012-AC14:** Dada la primera versión, Cuando se enumeran las alertas, Entonces hay exactamente tres definidas: ingesta sin ejecuciones correctas, tasa de errores de extracción y health checks caídos.
 
 ## Casos límite
 
@@ -82,12 +87,6 @@ Consulta también la [visión general de operaciones](/es/operations/overview/).
 - Las pantallas de administración (P2) no son necesarias para la primera versión; la cubren Bull Board y el stack de observabilidad.
 - Varios roles de administrador y permisos por fuente.
 - Planificación de capacidad y escalado automático.
-
-## Preguntas abiertas
-
-- ¿Es administrador cualquier usuario autenticado o existe un rol de administrador distinto?
-- ¿Dónde se editan los ajustes operativos (umbral de desaparición, umbrales de duplicados): en la configuración del despliegue o en el área de administración?
-- ¿Qué alertas se definen para la primera versión además de los fallos de servicio y las ejecuciones fallidas?
 
 ## Decisiones relacionadas
 

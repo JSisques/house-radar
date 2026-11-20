@@ -44,6 +44,7 @@ P1 (source section 7).
 - **HR-F007-BR6:** viewing a saved search runs it with the current data; results are never stored, so they always reflect the current state of the properties.
 - **HR-F007-BR7:** when two properties are linked as the same property ([HR-F005](/features/hr-f005-duplicates/)), a favorite of either remains a favorite of the surviving property, without duplicates.
 - **HR-F007-BR8:** the interface text is Spanish-first and translatable ([D12](/adr/d12-web-internationalization/)).
+- **HR-F007-BR9:** saved search names are unique per user.
 
 ## Acceptance criteria
 
@@ -58,6 +59,7 @@ P1 (source section 7).
 - **HR-F007-AC9:** Given a saved search, When the user opens it after new listings arrived, Then the results include properties that now match.
 - **HR-F007-AC10:** Given a user who favorited both properties that are later linked as one, When the link is made, Then they have one favorite for the surviving property.
 - **HR-F007-AC11:** Given an unauthenticated visitor, When they request favorites or saved searches, Then access is denied.
+- **HR-F007-AC12:** Given a user with a saved search named "Madrid flats", When the user saves or renames another saved search to the same name, Then it is rejected with a message.
 
 ## Edge cases
 
@@ -72,10 +74,6 @@ P1 (source section 7).
 - Sharing favorites or saved searches with other users.
 - Folders, tags, or notes on favorites.
 - Alerts when a saved search has new results ([HR-F011](/features/hr-f011-notifications/), post-MVP).
-
-## Open questions
-
-- Must saved search names be unique per user?
 
 ## Related decisions
 

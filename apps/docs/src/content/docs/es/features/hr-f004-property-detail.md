@@ -48,6 +48,8 @@ P0 (sección de origen 4).
 - **HR-F004-BR9:** la ficha muestra los posibles anuncios duplicados como candidatos para revisión ([HR-F005](/es/features/hr-f005-duplicates/)); nunca los vincula automáticamente.
 - **HR-F004-BR10:** para cada anuncio manual la ficha ofrece «comprobar anuncio» y «marcar como desaparecido» ([D17](/es/adr/d17-manual-import-assisted-form/), [D20](/es/adr/d20-listing-consolidation-rules/)).
 - **HR-F004-BR11:** todas las etiquetas, formatos numéricos y fechas son español primero y traducibles ([D12](/es/adr/d12-web-internationalization/)).
+- **HR-F004-BR12:** los datos de un anuncio manual pueden editarse. El precio y el estado cambian solo mediante «comprobar anuncio» (una nueva observación). Las correcciones de datos descriptivos se editan en el propio anuncio y se conserva un registro de auditoría.
+- **HR-F004-BR13:** el título y la descripción que se muestran de una propiedad proceden de su anuncio observado más recientemente; los valores de los demás anuncios son visibles en la pestaña de anuncios de la propiedad.
 
 ## Criterios de aceptación
 
@@ -61,6 +63,9 @@ P0 (sección de origen 4).
 - **HR-F004-AC8:** Dado un anuncio manual activo, Cuando el usuario selecciona «marcar como desaparecido», Entonces su estado pasa a `disappeared` y se recalcula el precio representativo.
 - **HR-F004-AC9:** Dada una propiedad con un valor desconocido, Cuando se muestra la ficha, Entonces el valor se muestra como desconocido y no como vacío ni cero.
 - **HR-F004-AC10:** Dado un identificador que no existe, Cuando el usuario abre la ficha, Entonces se muestra un mensaje de «propiedad no encontrada».
+- **HR-F004-AC11:** Dado un anuncio manual, Cuando el usuario corrige un campo descriptivo, Entonces el anuncio se actualiza en su sitio y se conserva un registro de auditoría del cambio.
+- **HR-F004-AC12:** Dado un anuncio manual, Cuando el usuario quiere cambiar su precio o su estado, Entonces lo hace mediante «comprobar anuncio» y se registra una nueva observación; el precio y el estado no pueden editarse directamente.
+- **HR-F004-AC13:** Dada una propiedad con anuncios de títulos distintos, Cuando se muestra la página, Entonces muestra el título y la descripción del anuncio observado más recientemente y los demás aparecen en la pestaña de anuncios.
 
 ## Casos límite
 
@@ -75,11 +80,6 @@ P0 (sección de origen 4).
 - Contactar con el anunciante desde House Radar.
 - Renderizado en servidor de las fichas ([D5](/es/adr/d05-frontend-framework/)).
 - Análisis de fotos ([fuera de alcance](/es/product/out-of-scope/)).
-
-## Preguntas abiertas
-
-- ¿Puede el usuario editar los datos de un anuncio manual después de crearlo?
-- ¿Qué título y descripción de anuncio se muestran cuando los anuncios difieren: siempre el observado más recientemente, o puede elegirlo el usuario?
 
 ## Decisiones relacionadas
 

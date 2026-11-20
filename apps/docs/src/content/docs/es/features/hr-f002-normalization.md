@@ -47,6 +47,9 @@ P0 (sección de origen 2).
 - **HR-F002-BR9:** cuando los anuncios de una propiedad discrepan en un atributo, la propiedad muestra el valor observado más reciente y señala el conflicto con cada valor y su fuente ([D20](/es/adr/d20-listing-consolidation-rules/)).
 - **HR-F002-BR10:** la propiedad expone un precio representativo, el menor precio entre sus anuncios activos; sin anuncios activos no tiene ninguno ([D19](/es/adr/d19-search-read-model/)).
 - **HR-F002-BR11:** los precios se expresan en euros y las superficies en metros cuadrados. Las etiquetas y formatos de cara al usuario son español primero y traducibles ([D12](/es/adr/d12-web-internationalization/)).
+- **HR-F002-BR12:** el tipo de inmueble es una lista cerrada: piso, ático, dúplex, estudio, casa independiente, casa adosada o pareada, casa rústica, finca, terreno y otro.
+- **HR-F002-BR13:** el estado es una lista cerrada: obra nueva, buen estado, a reformar y desconocido.
+- **HR-F002-BR14:** el certificado energético admite los valores A a G, en trámite, exento y desconocido.
 
 ## Criterios de aceptación
 
@@ -60,6 +63,9 @@ P0 (sección de origen 2).
 - **HR-F002-AC8:** Dada una propiedad con dos anuncios activos de 200 000 € y 190 000 €, Cuando se lee la propiedad, Entonces su precio representativo es 190 000 €.
 - **HR-F002-AC9:** Dado un anuncio que desaparece, Cuando cambia su estado, Entonces se conservan las observaciones anteriores y el anuncio deja de contar para el precio representativo.
 - **HR-F002-AC10:** Dado un anuncio nuevo, Cuando se guarda, Entonces se registran su fuente, URL original, fecha de incorporación y fecha de última comprobación.
+- **HR-F002-AC11:** Dado un anuncio, Cuando se indica un tipo de inmueble fuera de la lista cerrada, Entonces se rechaza; solo se aceptan los valores de la lista.
+- **HR-F002-AC12:** Dado un anuncio, Cuando se indica un estado fuera de la lista cerrada, Entonces se rechaza; solo se aceptan los valores de la lista.
+- **HR-F002-AC13:** Dado un anuncio con certificado energético «en trámite», Cuando se muestra la propiedad, Entonces el certificado se muestra como en trámite y no como una letra.
 
 ## Casos límite
 
@@ -75,11 +81,6 @@ P0 (sección de origen 2).
 - Geocodificación de direcciones ([D18](/es/adr/d18-location-pin-declared-precision/)).
 - Inferir características ausentes a partir de descripciones o fotografías.
 - Datos del Catastro y estimación automática del valor de mercado.
-
-## Preguntas abiertas
-
-- ¿Son el tipo de propiedad y el estado de conservación listas cerradas y cuáles son sus valores?
-- ¿Qué valores admite el certificado energético, incluidos «no disponible» y «en trámite»?
 
 ## Decisiones relacionadas
 

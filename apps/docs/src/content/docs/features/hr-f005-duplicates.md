@@ -46,6 +46,9 @@ P0 (source section 5).
 - **HR-F005-BR9:** price is not a criterion for being a candidate; it is shown during review, together with address data and the other compared fields, to help the user decide.
 - **HR-F005-BR10:** after a link, the property consolidates its listings under the rules of [D20](/adr/d20-listing-consolidation-rules/) and search shows it once ([D19](/adr/d19-search-read-model/)).
 - **HR-F005-BR11:** detection runs when a listing is created or when its location, built area, or bedrooms change, and does not block ingestion.
+- **HR-F005-BR12:** a link can be undone: the listing moves to a new property. Nothing is lost because the price history is stored per listing ([D20](/adr/d20-listing-consolidation-rules/)).
+- **HR-F005-BR13:** when two properties are linked, the surviving property keeps the most precise location by default; the user can change it.
+- **HR-F005-BR14:** the detection thresholds are configured at deployment, through environment variables, in the MVP.
 
 ## Acceptance criteria
 
@@ -62,6 +65,9 @@ P0 (source section 5).
 - **HR-F005-AC11:** Given a very strong match, When detection runs, Then no listing is linked until the user resolves the candidate.
 - **HR-F005-AC12:** Given two listings in the same municipality, one of them with `approximate` precision, with built areas of 100 m² and 104 m² and 3 bedrooms each, When detection runs, Then they appear as a candidate pair whatever the distance between their pins.
 - **HR-F005-AC13:** Given two listings in different municipalities, one of them with `approximate` precision, with the same built area and bedrooms, When detection runs, Then they are not a candidate pair.
+- **HR-F005-AC14:** Given two listings linked into one property, When the user undoes the link, Then one of the listings moves to a new property and the price history of each listing is intact.
+- **HR-F005-AC15:** Given two properties with locations of different precision, When they are linked, Then the surviving property keeps the most precise location and the user can change it.
+- **HR-F005-AC16:** Given a threshold set through an environment variable, When the application starts and detection runs, Then that threshold is applied.
 
 ## Edge cases
 
@@ -77,12 +83,6 @@ P0 (source section 5).
 - Automatic merging, with or without a confidence level.
 - Comparing photographs or descriptions to detect duplicates.
 - Detecting duplicates from address text (geocoding is deferred, [D18](/adr/d18-location-pin-declared-precision/)).
-
-## Open questions
-
-- Can a link between listings be undone, and what happens to the property and its history if it is?
-- When two properties with different locations are linked, which location does the surviving property keep?
-- Where are the thresholds configured: deployment configuration or an administration screen?
 
 ## Related decisions
 

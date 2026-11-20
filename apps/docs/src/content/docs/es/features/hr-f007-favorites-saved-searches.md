@@ -44,6 +44,7 @@ P1 (sección de origen 7).
 - **HR-F007-BR6:** ver una búsqueda guardada la ejecuta con los datos actuales; los resultados nunca se almacenan, por lo que siempre reflejan el estado actual de las propiedades.
 - **HR-F007-BR7:** cuando dos propiedades se vinculan como la misma propiedad ([HR-F005](/es/features/hr-f005-duplicates/)), el favorito de cualquiera de ellas sigue siendo favorito de la propiedad que permanece, sin duplicados.
 - **HR-F007-BR8:** los textos de la interfaz son español primero y traducibles ([D12](/es/adr/d12-web-internationalization/)).
+- **HR-F007-BR9:** los nombres de las búsquedas guardadas son únicos por usuario.
 
 ## Criterios de aceptación
 
@@ -58,6 +59,7 @@ P1 (sección de origen 7).
 - **HR-F007-AC9:** Dada una búsqueda guardada, Cuando el usuario la abre después de que hayan llegado anuncios nuevos, Entonces los resultados incluyen las propiedades que ahora coinciden.
 - **HR-F007-AC10:** Dado un usuario que marcó como favoritas ambas propiedades que luego se vinculan como una, Cuando se realiza el vínculo, Entonces tiene un favorito de la propiedad que permanece.
 - **HR-F007-AC11:** Dado un visitante no autenticado, Cuando solicita favoritos o búsquedas guardadas, Entonces se deniega el acceso.
+- **HR-F007-AC12:** Dado un usuario con una búsqueda guardada llamada «Pisos Madrid», Cuando el usuario guarda o renombra otra búsqueda guardada con el mismo nombre, Entonces se rechaza con un mensaje.
 
 ## Casos límite
 
@@ -72,10 +74,6 @@ P1 (sección de origen 7).
 - Compartir favoritos o búsquedas guardadas con otros usuarios.
 - Carpetas, etiquetas o notas en los favoritos.
 - Alertas cuando una búsqueda guardada tiene resultados nuevos ([HR-F011](/es/features/hr-f011-notifications/), posterior al MVP).
-
-## Preguntas abiertas
-
-- ¿Deben ser únicos por usuario los nombres de las búsquedas guardadas?
 
 ## Decisiones relacionadas
 

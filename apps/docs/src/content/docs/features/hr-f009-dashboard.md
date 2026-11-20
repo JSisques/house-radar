@@ -46,6 +46,9 @@ P1 (source section 9).
 - **HR-F009-BR9:** statistics by municipality group active properties by derived municipality, each with its own sample size.
 - **HR-F009-BR10:** no statistic is shown without data; an empty dataset shows an empty state, never zeros presented as results.
 - **HR-F009-BR11:** all labels, number formats, and currency formats are Spanish-first and translatable ([D12](/adr/d12-web-internationalization/)); charts provide a textual alternative.
+- **HR-F009-BR12:** a "new listing" is a listing first observed within the last 7 days.
+- **HR-F009-BR13:** the price evolution chart plots the median.
+- **HR-F009-BR14:** when a statistic covers fewer than 5 properties, it is shown with a small-sample warning; it is never hidden.
 
 ## Acceptance criteria
 
@@ -60,6 +63,9 @@ P1 (source section 9).
 - **HR-F009-AC9:** Given a listing that disappears, When the dashboard is recalculated, Then it no longer counts as active and the property leaves the statistics if it has no other active listing.
 - **HR-F009-AC10:** Given observations over time, When the dashboard is shown, Then the price evolution chart displays the series and the date of the first observation.
 - **HR-F009-AC11:** Given no collected data, When the dashboard is shown, Then an empty state is displayed instead of zero values.
+- **HR-F009-AC12:** Given a listing first observed 5 days ago and another 10 days ago, When the number of new listings is shown, Then only the first counts.
+- **HR-F009-AC13:** Given price observations over time, When the price evolution chart is shown, Then it plots the median.
+- **HR-F009-AC14:** Given a statistic computed over 4 properties, When it is displayed, Then it is shown with a small-sample warning.
 
 ## Edge cases
 
@@ -75,12 +81,6 @@ P1 (source section 9).
 - Market value estimation and investment profitability ([out of scope](/product/out-of-scope/)).
 - User-defined dashboards or custom metrics.
 - Exporting statistics.
-
-## Open questions
-
-- What period defines a "new listing" on the dashboard?
-- Which aggregate (average or median) does the price evolution chart plot?
-- Is there a minimum sample size below which a municipality statistic is hidden or flagged?
 
 ## Related decisions
 

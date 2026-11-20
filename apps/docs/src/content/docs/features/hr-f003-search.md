@@ -36,7 +36,7 @@ P0 (source section 3).
 ## Business rules
 
 - **HR-F003-BR1:** search results are properties, not listings. Each result shows its representative price, the lowest price among its active listings, as "N listings, from X €" ([D19](/adr/d19-search-read-model/)).
-- **HR-F003-BR2:** only properties with at least one active listing appear in search results; a property with no active listing has no representative price.
+- **HR-F003-BR2:** by default only properties with at least one active listing appear in search results; a property with no active listing has no representative price.
 - **HR-F003-BR3:** economic filters are minimum price, maximum price, and minimum and maximum price per square meter. Price filters apply to the representative price.
 - **HR-F003-BR4:** price per square meter uses the built area only. Properties whose built area is unknown are excluded when a price-per-square-meter filter is active, and they are never matched through the usable area ([D20](/adr/d20-listing-consolidation-rules/)).
 - **HR-F003-BR5:** area filters are minimum and maximum built area, usable area, and plot area. A property whose value for a filtered area is unknown does not match that filter.
@@ -45,9 +45,12 @@ P0 (source section 3).
 - **HR-F003-BR8:** radius and map-area filters use the property pin and are executed as spatial queries in PostGIS ([D6](/adr/d06-persistence/)). Properties without a pin do not match them.
 - **HR-F003-BR9:** all active filters combine with AND.
 - **HR-F003-BR10:** results can be sorted by price ascending, price descending, price per square meter, built area, plot area, date added, and update date. Properties with an unknown sort value are placed last, whichever direction is chosen.
-- **HR-F003-BR11:** the screen shows the number of results, offers an action that clears all filters, and loads results progressively or in pages.
+- **HR-F003-BR11:** the screen shows the number of results, offers an action that clears all filters, and shows results in pages.
 - **HR-F003-BR12:** active filters and sort order are kept when the user opens a property page and returns to the results.
 - **HR-F003-BR13:** all labels, number formats, and currency formats are Spanish-first and translatable ([D12](/adr/d12-web-internationalization/)).
+- **HR-F003-BR14:** the filter "properties to renovate" is the condition "to renovate"; "detached houses" is the property type "detached house"; "houses with land" means a plot area that is known and greater than 0.
+- **HR-F003-BR15:** results are paginated, 24 results per page. The active filters and the current page are reflected in the URL.
+- **HR-F003-BR16:** properties without an active listing are hidden by default; a toggle includes them in the results.
 
 ## Acceptance criteria
 
@@ -64,6 +67,10 @@ P0 (source section 3).
 - **HR-F003-AC11:** Given active filters, When the user clears all filters, Then no filter is applied and the result count updates.
 - **HR-F003-AC12:** Given more results than fit in one page, When the user reaches the end of the loaded results, Then the next results are loaded without repeating or skipping any.
 - **HR-F003-AC13:** Given a search with no matches, When the results are shown, Then the count is zero and the screen offers to clear the filters.
+- **HR-F003-AC14:** Given a property with plot area 0 and another with unknown plot area, When "houses with land" is active, Then neither matches.
+- **HR-F003-AC15:** Given more than 24 matching properties, When the results are shown, Then the first page shows 24 and the URL reflects the filters and the page.
+- **HR-F003-AC16:** Given a URL with filters and a page, When it is opened, Then the same filters and page are applied.
+- **HR-F003-AC17:** Given a property without active listings, When the toggle to include them is off, Then it does not appear; When it is on, Then it appears.
 
 ## Edge cases
 
@@ -78,12 +85,6 @@ P0 (source section 3).
 - Free-text search over titles and descriptions.
 - AI-powered search ([out of scope](/product/out-of-scope/)).
 - Searching individual listings: results are always properties ([D19](/adr/d19-search-read-model/)).
-
-## Open questions
-
-- How do "properties to renovate", "detached houses", and "houses with land" map to the model: values of condition and property type, or derived from plot area?
-- What is the page size or loading increment for results?
-- Should the user be able to include properties with no active listing in search results?
 
 ## Related decisions
 

@@ -30,7 +30,7 @@ P1 (source section 10).
 ## User stories
 
 - As the owner of the installation, I want to sign in with my account, so that only I can use my House Radar.
-- As a user, I want to set my time zone and display preferences, so that dates and values appear as I expect.
+- As a user, I want to set my time zone, so that dates appear as I expect.
 - As a user, I want to manage my profile and password, so that my account stays under my control.
 
 ## Business rules
@@ -43,9 +43,13 @@ P1 (source section 10).
 - **HR-F010-BR6:** favorites and saved searches are associated with a user and are not global; a user never accesses data owned by another user ([HR-F007](/features/hr-f007-favorites-saved-searches/)).
 - **HR-F010-BR7:** failed login attempts return the same generic error whether the account exists or not.
 - **HR-F010-BR8:** the user manages a profile and can change their password, providing the current one.
-- **HR-F010-BR9:** the user can set a time zone and basic display preferences. Preferences belong to the user and are applied when the interface renders dates and values.
+- **HR-F010-BR9:** the user can set a time zone; it is the only preference in the MVP. Preferences belong to the user and are applied when the interface renders dates and values.
 - **HR-F010-BR10:** the interface is Spanish only in the first release but is prepared for more languages ([D12](/adr/d12-web-internationalization/)); a language preference is not exposed until another translation exists.
 - **HR-F010-BR11:** data source configuration and the collection process status panel are part of administration ([HR-F012](/features/hr-f012-admin-observability/)) and are reachable from the settings area.
+- **HR-F010-BR12:** the seed account is created by a CLI command that reads the credentials from environment variables and fails if the account already exists.
+- **HR-F010-BR13:** the session is an httpOnly cookie backed by a server-side session stored in Redis, with a 7-day sliding expiration.
+- **HR-F010-BR14:** the password must have at least 12 characters. After 5 failed sign-ins the account is locked for 15 minutes.
+- **HR-F010-BR15:** the only preference in the MVP is the time zone.
 
 ## Acceptance criteria
 
@@ -58,7 +62,12 @@ P1 (source section 10).
 - **HR-F010-AC7:** Given two accounts created in a test, When one signs in, Then it cannot read or change the other's favorites or saved searches.
 - **HR-F010-AC8:** Given an authenticated user, When they change their password with the correct current password, Then the new password works and the old one does not.
 - **HR-F010-AC9:** Given an authenticated user, When they change their time zone, Then dates are displayed in that time zone.
-- **HR-F010-AC10:** Given the seed already ran, When it runs again, Then no second account is created and the existing one is not overwritten.
+- **HR-F010-AC10:** Given the seed already ran, When it runs again, Then it fails, no second account is created, and the existing one is not overwritten.
+- **HR-F010-AC11:** Given the seed command with credentials in environment variables, When it runs and no account exists, Then the account is created with those credentials.
+- **HR-F010-AC12:** Given a successful sign-in, When the session is created, Then it is stored server-side in Redis and the browser receives an httpOnly cookie.
+- **HR-F010-AC13:** Given an active session, When the user makes a request, Then its expiration is extended to 7 days from that request.
+- **HR-F010-AC14:** Given a password shorter than 12 characters, When the user sets it, Then it is rejected.
+- **HR-F010-AC15:** Given an account with 5 consecutive failed sign-ins, When a further sign-in is attempted within 15 minutes, Then it is refused, even with the correct password.
 
 ## Edge cases
 
@@ -73,13 +82,6 @@ P1 (source section 10).
 - Public registration, invitations, and roles.
 - Password recovery by email and two-factor authentication.
 - Migration to OIDC or a SaaS identity provider (a future adapter).
-
-## Open questions
-
-- How is the seed account provisioned (deployment configuration or a command), and how are its credentials supplied?
-- What is the session mechanism and its duration?
-- Is there a password policy, and is there a limit or lock on repeated failed sign-ins?
-- Which display preferences exist besides the time zone?
 
 ## Related decisions
 

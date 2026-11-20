@@ -36,7 +36,7 @@ P0 (sección de origen 3).
 ## Reglas de negocio
 
 - **HR-F003-BR1:** los resultados de búsqueda son propiedades, no anuncios. Cada resultado muestra su precio representativo, el menor precio entre sus anuncios activos, como «N anuncios, desde X €» ([D19](/es/adr/d19-search-read-model/)).
-- **HR-F003-BR2:** solo aparecen en los resultados las propiedades con al menos un anuncio activo; una propiedad sin anuncios activos no tiene precio representativo.
+- **HR-F003-BR2:** por defecto solo aparecen en los resultados las propiedades con al menos un anuncio activo; una propiedad sin anuncios activos no tiene precio representativo.
 - **HR-F003-BR3:** los filtros económicos son precio mínimo, precio máximo y precio por metro cuadrado mínimo y máximo. Los filtros de precio se aplican al precio representativo.
 - **HR-F003-BR4:** el precio por metro cuadrado usa únicamente la superficie construida. Las propiedades cuya superficie construida es desconocida se excluyen cuando hay un filtro de precio por metro cuadrado activo y nunca se emparejan mediante la superficie útil ([D20](/es/adr/d20-listing-consolidation-rules/)).
 - **HR-F003-BR5:** los filtros de superficie son mínimo y máximo de superficie construida, útil y de terreno. Una propiedad cuyo valor para una superficie filtrada es desconocido no cumple ese filtro.
@@ -45,9 +45,12 @@ P0 (sección de origen 3).
 - **HR-F003-BR8:** los filtros de radio y de área del mapa usan el pin de la propiedad y se ejecutan como consultas espaciales en PostGIS ([D6](/es/adr/d06-persistence/)). Las propiedades sin pin no los cumplen.
 - **HR-F003-BR9:** todos los filtros activos se combinan con AND.
 - **HR-F003-BR10:** los resultados pueden ordenarse por precio ascendente, precio descendente, precio por metro cuadrado, superficie construida, superficie de terreno, fecha de incorporación y fecha de actualización. Las propiedades con valor de ordenación desconocido se colocan al final, sea cual sea la dirección elegida.
-- **HR-F003-BR11:** la pantalla muestra el número de resultados, ofrece una acción que limpia todos los filtros y carga los resultados de forma progresiva o por páginas.
+- **HR-F003-BR11:** la pantalla muestra el número de resultados, ofrece una acción que limpia todos los filtros y muestra los resultados por páginas.
 - **HR-F003-BR12:** los filtros activos y el orden se conservan cuando el usuario abre la ficha de una propiedad y vuelve a los resultados.
 - **HR-F003-BR13:** todas las etiquetas, formatos numéricos y formatos de moneda son español primero y traducibles ([D12](/es/adr/d12-web-internationalization/)).
+- **HR-F003-BR14:** el filtro «propiedades a reformar» es el estado «a reformar»; «casas independientes» es el tipo de inmueble «casa independiente»; «casas con terreno» significa una superficie de parcela conocida y mayor que 0.
+- **HR-F003-BR15:** los resultados se paginan, con 24 resultados por página. Los filtros activos y la página actual se reflejan en la URL.
+- **HR-F003-BR16:** las propiedades sin anuncios activos se ocultan por defecto; un conmutador las incluye en los resultados.
 
 ## Criterios de aceptación
 
@@ -64,6 +67,10 @@ P0 (sección de origen 3).
 - **HR-F003-AC11:** Dados filtros activos, Cuando el usuario limpia todos los filtros, Entonces no se aplica ningún filtro y el recuento de resultados se actualiza.
 - **HR-F003-AC12:** Dados más resultados de los que caben en una página, Cuando el usuario llega al final de los resultados cargados, Entonces se cargan los siguientes sin repetir ni omitir ninguno.
 - **HR-F003-AC13:** Dada una búsqueda sin coincidencias, Cuando se muestran los resultados, Entonces el recuento es cero y la pantalla ofrece limpiar los filtros.
+- **HR-F003-AC14:** Dadas una propiedad con superficie de parcela 0 y otra con superficie de parcela desconocida, Cuando «casas con terreno» está activo, Entonces ninguna coincide.
+- **HR-F003-AC15:** Dadas más de 24 propiedades coincidentes, Cuando se muestran los resultados, Entonces la primera página muestra 24 y la URL refleja los filtros y la página.
+- **HR-F003-AC16:** Dada una URL con filtros y una página, Cuando se abre, Entonces se aplican los mismos filtros y la misma página.
+- **HR-F003-AC17:** Dada una propiedad sin anuncios activos, Cuando el conmutador para incluirlas está desactivado, Entonces no aparece; Cuando está activado, Entonces aparece.
 
 ## Casos límite
 
@@ -78,12 +85,6 @@ P0 (sección de origen 3).
 - Búsqueda de texto libre sobre títulos y descripciones.
 - Búsqueda con IA ([fuera de alcance](/es/product/out-of-scope/)).
 - Búsqueda de anuncios individuales: los resultados son siempre propiedades ([D19](/es/adr/d19-search-read-model/)).
-
-## Preguntas abiertas
-
-- ¿Cómo se corresponden «propiedades para reformar», «casas independientes» y «casas con terreno» con el modelo: valores de estado de conservación y tipo de propiedad, o derivados de la superficie de terreno?
-- ¿Cuál es el tamaño de página o el incremento de carga de los resultados?
-- ¿Debe poder el usuario incluir en los resultados propiedades sin anuncios activos?
 
 ## Decisiones relacionadas
 

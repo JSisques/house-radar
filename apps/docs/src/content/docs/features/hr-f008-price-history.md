@@ -48,6 +48,7 @@ P0 (source section 8).
 - **HR-F008-BR9:** the history reflects only what House Radar has observed since the first observation. The interface states the date of the first observation and never presents the history as complete.
 - **HR-F008-BR10:** the evolution is shown in a chart with an accessible textual alternative. Prices are in euros, with Spanish-first formats ([D12](/adr/d12-web-internationalization/)).
 - **HR-F008-BR11:** observations are immutable: a correction is a new observation.
+- **HR-F008-BR12:** observations are kept forever; there is no compaction in the MVP.
 
 ## Acceptance criteria
 
@@ -62,6 +63,7 @@ P0 (source section 8).
 - **HR-F008-AC9:** Given an observation with a changed attribute other than price, When it is stored, Then the change is recorded in the history.
 - **HR-F008-AC10:** Given a property with history, When the user opens the property page, Then a chart shows the evolution of its lowest active price.
 - **HR-F008-AC11:** Given a stored observation, When a later observation differs, Then the earlier observation is not modified.
+- **HR-F008-AC12:** Given observations of any age, When the price history is shown, Then all of them are available.
 
 ## Edge cases
 
@@ -78,10 +80,6 @@ P0 (source section 8).
 - Reconstructing history before the first observation.
 - Historical data from external sources.
 - Alerts on price changes ([HR-F011](/features/hr-f011-notifications/), post-MVP).
-
-## Open questions
-
-- How long are full snapshots retained, and is only the difference stored after some period?
 
 ## Related decisions
 

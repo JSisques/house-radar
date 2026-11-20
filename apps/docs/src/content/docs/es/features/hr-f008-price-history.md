@@ -48,6 +48,7 @@ P0 (sección de origen 8).
 - **HR-F008-BR9:** el histórico refleja únicamente lo observado por House Radar desde la primera observación. La interfaz indica la fecha de la primera observación y nunca presenta el histórico como completo.
 - **HR-F008-BR10:** la evolución se muestra en un gráfico con una alternativa textual accesible. Los precios están en euros, con formatos español primero ([D12](/es/adr/d12-web-internationalization/)).
 - **HR-F008-BR11:** las observaciones son inmutables: una corrección es una nueva observación.
+- **HR-F008-BR12:** las observaciones se conservan para siempre; no hay compactación en el MVP.
 
 ## Criterios de aceptación
 
@@ -62,6 +63,7 @@ P0 (sección de origen 8).
 - **HR-F008-AC9:** Dada una observación con un atributo distinto del precio modificado, Cuando se almacena, Entonces el cambio queda registrado en el histórico.
 - **HR-F008-AC10:** Dada una propiedad con histórico, Cuando el usuario abre la ficha de la propiedad, Entonces un gráfico muestra la evolución de su menor precio activo.
 - **HR-F008-AC11:** Dada una observación almacenada, Cuando una observación posterior difiere, Entonces la observación anterior no se modifica.
+- **HR-F008-AC12:** Dadas observaciones de cualquier antigüedad, Cuando se muestra el histórico de precios, Entonces todas están disponibles.
 
 ## Casos límite
 
@@ -78,10 +80,6 @@ P0 (sección de origen 8).
 - Reconstruir el histórico anterior a la primera observación.
 - Datos históricos procedentes de fuentes externas.
 - Alertas por cambios de precio ([HR-F011](/es/features/hr-f011-notifications/), posterior al MVP).
-
-## Preguntas abiertas
-
-- ¿Durante cuánto tiempo se conservan los snapshots completos y se almacena solo la diferencia pasado un tiempo?
 
 ## Decisiones relacionadas
 

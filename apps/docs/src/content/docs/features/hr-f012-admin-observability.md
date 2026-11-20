@@ -53,6 +53,9 @@ See also the [Operations overview](/operations/overview/).
 - **HR-F012-BR11:** logs and metrics never contain passwords, tokens, or other secrets.
 - **HR-F012-BR12:** observability tooling is accessed through adapters, so it can be replaced without changing application code ([D10](/adr/d10-cross-cutting-architecture/)).
 - **HR-F012-BR13 (P2):** the administration area shows the effective values of operational settings, such as the number of runs without sighting that marks a listing as disappeared (default 3) ([D20](/adr/d20-listing-consolidation-rules/)).
+- **HR-F012-BR14:** there is a single role in the MVP: every authenticated user is an administrator. The role model is prepared for future roles.
+- **HR-F012-BR15:** the alerts for the first release are exactly three ([D15](/adr/d15-observability/)): ingestion without successful runs, extraction error rate, and health checks down.
+- **HR-F012-BR16:** operational settings (the disappearance threshold and the duplicate-detection thresholds) are deployment configuration, through environment variables, in the MVP; they are not edited in the administration area.
 
 ## Acceptance criteria
 
@@ -68,6 +71,8 @@ See also the [Operations overview](/operations/overview/).
 - **HR-F012-AC10 (P2):** Given an enabled source, When the administrator disables it, Then no scheduled run starts for it.
 - **HR-F012-AC11 (P2):** Given extraction errors, When the administrator opens the errors view, Then each error shows its source, time, and cause.
 - **HR-F012-AC12:** Given a login request with a password, When the logs are inspected, Then the password does not appear.
+- **HR-F012-AC13:** Given any authenticated user, When they open the administration area, Then they have administrator access.
+- **HR-F012-AC14:** Given the first release, When the alerts are listed, Then exactly three are defined: ingestion without successful runs, extraction error rate, and health checks down.
 
 ## Edge cases
 
@@ -82,12 +87,6 @@ See also the [Operations overview](/operations/overview/).
 - Administration screens (P2) are not required for the first release; Bull Board and the observability stack cover it.
 - Multiple administrator roles and per-source permissions.
 - Capacity planning and automatic scaling.
-
-## Open questions
-
-- Is any authenticated user an administrator, or is there a distinct administrator role?
-- Where are operational settings (disappearance threshold, duplicate thresholds) edited: deployment configuration or the administration area?
-- Which alerts are defined for the first release besides service failures and failed runs?
 
 ## Related decisions
 

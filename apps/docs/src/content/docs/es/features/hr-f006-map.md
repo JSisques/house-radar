@@ -46,6 +46,9 @@ P1 (sección de origen 6).
 - **HR-F006-BR8:** el selector de pin coloca o mueve un pin y exige elegir una precisión. Al guardar un pin se derivan el municipio y la provincia ([D18](/es/adr/d18-location-pin-declared-precision/)).
 - **HR-F006-BR9:** la biblioteca de mapas se accede únicamente a través del puerto de mapa, de modo que puede sustituirse sin tocar el resto del frontend ([D9](/es/adr/d09-map/), [D10](/es/adr/d10-cross-cutting-architecture/)).
 - **HR-F006-BR10:** los textos, formatos de precio y controles del mapa son español primero y traducibles ([D12](/es/adr/d12-web-internationalization/)).
+- **HR-F006-BR11:** desplazar o hacer zoom en el mapa no filtra los resultados. Solo el botón explícito «buscar en esta zona» restringe los resultados a la zona visible.
+- **HR-F006-BR12:** las teselas del mapa proceden de OpenFreeMap (gratuito, sin clave de API ni registro; se ofrece tal cual y puede cambiar o dejar de existir). Se consumen a través del adaptador de teselas de mapa ([D9](/es/adr/d09-map/), [D10](/es/adr/d10-cross-cutting-architecture/)) para poder sustituir al proveedor o alojarlo por cuenta propia. Fuentes: <https://openfreemap.org> y <https://openfreemap.org/tos/>.
+- **HR-F006-BR13:** la atribución de OpenStreetMap se muestra siempre en el mapa.
 
 ## Criterios de aceptación
 
@@ -60,6 +63,9 @@ P1 (sección de origen 6).
 - **HR-F006-AC9:** Dado el formulario de importación manual, Cuando el usuario coloca un pin y elige una precisión, Entonces el pin y la precisión se guardan y se derivan el municipio y la provincia.
 - **HR-F006-AC10:** Dado un usuario que intenta guardar un pin sin elegir una precisión, Cuando lo envía, Entonces el pin no se guarda y el formulario solicita la precisión.
 - **HR-F006-AC11:** Dado un adaptador de mapa sustituido por otra implementación del puerto, Cuando se usa la pantalla del mapa, Entonces su comportamiento no cambia.
+- **HR-F006-AC12:** Dado un mapa con resultados, Cuando el usuario desplaza o hace zoom, Entonces la lista de resultados no cambia.
+- **HR-F006-AC13:** Dado un mapa desplazado o ampliado, Cuando el usuario pulsa «buscar en esta zona», Entonces los resultados se restringen a la zona visible.
+- **HR-F006-AC14:** Dado que se muestra el mapa, Cuando se muestran las teselas, Entonces la atribución de OpenStreetMap es visible.
 
 ## Casos límite
 
@@ -75,11 +81,6 @@ P1 (sección de origen 6).
 - Geocodificación de direcciones ([D18](/es/adr/d18-location-pin-declared-precision/)).
 - Rutas a pie de calle, puntos de interés y datos de barrio.
 - Dibujar varias áreas a la vez.
-
-## Preguntas abiertas
-
-- ¿Desplazar o acercar el mapa restringe automáticamente la lista de resultados al área visible, o solo lo hace una selección de área explícita?
-- ¿Qué fuente de teselas del mapa se utiliza?
 
 ## Decisiones relacionadas
 

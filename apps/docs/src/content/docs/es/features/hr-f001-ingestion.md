@@ -48,6 +48,12 @@ P0 (sección de origen 1).
 - **HR-F001-BR10:** las imágenes solo se almacenan o muestran cuando las condiciones de la fuente lo permiten; en caso contrario solo se conserva el enlace al anuncio original.
 - **HR-F001-BR11:** los anuncios manuales no tienen comprobaciones automáticas de estado. El usuario registra una nueva observación con «comprobar anuncio» (precio, sigue activo, fecha de comprobación) o marca el anuncio como `disappeared` ([D20](/es/adr/d20-listing-consolidation-rules/)).
 - **HR-F001-BR12:** todo anuncio ingerido registra su fuente, URL original, identificador externo si se conoce, fecha de incorporación y fecha de última actualización.
+- **HR-F001-BR13:** un anuncio manual sin identificador externo recibe un UUID interno como identidad.
+- **HR-F001-BR14:** al importar un anuncio manual, su URL se normaliza eliminando la cadena de consulta (query string) y el fragmento. Volver a importar una URL cuya forma normalizada coincide con un anuncio manual existente avisa al usuario y le ofrece «comprobar anuncio» en lugar de crear un anuncio nuevo.
+- **HR-F001-BR15:** las fuentes automáticas se ejecutan una vez al día por defecto.
+- **HR-F001-BR16:** los errores temporales se reintentan 3 veces con espera exponencial (backoff) por defecto.
+- **HR-F001-BR17:** la frecuencia de ejecución, el número de reintentos y el backoff son configurables.
+- **HR-F001-BR18:** las fotos subidas por el usuario a un anuncio manual quedan fuera del alcance del MVP (post-MVP).
 
 ## Criterios de aceptación
 
@@ -61,6 +67,11 @@ P0 (sección de origen 1).
 - **HR-F001-AC8:** Dado un anuncio manual activo, Cuando el usuario ejecuta «comprobar anuncio» con un precio nuevo, Entonces se registra una observación con el nuevo precio, el estado y la fecha de comprobación, y se actualiza la fecha de última comprobación.
 - **HR-F001-AC9:** Dada una fuente cuyas condiciones no permiten almacenar imágenes, Cuando se ingiere un anuncio, Entonces no se almacena ninguna imagen y se conserva el enlace al anuncio original.
 - **HR-F001-AC10:** Dada una fuente que no ha sido autorizada, Cuando un administrador intenta habilitarla, Entonces permanece deshabilitada.
+- **HR-F001-AC11:** Dado un anuncio manual sin identificador externo, Cuando se guarda, Entonces recibe un UUID interno como identidad.
+- **HR-F001-AC12:** Dado un anuncio manual existente con URL `https://example.com/home/1?ref=a#photos`, Cuando el usuario importa `https://example.com/home/1`, Entonces se avisa al usuario y se le ofrece «comprobar anuncio», y no se crea ningún anuncio nuevo.
+- **HR-F001-AC13:** Dada una fuente automática con la configuración por defecto, Cuando se produce un error temporal, Entonces la operación se reintenta hasta 3 veces con espera exponencial.
+- **HR-F001-AC14:** Dada una fuente automática con la configuración por defecto, Cuando ha pasado un día desde su última ejecución, Entonces se inicia una nueva ejecución.
+- **HR-F001-AC15:** Dados una frecuencia, un número de reintentos o un backoff modificados en la configuración, Cuando se programa la siguiente ejecución, Entonces se aplican los nuevos valores.
 
 ## Casos límite
 
@@ -76,12 +87,6 @@ P0 (sección de origen 1).
 - Extraer cualquier contenido de la página que hay tras una URL manual.
 - Hacer scraping de portales sin autorización.
 - Importar desde varias fuentes automáticas a la vez (solo la importación manual está activa hasta que se conceda la clave de idealista).
-
-## Preguntas abiertas
-
-- ¿Qué identificador usa un anuncio manual cuando el usuario no puede aportar un identificador externo y cómo se empareja la misma URL en una nueva importación?
-- ¿Cuáles son los límites de reintento, el backoff y la cadencia de ejecución por defecto de las fuentes automáticas?
-- ¿Puede el usuario adjuntar sus propias fotos a un anuncio manual?
 
 ## Decisiones relacionadas
 

@@ -47,6 +47,9 @@ P0 (source section 2).
 - **HR-F002-BR9:** when listings of a property disagree on an attribute, the property shows the most recent observed value and flags the conflict with each value and its source ([D20](/adr/d20-listing-consolidation-rules/)).
 - **HR-F002-BR10:** the property exposes a representative price, the lowest price among its active listings; with no active listing it has none ([D19](/adr/d19-search-read-model/)).
 - **HR-F002-BR11:** prices are expressed in euros and areas in square meters. User-facing labels and formats are Spanish-first and translatable ([D12](/adr/d12-web-internationalization/)).
+- **HR-F002-BR12:** property type is a closed list: flat (`piso`), penthouse (`ático`), duplex, studio, detached house, semi-detached or terraced house, rustic house, estate (`finca`), land, and other.
+- **HR-F002-BR13:** condition is a closed list: new build, good condition, to renovate, and unknown.
+- **HR-F002-BR14:** the energy certificate accepts the values A to G, in process, exempt, and unknown.
 
 ## Acceptance criteria
 
@@ -60,6 +63,9 @@ P0 (source section 2).
 - **HR-F002-AC8:** Given a property with two active listings priced 200 000 € and 190 000 €, When the property is read, Then its representative price is 190 000 €.
 - **HR-F002-AC9:** Given a listing that disappears, When its status changes, Then the previous observations are kept and the listing no longer counts toward the representative price.
 - **HR-F002-AC10:** Given a new listing, When it is saved, Then its source, original URL, date added, and date of last check are recorded.
+- **HR-F002-AC11:** Given a listing, When a property type outside the closed list is provided, Then it is rejected; only the listed values are accepted.
+- **HR-F002-AC12:** Given a listing, When a condition outside the closed list is provided, Then it is rejected; only the listed values are accepted.
+- **HR-F002-AC13:** Given a listing with an energy certificate "in process", When the property is shown, Then the certificate is shown as in process and not as a letter.
 
 ## Edge cases
 
@@ -75,11 +81,6 @@ P0 (source section 2).
 - Geocoding of addresses ([D18](/adr/d18-location-pin-declared-precision/)).
 - Inferring missing features from descriptions or photographs.
 - Cadastre (Catastro) data and automatic market value estimation.
-
-## Open questions
-
-- Are property type and condition closed lists, and what are their values?
-- Which values does the energy certificate accept, including "not available" and "in process"?
 
 ## Related decisions
 

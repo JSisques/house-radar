@@ -46,6 +46,9 @@ P1 (source section 6).
 - **HR-F006-BR8:** the pin picker places or moves a pin and requires choosing a precision. Saving a pin derives municipality and province ([D18](/adr/d18-location-pin-declared-precision/)).
 - **HR-F006-BR9:** the map library is accessed only through the map port, so it can be replaced without touching the rest of the frontend ([D9](/adr/d09-map/), [D10](/adr/d10-cross-cutting-architecture/)).
 - **HR-F006-BR10:** map text, price formats, and controls are Spanish-first and translatable ([D12](/adr/d12-web-internationalization/)).
+- **HR-F006-BR11:** panning or zooming the map does not filter the results. Only the explicit "search this area" button restricts the results to the visible area.
+- **HR-F006-BR12:** map tiles come from OpenFreeMap (free, no API key, no registration; provided as-is and may change or be discontinued). They are consumed through the map tiles adapter ([D9](/adr/d09-map/), [D10](/adr/d10-cross-cutting-architecture/)) so the provider can be replaced or self-hosted. Sources: <https://openfreemap.org> and <https://openfreemap.org/tos/>.
+- **HR-F006-BR13:** the OpenStreetMap attribution is always shown on the map.
 
 ## Acceptance criteria
 
@@ -60,6 +63,9 @@ P1 (source section 6).
 - **HR-F006-AC9:** Given the manual import form, When the user places a pin and chooses a precision, Then the pin and precision are saved and municipality and province are derived.
 - **HR-F006-AC10:** Given the user tries to save a pin without choosing a precision, When they submit, Then the pin is not saved and the form asks for the precision.
 - **HR-F006-AC11:** Given a map adapter replaced by another implementation of the port, When the map screen is used, Then its behavior is unchanged.
+- **HR-F006-AC12:** Given a map with results, When the user pans or zooms, Then the results list does not change.
+- **HR-F006-AC13:** Given a panned or zoomed map, When the user selects "search this area", Then the results are restricted to the visible area.
+- **HR-F006-AC14:** Given the map is displayed, When tiles are shown, Then the OpenStreetMap attribution is visible.
 
 ## Edge cases
 
@@ -75,11 +81,6 @@ P1 (source section 6).
 - Geocoding of addresses ([D18](/adr/d18-location-pin-declared-precision/)).
 - Street-level routes, points of interest, and neighborhood data.
 - Drawing multiple areas at once.
-
-## Open questions
-
-- Does panning or zooming the map automatically restrict the results list to the visible area, or only an explicit area selection does?
-- Which map tile source is used?
 
 ## Related decisions
 

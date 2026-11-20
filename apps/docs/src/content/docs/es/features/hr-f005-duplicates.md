@@ -46,6 +46,9 @@ P0 (sección de origen 5).
 - **HR-F005-BR9:** el precio no es un criterio para ser candidato; se muestra durante la revisión, junto con los datos de ubicación y los demás campos comparados, para ayudar al usuario a decidir.
 - **HR-F005-BR10:** tras un vínculo, la propiedad consolida sus anuncios según las reglas de [D20](/es/adr/d20-listing-consolidation-rules/) y la búsqueda la muestra una sola vez ([D19](/es/adr/d19-search-read-model/)).
 - **HR-F005-BR11:** la detección se ejecuta cuando se crea un anuncio o cuando cambian su ubicación, superficie construida o habitaciones, y no bloquea la ingesta.
+- **HR-F005-BR12:** un vínculo puede deshacerse: el anuncio pasa a una propiedad nueva. No se pierde nada porque el histórico de precios se almacena por anuncio ([D20](/es/adr/d20-listing-consolidation-rules/)).
+- **HR-F005-BR13:** cuando se vinculan dos propiedades, la propiedad resultante conserva por defecto la ubicación más precisa; el usuario puede cambiarla.
+- **HR-F005-BR14:** los umbrales de detección se configuran en el despliegue, mediante variables de entorno, en el MVP.
 
 ## Criterios de aceptación
 
@@ -62,6 +65,9 @@ P0 (sección de origen 5).
 - **HR-F005-AC11:** Dada una coincidencia muy fuerte, Cuando se ejecuta la detección, Entonces ningún anuncio se vincula hasta que el usuario resuelve el candidato.
 - **HR-F005-AC12:** Dados dos anuncios en el mismo municipio, uno de ellos con precisión `approximate`, con superficies construidas de 100 m² y 104 m² y 3 habitaciones cada uno, Cuando se ejecuta la detección, Entonces aparecen como un par candidato sea cual sea la distancia entre sus pines.
 - **HR-F005-AC13:** Dados dos anuncios en municipios distintos, uno de ellos con precisión `approximate`, con la misma superficie construida y las mismas habitaciones, Cuando se ejecuta la detección, Entonces no son un par candidato.
+- **HR-F005-AC14:** Dados dos anuncios vinculados en una propiedad, Cuando el usuario deshace el vínculo, Entonces uno de los anuncios pasa a una propiedad nueva y el histórico de precios de cada anuncio permanece intacto.
+- **HR-F005-AC15:** Dadas dos propiedades con ubicaciones de distinta precisión, Cuando se vinculan, Entonces la propiedad resultante conserva la ubicación más precisa y el usuario puede cambiarla.
+- **HR-F005-AC16:** Dado un umbral definido mediante una variable de entorno, Cuando arranca la aplicación y se ejecuta la detección, Entonces se aplica ese umbral.
 
 ## Casos límite
 
@@ -77,12 +83,6 @@ P0 (sección de origen 5).
 - Fusión automática, con o sin nivel de confianza.
 - Comparar fotografías o descripciones para detectar duplicados.
 - Detectar duplicados a partir del texto de la dirección (la geocodificación se aplaza, [D18](/es/adr/d18-location-pin-declared-precision/)).
-
-## Preguntas abiertas
-
-- ¿Puede deshacerse un vínculo entre anuncios y qué ocurre con la propiedad y su histórico si se deshace?
-- Cuando se vinculan dos propiedades con ubicaciones distintas, ¿qué ubicación conserva la propiedad que permanece?
-- ¿Dónde se configuran los umbrales: en la configuración del despliegue o en una pantalla de administración?
 
 ## Decisiones relacionadas
 

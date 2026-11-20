@@ -48,6 +48,8 @@ P0 (source section 4).
 - **HR-F004-BR9:** the page shows possible duplicate listings as candidates for review ([HR-F005](/features/hr-f005-duplicates/)); it never links them automatically.
 - **HR-F004-BR10:** for each manual listing the page offers "check listing" and "mark as disappeared" ([D17](/adr/d17-manual-import-assisted-form/), [D20](/adr/d20-listing-consolidation-rules/)).
 - **HR-F004-BR11:** all labels, number formats, and dates are Spanish-first and translatable ([D12](/adr/d12-web-internationalization/)).
+- **HR-F004-BR12:** the data of a manual listing can be edited. Price and status change only through "check listing" (a new observation). Corrections to descriptive data are edited in place and an audit record is kept.
+- **HR-F004-BR13:** the title and description shown for a property come from its most recently observed listing; the other listings' values are visible in the property's listings tab.
 
 ## Acceptance criteria
 
@@ -61,6 +63,9 @@ P0 (source section 4).
 - **HR-F004-AC8:** Given an active manual listing, When the user selects "mark as disappeared", Then its status becomes `disappeared` and the representative price is recalculated.
 - **HR-F004-AC9:** Given a property with an unknown value, When the page is shown, Then the value is displayed as unknown and not as empty or zero.
 - **HR-F004-AC10:** Given an identifier that does not exist, When the user opens the page, Then a "property not found" message is shown.
+- **HR-F004-AC11:** Given a manual listing, When the user corrects a descriptive field, Then the listing is updated in place and an audit record of the change is kept.
+- **HR-F004-AC12:** Given a manual listing, When the user wants to change its price or status, Then it is done through "check listing" and records a new observation; the price and status cannot be edited directly.
+- **HR-F004-AC13:** Given a property with listings whose titles differ, When the page is shown, Then it shows the title and description of the most recently observed listing and the others appear in the listings tab.
 
 ## Edge cases
 
@@ -75,11 +80,6 @@ P0 (source section 4).
 - Contacting the advertiser from House Radar.
 - Server-side rendering of property pages ([D5](/adr/d05-frontend-framework/)).
 - Photo analysis ([out of scope](/product/out-of-scope/)).
-
-## Open questions
-
-- Can the user edit the data of a manual listing after creating it?
-- Which listing's title and description are shown when listings differ: always the most recently observed, or can the user choose?
 
 ## Related decisions
 
