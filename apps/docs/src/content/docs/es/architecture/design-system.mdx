@@ -5,14 +5,11 @@ sidebar:
   order: 5
 ---
 
-import FontLoader from '../../../../components/design/FontLoader.astro';
 import Swatch from '../../../../components/design/Swatch.astro';
 import TypeSample from '../../../../components/design/TypeSample.astro';
 import HatchSample from '../../../../components/design/HatchSample.astro';
 import HatchHistory from '../../../../components/design/HatchHistory.astro';
 import PriceChip from '../../../../components/design/PriceChip.astro';
-
-<FontLoader />
 
 Decisión [D34](/es/adr/d34-visual-direction/). Cada muestra de abajo se renderiza con pequeños componentes de `apps/docs/src/components/design/`, de modo que la página muestra los tokens reales y sigue el tema claro u oscuro del portal. Los tokens se implementarán como variables CSS y un tema de Tailwind en `apps/web` ([D5](/es/adr/d05-frontend-framework/)).
 
@@ -40,7 +37,7 @@ Cada muestra enseña el valor claro (izquierda) y el oscuro (derecha).
 
 ## Tipografía
 
-Tres roles, tres tipografías. Se cargan desde Google Fonts; si la petición falla, los componentes recurren a las pilas de fuentes del sistema (`system-ui`, `ui-monospace`) y la página sigue siendo legible.
+Tres roles, tres tipografías. Se alojan en local con Fontsource (sin peticiones a terceros) y se cargan para todo el portal; las pilas de fuentes del sistema quedan como alternativa (`system-ui`, `ui-monospace`) y la página sigue siendo legible.
 
 <TypeSample role="display" caption="Títulos · Schibsted Grotesk 700-800, con moderación">Casa con terreno en Ames</TypeSample>
 <TypeSample role="body" caption="Cuerpo e interfaz · Public Sans 400-600">Vivienda unifamiliar de piedra con finca cerrada, a 9 km del centro de Santiago.</TypeSample>
@@ -86,7 +83,7 @@ Cuando dos fuentes discrepan en un atributo ([D20](/es/adr/d20-listing-consolida
 - El texto y los colores de estado mantienen contraste suficiente en claro y oscuro; Líquen siempre lleva texto oscuro.
 - El color nunca es la única señal: los cambios de precio y los errores incluyen una flecha o un texto.
 - Los valores desconocidos se anuncian como texto («sin dato», «no declarado»), no solo mediante la trama.
-- Las fuentes vienen de Google Fonts o se alojan en local, siempre con alternativas del sistema.
+- Las fuentes se alojan en local (Fontsource), siempre con alternativas del sistema.
 
 ## Pantallas
 

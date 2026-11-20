@@ -26,6 +26,7 @@ Record the approved visual direction "Folla catastral" in the repository: canvas
 |----|------|-------|--------|--------|
 | T1 | Store canvas sources + README in `apps/docs/design/folla-catastral/` | inline (mechanical copy) | [x] | 0bfa161 |
 | T2 | ADR D34 visual direction (en + es) + index; docs page `architecture/design-system` (en + es) rendering palette, type and hatch live; link from overview and conventions | delegated (writer trigger: 2+ files) | [x] | fb00217 (ADR D34), 5eb576c (design page) |
+| T4 | Apply the design system to the docs portal: Starlight theme variables mapped to the tokens (`apps/docs/src/styles/theme.css`), self-hosted Fontsource fonts, Schibsted Grotesk headings; remove the Google Fonts loader | inline (2 mechanical files + config) | [x] | see progress |
 | T3 | Frontend agent skill: hard rules for tokens, typography, hatch for unknown, color-not-alone; link the design page and canvas sources | delegated | [x] | b543f7f |
 
 Checks: `pnpm docs:test`, `pnpm docs:check-i18n`, `pnpm docs:check`, `pnpm docs:build`; visual check of the design page (headless Chrome, light and dark).
@@ -40,3 +41,5 @@ Checks: `pnpm docs:test`, `pnpm docs:check-i18n`, `pnpm docs:check`, `pnpm docs:
 - `pnpm docs:test`: 4 pass. `pnpm docs:check-i18n`: 67 pages OK. `pnpm docs:check`: 0 errors. `pnpm docs:build`: 135 pages built.
 - Visual check (headless Chrome, light and dark, en and es): found and fixed (a) the hatch never rendered — `.hr-ds .hr-unk` was a descendant selector but both classes sit on the same element; now `.hr-ds.hr-unk`; (b) the hatch hurt legibility of text over it — now the hatch token at 55% opacity every 8px (spec updated in ADR D34, page, decision record and canvas sources, canvas republished); (c) unknown cells sat ~16px lower because of Starlight content margins — cells use `not-content`. Re-checked after the fix.
 - Review (main..HEAD, medium risk: frontend skill rules): consent granted, **approved and acknowledged**. Findings fixed: duplicate `--hr-line` token with a wrong value; README path to the `.mdx` page; `HatchSample` treats empty or null values as unknown; `HatchHistory` uses a unique SVG pattern id per instance. Not applied: the single-use pattern id in the `Detail.dc.html` canvas source.
+
+- T4 (user request 2026-11-20): docs portal themed with "Folla catastral" — dark on Lousa, light reading surface `#F3F5F4` with Brétema chrome (mitigates the long-form legibility risk), Musgo accent, self-hosted fonts (Fontsource 5.3.0) replacing the Google Fonts `FontLoader`; ADR D34 consequence and design page updated. Verified: docs:check 0 errors, i18n parity 67 pages, build OK; visual check of home and a long ADR (D31) in light (en) and dark (es).

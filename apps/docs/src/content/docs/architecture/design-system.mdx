@@ -5,14 +5,11 @@ sidebar:
   order: 5
 ---
 
-import FontLoader from '../../../components/design/FontLoader.astro';
 import Swatch from '../../../components/design/Swatch.astro';
 import TypeSample from '../../../components/design/TypeSample.astro';
 import HatchSample from '../../../components/design/HatchSample.astro';
 import HatchHistory from '../../../components/design/HatchHistory.astro';
 import PriceChip from '../../../components/design/PriceChip.astro';
-
-<FontLoader />
 
 Decision [D34](/adr/d34-visual-direction/). Every sample below is rendered by small components in `apps/docs/src/components/design/`, so the page shows the real tokens and follows the light and dark theme of the portal. The tokens will be implemented as CSS variables and a Tailwind theme in `apps/web` ([D5](/adr/d05-frontend-framework/)).
 
@@ -40,7 +37,7 @@ Each swatch shows the light value (left) and the dark value (right).
 
 ## Typography
 
-Three roles, three typefaces. They load from Google Fonts; if the request fails, the components fall back to the system font stacks (`system-ui`, `ui-monospace`), so the page stays readable.
+Three roles, three typefaces. They are self-hosted with Fontsource (no third-party requests) and loaded for the whole portal; system font stacks remain as fallback (`system-ui`, `ui-monospace`), so the page stays readable.
 
 <TypeSample role="display" caption="Display · Schibsted Grotesk 700-800, restrained">Casa con terreno en Ames</TypeSample>
 <TypeSample role="body" caption="Body and UI · Public Sans 400-600">Vivienda unifamiliar de piedra con finca cerrada, a 9 km del centro de Santiago.</TypeSample>
@@ -86,7 +83,7 @@ When two sources disagree on an attribute ([D20](/adr/d20-listing-consolidation-
 - Text and state colors keep sufficient contrast in light and dark; Líquen always carries dark text.
 - Color is never the only signal: price changes and errors include an arrow or text.
 - Unknown values are announced as text ("sin dato", "no declarado"), not conveyed only by the hatch.
-- Fonts come from Google Fonts or are self-hosted, always with system fallbacks.
+- Fonts are self-hosted (Fontsource), always with system fallbacks.
 
 ## Screens
 

@@ -49,7 +49,7 @@ sidebar:
 - The tokens are implemented as CSS variables plus a Tailwind theme in `apps/web` during the M0 web skeleton slice; components never use raw hex values.
 - Unknown rendering is one shared component, so every screen shows missing data the same way and the rule cannot be bypassed by ad hoc `—`.
 - Accessibility: text and state colors keep sufficient contrast in both themes (Líquen always carries dark text), and color is never the only signal (arrows and text accompany price changes and errors).
-- Fonts come from Google Fonts or are self-hosted; the choice is deferred to the web skeleton, with system font stacks as fallback.
+- Fonts are self-hosted with Fontsource (no third-party requests), in the docs portal now and in `apps/web` from the M0 web skeleton, with system font stacks as fallback. The docs portal applies the same direction through Starlight theme variables (`apps/docs/src/styles/theme.css`).
 - The distinctive identity depends on discipline: Líquen must stay scarce and the hatch reserved for unknowns.
 
 ## Alternatives considered

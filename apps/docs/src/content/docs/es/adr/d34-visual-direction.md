@@ -49,7 +49,7 @@ sidebar:
 - Los tokens se implementan como variables CSS más un tema de Tailwind en `apps/web` durante el slice del esqueleto web de M0; los componentes nunca usan valores hexadecimales directos.
 - El renderizado de lo desconocido es un único componente compartido, de modo que todas las pantallas muestran los datos ausentes igual y la regla no se puede eludir con un `—` ad hoc.
 - Accesibilidad: el texto y los colores de estado mantienen contraste suficiente en ambos temas (Líquen siempre lleva texto oscuro) y el color nunca es la única señal (flechas y texto acompañan a los cambios de precio y a los errores).
-- Las fuentes vienen de Google Fonts o se alojan en local; la elección se aplaza al esqueleto web, con pilas de fuentes del sistema como alternativa.
+- Las fuentes se alojan en local con Fontsource (sin peticiones a terceros), en el portal de documentación desde ya y en `apps/web` desde el esqueleto web de M0, con pilas de fuentes del sistema como alternativa. El portal aplica la misma dirección mediante las variables de tema de Starlight (`apps/docs/src/styles/theme.css`).
 - La identidad distintiva exige disciplina: Líquen debe seguir siendo escaso y la trama reservada a lo desconocido.
 
 ## Alternativas consideradas
