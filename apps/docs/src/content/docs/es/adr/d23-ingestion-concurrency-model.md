@@ -19,7 +19,7 @@ Escalar el trabajo, no «un worker por fuente».
 1. **La planificación se separa de la ejecución.** Los jobs repetibles de BullMQ encolan `sync-source(<source>)`. Los workers de ingesta son réplicas idénticas y sin estado que solo consumen jobs (`docker compose up --scale ingestion=N`).
 2. **Reclamación atómica de jobs.** BullMQ mueve un job a activo de forma atómica con un bloqueo (lock). Si un worker muere, el lock caduca y otro worker reintenta el job (recuperación de jobs estancados).
 3. **Fan-out.** `sync-source` descubre los anuncios y encola un job `fetch-listing(<source>, <externalId>)` por anuncio, de modo que N workers se reparten el trabajo de una misma fuente.
-4. **IDs de job deterministas**, por ejemplo `fetch:<source>:<externalId>:<runId>`, para que el mismo job no se encole dos veces dentro de una ejecución.
+4. **IDs de job deterministas**, por ejemplo `fetch.<source>.<externalId>.<runId>`, para que el mismo job no se encole dos veces dentro de una ejecución.
 5. **Una cola por fuente con su propio limitador de tasa.** El limitador de BullMQ es global por cola (compartido por todos los workers), por lo que la cuota de cada fuente se respeta sin importar el número de workers. Los «grupos» de BullMQ (una sola cola con límites por grupo) son una funcionalidad de pago de la versión Pro y no se usan.
 6. **La base de datos es la última línea de defensa** ([D6](/es/adr/d06-persistence/)):
    - Unicidad `(source, external_id)` más upsert: el mismo anuncio se actualiza, nunca se duplica (véase la enmienda de [D21](/es/adr/d21-duplicate-detection-policy/)).

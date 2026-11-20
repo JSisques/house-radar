@@ -11,7 +11,7 @@ Document the ingestion concurrency and scaling model as ADR D23 plus an architec
 1. Scheduling is separated from execution: BullMQ repeatable jobs enqueue `sync-source(<source>)`; ingestion workers are stateless, identical replicas that only consume (`docker compose up --scale ingestion=N`).
 2. BullMQ moves a job to active atomically with a lock; if a worker dies the lock expires and the job is retried by another worker (stalled job recovery).
 3. Fan-out: `sync-source` discovers listings and enqueues one `fetch-listing(<source>, <externalId>)` per listing, so N workers share the work of a single source.
-4. Deterministic job IDs (e.g. `fetch:<source>:<externalId>:<runId>`) so the same job is not enqueued twice in a run.
+4. Deterministic job IDs (e.g. `fetch.<source>.<externalId>.<runId>`) so the same job is not enqueued twice in a run.
 5. One queue per source with its own rate limiter; BullMQ's limiter is global per queue (shared by all workers), so each source's quota is respected regardless of worker count. BullMQ "groups" (single queue, per-group limits) are a paid Pro feature and are not used.
 6. The database is the last line of defense: unique `(source, external_id)` + upsert (same listing is updated, see D21 amendment); observations append-only and immutable with uniqueness per `(listing, run)`; the Property aggregate uses optimistic locking (MikroORM `version`) for duplicate linking and representative price recomputation.
 7. Each connector is an adapter implementing the same port (`discover()`, `fetch(externalId)`) returning the normalized model (D10); adding a source = new adapter + register its queue; workers unchanged.

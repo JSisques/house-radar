@@ -20,8 +20,8 @@ Decision [D23](/adr/d23-ingestion-concurrency-model/): scale work, not "one work
 
 1. **Schedule.** The scheduler registers BullMQ repeatable jobs. Each firing enqueues `sync-source(<source>)` in that source's queue (for example `queue:idealista`). The scheduler never runs ingestion itself.
 2. **Queue per source.** Every source has its own queue in Redis with its own rate limiter. Adding a source means registering one more queue.
-3. **Claim.** An ingestion worker takes a job from a queue. BullMQ moves it to active atomically with a lock, so two workers never receive the same job at the same time.
-4. **Fan-out.** `sync-source` calls the connector's `discover()` and enqueues one `fetch-listing(<source>, <externalId>)` per listing. Job IDs are deterministic (`fetch:<source>:<externalId>:<runId>`), so a listing is not enqueued twice in a run.
+3. **Claim.** An ingestion worker takes a job from a queue. BullMQ moves it to active atomically with a lock, so a job is normally processed by a single worker. Delivery is at-least-once: if a lock expires while its worker is still running (for example, a long stall), another worker can process the same job, which is why every step must be idempotent. BullMQ custom job IDs cannot contain `:`, so IDs use `.` as separator.
+4. **Fan-out.** `sync-source` calls the connector's `discover()` and enqueues one `fetch-listing(<source>, <externalId>)` per listing. Job IDs are deterministic (`fetch.<source>.<externalId>.<runId>`), so a listing is not enqueued twice in a run.
 5. **Fetch.** Any worker consumes each `fetch-listing` job and calls the connector's `fetch(externalId)`. Connectors are adapters of one port and return the normalized model ([D10](/adr/d10-cross-cutting-architecture/)).
 6. **Persist.** The worker upserts the listing by `(source, external_id)`, appends an observation, and, when needed, updates the Property aggregate with optimistic locking ([D6](/adr/d06-persistence/)).
 7. **Recover.** If a worker dies, its lock expires and another worker retries the job (stalled job recovery).
@@ -32,7 +32,7 @@ Instead of preventing every possible collision with hand-made distributed locks,
 
 | Level | Mechanism | Effect of a collision |
 | --- | --- | --- |
-| Job | Deterministic job ID (`fetch:<source>:<externalId>:<runId>`) | The same job is not enqueued twice within a run. |
+| Job | Deterministic job ID (`fetch.<source>.<externalId>.<runId>`) | The same job is not enqueued twice within a run. |
 | Listing | Unique `(source, external_id)` plus upsert | The same listing is updated, never duplicated ([D21](/adr/d21-duplicate-detection-policy/) amendment). |
 | History and aggregate | Append-only observations, unique per `(listing, run)`; optimistic locking on Property (MikroORM `version`) | A repeated observation is rejected; a concurrent Property update fails and is retried instead of overwriting. |
 

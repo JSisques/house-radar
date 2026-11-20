@@ -19,7 +19,7 @@ Scale work, not "one worker per source".
 1. **Scheduling is separated from execution.** BullMQ repeatable jobs enqueue `sync-source(<source>)`. Ingestion workers are stateless, identical replicas that only consume jobs (`docker compose up --scale ingestion=N`).
 2. **Atomic job claiming.** BullMQ moves a job to active atomically with a lock. If a worker dies, the lock expires and another worker retries the job (stalled job recovery).
 3. **Fan-out.** `sync-source` discovers listings and enqueues one `fetch-listing(<source>, <externalId>)` job per listing, so N workers share the work of a single source.
-4. **Deterministic job IDs**, for example `fetch:<source>:<externalId>:<runId>`, so the same job is not enqueued twice within a run.
+4. **Deterministic job IDs**, for example `fetch.<source>.<externalId>.<runId>`, so the same job is not enqueued twice within a run.
 5. **One queue per source with its own rate limiter.** The BullMQ limiter is global per queue (shared by all workers), so each source's quota is respected regardless of the number of workers. BullMQ "groups" (a single queue with per-group limits) are a paid Pro feature and are not used.
 6. **The database is the last line of defense** ([D6](/adr/d06-persistence/)):
    - Unique `(source, external_id)` plus upsert: the same listing is updated, never duplicated (see the [D21](/adr/d21-duplicate-detection-policy/) amendment).

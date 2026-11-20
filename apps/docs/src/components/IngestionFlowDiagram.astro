@@ -56,7 +56,7 @@ const { title, desc } = Astro.props;
 
     <rect class="node" x="70" y="222" width="760" height="56" rx="8"></rect>
     <text class="label" x="450" y="246" text-anchor="middle">sync-source → fan-out → fetch-listing × N</text>
-    <text class="sub" x="450" y="266" text-anchor="middle">job ID: fetch:&lt;source&gt;:&lt;externalId&gt;:&lt;runId&gt;</text>
+    <text class="sub" x="450" y="266" text-anchor="middle">job ID: fetch.&lt;source&gt;.&lt;externalId&gt;.&lt;runId&gt;</text>
 
     <line class="edge" x1="320" y1="294" x2="320" y2="340" marker-end="url(#ifd-arrow)"></line>
     <text class="edge-label" x="332" y="322">consume (atomic lock)</text>

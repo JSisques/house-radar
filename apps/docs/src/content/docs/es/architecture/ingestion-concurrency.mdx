@@ -20,8 +20,8 @@ Decisión [D23](/es/adr/d23-ingestion-concurrency-model/): escalar el trabajo, n
 
 1. **Planificar.** El planificador registra jobs repetibles de BullMQ. Cada disparo encola `sync-source(<source>)` en la cola de esa fuente (por ejemplo `queue:idealista`). El planificador nunca ejecuta la ingesta por sí mismo.
 2. **Una cola por fuente.** Cada fuente tiene su propia cola en Redis con su propio limitador de tasa. Añadir una fuente supone registrar una cola más.
-3. **Reclamar.** Un worker de ingesta toma un job de una cola. BullMQ lo mueve a activo de forma atómica con un lock, de modo que dos workers nunca reciben el mismo job a la vez.
-4. **Fan-out.** `sync-source` llama a `discover()` del conector y encola un `fetch-listing(<source>, <externalId>)` por anuncio. Los IDs de job son deterministas (`fetch:<source>:<externalId>:<runId>`), por lo que un anuncio no se encola dos veces en una ejecución.
+3. **Reclamar.** Un worker de ingesta toma un job de una cola. BullMQ lo mueve a activo de forma atómica con un lock, de modo que normalmente un job lo procesa un único worker. La entrega es al menos una vez (at-least-once): si un lock expira mientras su worker sigue ejecutándose (por ejemplo, por un bloqueo prolongado), otro worker puede procesar el mismo job; por eso cada paso debe ser idempotente. Los IDs de job personalizados de BullMQ no pueden contener `:`, por lo que se usa `.` como separador.
+4. **Fan-out.** `sync-source` llama a `discover()` del conector y encola un `fetch-listing(<source>, <externalId>)` por anuncio. Los IDs de job son deterministas (`fetch.<source>.<externalId>.<runId>`), por lo que un anuncio no se encola dos veces en una ejecución.
 5. **Obtener.** Cualquier worker consume cada job `fetch-listing` y llama a `fetch(externalId)` del conector. Los conectores son adaptadores de un mismo puerto y devuelven el modelo normalizado ([D10](/es/adr/d10-cross-cutting-architecture/)).
 6. **Persistir.** El worker hace upsert del anuncio por `(source, external_id)`, añade una observación y, si hace falta, actualiza el agregado Property con bloqueo optimista ([D6](/es/adr/d06-persistence/)).
 7. **Recuperar.** Si un worker muere, su lock caduca y otro worker reintenta el job (recuperación de jobs estancados).
@@ -32,7 +32,7 @@ En lugar de prevenir cada posible colisión con bloqueos distribuidos hechos a m
 
 | Nivel | Mecanismo | Efecto de una colisión |
 | --- | --- | --- |
-| Job | ID de job determinista (`fetch:<source>:<externalId>:<runId>`) | El mismo job no se encola dos veces en una ejecución. |
+| Job | ID de job determinista (`fetch.<source>.<externalId>.<runId>`) | El mismo job no se encola dos veces en una ejecución. |
 | Anuncio | Unicidad `(source, external_id)` más upsert | El mismo anuncio se actualiza, nunca se duplica (enmienda de [D21](/es/adr/d21-duplicate-detection-policy/)). |
 | Histórico y agregado | Observaciones append-only, únicas por `(listing, run)`; bloqueo optimista en Property (`version` de MikroORM) | Una observación repetida se rechaza; una actualización concurrente de Property falla y se reintenta en lugar de sobrescribir. |
 
