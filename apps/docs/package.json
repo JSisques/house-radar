@@ -7,7 +7,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "node --test 'scripts/*.test.mjs'",
+    "check:i18n": "node scripts/i18n-parity.mjs"
   },
   "dependencies": {
     "@astrojs/starlight": "0.43.1",

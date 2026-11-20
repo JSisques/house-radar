@@ -10,6 +10,8 @@
   "scripts": {
     "docs:dev": "pnpm --filter docs dev",
     "docs:build": "pnpm --filter docs build",
-    "docs:check": "pnpm --filter docs exec astro check"
+    "docs:check": "pnpm --filter docs exec astro check",
+    "docs:test": "pnpm --filter docs test",
+    "docs:check-i18n": "pnpm --filter docs check:i18n"
   }
 }
