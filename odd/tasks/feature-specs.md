@@ -43,7 +43,7 @@ Front matter unchanged in shape. Sections: Summary; Priority; Responsible module
 | T3 | HR-F001 ingestion, HR-F002 normalization (en + es) | delegated | [x] | 305dc6a |
 | T4 | HR-F003 search, HR-F004 detail, HR-F005 duplicates, HR-F008 price history (en + es) | delegated | [x] | a217c27 |
 | T5 | HR-F006 map, HR-F007 favorites & saved searches, HR-F009 dashboard (en + es) | delegated | [x] | 447da9f |
-| T6 | HR-F010 users, HR-F011 notifications, HR-F012 admin & observability (en + es); features index update | delegated | [x] | |
+| T6 | HR-F010 users, HR-F011 notifications, HR-F012 admin & observability (en + es); features index update | delegated | [x] | 3360ae3 |
 
 ## Acceptance criteria
 
