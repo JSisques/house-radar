@@ -1,0 +1,99 @@
+---
+title: Sistema de diseño
+description: "El sistema visual Folla catastral renderizado en vivo: paleta, tipografía, la trama para valores desconocidos, estados del precio y reglas de accesibilidad."
+sidebar:
+  order: 5
+---
+
+import FontLoader from '../../../../components/design/FontLoader.astro';
+import Swatch from '../../../../components/design/Swatch.astro';
+import TypeSample from '../../../../components/design/TypeSample.astro';
+import HatchSample from '../../../../components/design/HatchSample.astro';
+import HatchHistory from '../../../../components/design/HatchHistory.astro';
+import PriceChip from '../../../../components/design/PriceChip.astro';
+
+<FontLoader />
+
+Decisión [D34](/es/adr/d34-visual-direction/). Cada muestra de abajo se renderiza con pequeños componentes de `apps/docs/src/components/design/`, de modo que la página muestra los tokens reales y sigue el tema claro u oscuro del portal. Los tokens se implementarán como variables CSS y un tema de Tailwind en `apps/web` ([D5](/es/adr/d05-frontend-framework/)).
+
+## Principio
+
+«Folla catastral» es una ficha de topógrafo, no un escaparate inmobiliario. Cada dato tiene fuente y fecha; lo que no se ha medido se dibuja como terreno sin medir. Lleva a la interfaz el principio de producto de no inventar información: un valor ausente es visible y se distingue de un valor cero o inexistente.
+
+## Paleta
+
+Cada muestra enseña el valor claro (izquierda) y el oscuro (derecha).
+
+| Token | Muestra | Claro | Oscuro | Rol |
+| --- | --- | --- | --- | --- |
+| Brétema (fondo) | <Swatch name="Brétema" light="#E6E9E7" dark="#1E2A30" /> | `#E6E9E7` | `#1E2A30` | Gris niebla frío, nunca crema; la base oscura es Lousa |
+| Lousa (tinta) | <Swatch name="Lousa" light="#1E2A30" dark="#E6E9E7" /> | `#1E2A30` | `#E6E9E7` | Texto principal; fondo del tema oscuro |
+| Musgo (primario) | <Swatch name="Musgo" light="#2F5D4E" dark="#8CC2AC" /> | `#2F5D4E` | `#8CC2AC` | Acciones, selección, foco |
+| Atlántico (geo) | <Swatch name="Atlántico" light="#3C6E8F" dark="#8DB8D6" /> | `#3C6E8F` | `#8DB8D6` | Mapa, enlaces, datos geográficos |
+| Líquen (acento) | <Swatch name="Líquen" light="#D4A017" dark="#D4A017" /> | `#D4A017` | `#D4A017` | Acento escaso: novedades y bajadas de precio; siempre con texto oscuro |
+| Ferruxe (aviso) | <Swatch name="Ferruxe" light="#9E4A2F" dark="#E39575" /> | `#9E4A2F` | `#E39575` | Subidas de precio y errores; nunca solo por color |
+| Superficie | <Swatch name="Superficie" light="#F3F5F4" dark="#26343B" /> | `#F3F5F4` | `#26343B` | Tarjetas y paneles |
+| Atenuado | <Swatch name="Atenuado" light="#4A575E" dark="#AEB8B4" /> | `#4A575E` | `#AEB8B4` | Texto secundario |
+| Línea | <Swatch name="Línea" light="#C3CAC7" dark="#3E4E56" /> | `#C3CAC7` | `#3E4E56` | Bordes y separadores |
+| Trama | <Swatch name="Trama" light="#9AA4A0" dark="#5C6B71" /> | `#9AA4A0` | `#5C6B71` | Patrón de valor desconocido |
+| Mapa | <Swatch name="Mapa" light="#D5DEDB" dark="#22323A" /> | `#D5DEDB` | `#22323A` | Fondo del mapa |
+
+## Tipografía
+
+Tres roles, tres tipografías. Se cargan desde Google Fonts; si la petición falla, los componentes recurren a las pilas de fuentes del sistema (`system-ui`, `ui-monospace`) y la página sigue siendo legible.
+
+<TypeSample role="display" caption="Títulos · Schibsted Grotesk 700-800, con moderación">Casa con terreno en Ames</TypeSample>
+<TypeSample role="body" caption="Cuerpo e interfaz · Public Sans 400-600">Vivienda unifamiliar de piedra con finca cerrada, a 9 km del centro de Santiago.</TypeSample>
+<TypeSample role="mono" caption="Datos · IBM Plex Mono, cifras tabulares">245.000 € · 186 m² · 1.317 €/m²</TypeSample>
+
+Los precios, superficies, coordenadas y fechas usan siempre el rol de datos para que las columnas de números queden alineadas.
+
+## Firma: lo desconocido se dibuja
+
+Un valor que la fuente no declara no se rellena ni se oculta. Se dibuja con una trama cartográfica (líneas a 135°, 1px cada 7px, token de trama), un borde discontinuo y los textos «sin dato» y «no declarado» (traducidos por idioma). Nunca se muestra como `—`, vacío o cero, de modo que «no tiene» y «no lo sabemos» siguen siendo distintos. En la aplicación es un único componente compartido.
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:0.75rem;margin:1rem 0">
+  <HatchSample label="Superficie construida" value="186 m²" note="declarado · idealista" />
+  <HatchSample label="Superficie útil" note="no declarado" />
+  <HatchSample label="Precio por m²" value="1.317 €/m²" note="calculado · construida" />
+  <HatchSample label="Año de construcción" note="no declarado" />
+</div>
+
+### Historial: «sin observar»
+
+En el historial de precios, el periodo anterior a la primera observación se dibuja como un área rayada «sin observar». La línea empieza donde existe la primera observación; no se extrapola hacia atrás.
+
+<HatchHistory label="Historial de precios: área rayada del periodo anterior a la primera observación y después la línea de precio observado" />
+
+## Estados del precio
+
+<PriceChip kind="drop">▼ −10.000 € · bajada</PriceChip>
+<PriceChip kind="rise">▲ +5.000 € · subida</PriceChip>
+<PriceChip kind="new">nuevo · hace 2 días</PriceChip>
+<PriceChip kind="gone">desaparecido · 3 comprobaciones</PriceChip>
+<PriceChip kind="approx">ubicación aproximada</PriceChip>
+
+- Líquen es escaso a propósito: solo novedades y bajadas de precio, siempre con texto oscuro.
+- Las subidas y los errores usan Ferruxe y nunca dependen solo del color: siempre los acompaña una flecha o un texto.
+- Una ubicación aproximada es un círculo discontinuo en el mapa, no un pin.
+
+## Conflictos
+
+Cuando dos fuentes discrepan en un atributo ([D20](/es/adr/d20-listing-consolidation-rules/)), el atributo lleva un borde Ferruxe y nombra el valor de la otra fuente, de modo que el usuario ve ambos y la fuente de cada uno.
+
+## Accesibilidad
+
+- El texto y los colores de estado mantienen contraste suficiente en claro y oscuro; Líquen siempre lleva texto oscuro.
+- El color nunca es la única señal: los cambios de precio y los errores incluyen una flecha o un texto.
+- Los valores desconocidos se anuncian como texto («sin dato», «no declarado»), no solo mediante la trama.
+- Las fuentes vienen de Google Fonts o se alojan en local, siempre con alternativas del sistema.
+
+## Pantallas
+
+Las pantallas de referencia del esqueleto funcional son:
+
+- **Búsqueda:** panel de filtros, resultados por inmueble («N anuncios, desde»), un mapa con «Buscar en esta zona» y ubicaciones aproximadas como círculos discontinuos.
+- **Detalle:** cuadrícula de ficha de datos, historial observado, tabla de anuncios y resolución de duplicados.
+- **Importación asistida:** formulario con «El anuncio no lo dice», un pin en el mapa con precisión, el municipio detectado y una vista previa en vivo.
+
+Sus fuentes del lienzo están versionadas en [`apps/docs/design/folla-catastral/`](https://github.com/JSisques/house-radar/tree/main/apps/docs/design/folla-catastral). El lienzo vivo es privado; las fuentes versionadas son la guía.

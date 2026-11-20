@@ -194,7 +194,7 @@ Files are kebab-case with a role suffix. Classes are PascalCase with the same su
 
 ## Frontend
 
-Applies to `apps/web` ([D5](/adr/d05-frontend-framework/)).
+Applies to `apps/web` ([D5](/adr/d05-frontend-framework/)). Visual rules (design tokens, typography, how unknown values are drawn) are in [Design system](/architecture/design-system/) ([D34](/adr/d34-visual-direction/)).
 
 ### Structure
 

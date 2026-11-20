@@ -194,7 +194,7 @@ Los archivos van en kebab-case con un sufijo de rol. Las clases van en PascalCas
 
 ## Frontend
 
-Se aplica a `apps/web` ([D5](/es/adr/d05-frontend-framework/)).
+Se aplica a `apps/web` ([D5](/es/adr/d05-frontend-framework/)). Las reglas visuales (tokens de diseño, tipografía, cómo se dibujan los valores desconocidos) están en [Sistema de diseño](/es/architecture/design-system/) ([D34](/es/adr/d34-visual-direction/)).
 
 ### Estructura
 

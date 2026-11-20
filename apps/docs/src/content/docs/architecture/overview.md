@@ -68,6 +68,8 @@ How ingestion workers scale without collisions and respect per-source quotas is 
 
 Structure, layering, naming, testing and tooling rules for backend, frontend and shared packages are in [Code conventions](/architecture/conventions/).
 
+The visual system (palette, typography, the hatch for unknown values) is in [Design system](/architecture/design-system/) ([D34](/adr/d34-visual-direction/)).
+
 ## Runtime services
 
 All services run with Docker Compose ([D8](/adr/d08-deployment/)).

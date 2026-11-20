@@ -1,0 +1,39 @@
+.hr-ds {
+  --hr-bg: #e6e9e7;
+  --hr-surface: #f3f5f4;
+  --hr-ink: #1e2a30;
+  --hr-muted: #4a575e;
+  --hr-line: #c3cad7;
+  --hr-line: #c3cac7;
+  --hr-primary: #2f5d4e;
+  --hr-geo: #3c6e8f;
+  --hr-accent: #d4a017;
+  --hr-warn: #9e4a2f;
+  --hr-hatch: #9aa4a0;
+  --hr-map: #d5dedb;
+  --hr-on-accent: #1e2a30;
+  --hr-font-display: 'Schibsted Grotesk', system-ui, sans-serif;
+  --hr-font-body: 'Public Sans', system-ui, sans-serif;
+  --hr-font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  color: var(--hr-ink);
+  font-family: var(--hr-font-body);
+}
+:root[data-theme='dark'] .hr-ds {
+  --hr-bg: #1e2a30;
+  --hr-surface: #26343b;
+  --hr-ink: #e6e9e7;
+  --hr-muted: #aeb8b4;
+  --hr-line: #3e4e56;
+  --hr-primary: #8cc2ac;
+  --hr-geo: #8db8d6;
+  --hr-warn: #e39575;
+  --hr-hatch: #5c6b71;
+  --hr-map: #22323a;
+}
+.hr-ds .hr-unk {
+  background: repeating-linear-gradient(135deg, var(--hr-hatch) 0 1px, transparent 1px 7px);
+}
+.hr-ds .hr-mono {
+  font-family: var(--hr-font-mono);
+  font-variant-numeric: tabular-nums;
+}
