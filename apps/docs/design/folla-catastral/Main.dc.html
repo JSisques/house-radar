@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Sistema visual Folla catastral</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=Public+Sans:wght@400;500;600&amp;family=Schibsted+Grotesk:wght@500;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.hr{--bg:#E6E9E7;--surface:#F3F5F4;--ink:#1E2A30;--muted:#4A575E;--line:#C3CAC7;--primary:#2F5D4E;--on-primary:#F3F5F4;--geo:#3C6E8F;--accent:#D4A017;--warn:#9E4A2F;--hatch:#9AA4A0;background:var(--bg);color:var(--ink);font-family:'Public Sans',system-ui,sans-serif}
+.hr.dark{--bg:#1E2A30;--surface:#26343B;--ink:#E6E9E7;--muted:#AEB8B4;--line:#3E4E56;--primary:#8CC2AC;--on-primary:#13201A;--geo:#8DB8D6;--accent:#D4A017;--warn:#E39575;--hatch:#5C6B71}
+.unk{background:repeating-linear-gradient(135deg,var(--hatch) 0 1px,transparent 1px 7px)}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.display{font-family:'Schibsted Grotesk',system-ui,sans-serif}
+a{color:var(--geo)}a:hover{color:var(--primary)}
+</style>
+</helmet>
+<div class="hr {{themeClass}}" style="min-height: 1180px; box-sizing: border-box; padding: 64px clamp(16px, 5vw, 80px); display: flex; flex-direction: column; gap: 56px">
+  <header style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 24px; border-bottom: 1px solid var(--line); padding-bottom: 32px">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 760px">
+      <span class="mono" style="font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted)">House Radar · sistema visual · v0.1</span>
+      <h1 class="display" style="margin: 0; font-size: clamp(40px, 5vw, 64px); line-height: 1; font-weight: 800; letter-spacing: -0.02em">Folla catastral</h1>
+      <p style="margin: 0; font-size: 18px; line-height: 1.55; color: var(--muted)">Una ficha de topógrafo, no un escaparate. Cada dato tiene fuente y fecha; lo que no se ha medido se dibuja como terreno sin medir.</p>
+    </div>
+    <div class="mono" style="font-size: 13px; color: var(--muted); text-align: right; line-height: 1.6">42.8782° N · 8.5448° O<br>Santiago de Compostela</div>
+  </header>
+
+  <section style="display: flex; flex-direction: column; gap: 20px">
+    <h2 class="display" style="margin: 0; font-size: 24px; font-weight: 700">Paleta</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px">
+      <sc-for list="{{swatches}}" as="s" hint-placeholder-count="6">
+        <div style="display: flex; flex-direction: column; border: 1px solid var(--line); background: var(--surface)">
+          <div style="height: 96px; background: {{s.hex}}"></div>
+          <div style="padding: 14px 16px; display: flex; flex-direction: column; gap: 4px">
+            <strong class="display" style="font-size: 17px">{{s.name}}</strong>
+            <span class="mono" style="font-size: 13px; color: var(--muted)">{{s.hex}}</span>
+            <span style="font-size: 14px; line-height: 1.45; color: var(--muted)">{{s.role}}</span>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px">
+    <div style="display: flex; flex-direction: column; gap: 20px">
+      <h2 class="display" style="margin: 0; font-size: 24px; font-weight: 700">Tipografía</h2>
+      <div style="display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px">
+        <span class="mono" style="font-size: 12px; color: var(--muted)">Títulos · Schibsted Grotesk 800</span>
+        <span class="display" style="font-size: 40px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.05">Casa con terreno en Ames</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px">
+        <span class="mono" style="font-size: 12px; color: var(--muted)">Cuerpo · Public Sans 400</span>
+        <span style="font-size: 16px; line-height: 1.6">Vivienda unifamiliar de piedra con finca cerrada, a 9 km del centro de Santiago. Reformada parcialmente en 2015.</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px">
+        <span class="mono" style="font-size: 12px; color: var(--muted)">Datos · IBM Plex Mono, cifras tabulares</span>
+        <span class="mono" style="font-size: 22px; font-weight: 500">245.000 € · 186 m² · 1.317 €/m²</span>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 20px">
+      <h2 class="display" style="margin: 0; font-size: 24px; font-weight: 700">La firma: lo desconocido se dibuja</h2>
+      <p style="margin: 0; font-size: 16px; line-height: 1.6; color: var(--muted)">Un dato que el anuncio no declara no se rellena ni se oculta: se marca con la trama de terreno sin medir. Así se distingue «no tiene» de «no lo sabemos».</p>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+        <div style="border: 1px solid var(--line); background: var(--surface); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px">
+          <span style="font-size: 13px; color: var(--muted)">Superficie construida</span>
+          <span class="mono" style="font-size: 20px; font-weight: 500">186 m²</span>
+          <span class="mono" style="font-size: 11px; color: var(--muted)">declarado · idealista</span>
+        </div>
+        <div class="unk" style="border: 1px dashed var(--hatch); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px">
+          <span style="font-size: 13px; color: var(--muted)">Superficie útil</span>
+          <span class="mono" style="font-size: 20px; font-weight: 500; color: var(--muted)">sin dato</span>
+          <span class="mono" style="font-size: 11px; color: var(--muted)">no declarado</span>
+        </div>
+        <div style="border: 1px solid var(--line); background: var(--surface); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px">
+          <span style="font-size: 13px; color: var(--muted)">Precio por m²</span>
+          <span class="mono" style="font-size: 20px; font-weight: 500">1.317 €/m²</span>
+          <span class="mono" style="font-size: 11px; color: var(--muted)">calculado · construida</span>
+        </div>
+        <div class="unk" style="border: 1px dashed var(--hatch); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px">
+          <span style="font-size: 13px; color: var(--muted)">Año de construcción</span>
+          <span class="mono" style="font-size: 20px; font-weight: 500; color: var(--muted)">sin dato</span>
+          <span class="mono" style="font-size: 11px; color: var(--muted)">no declarado</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 20px">
+    <h2 class="display" style="margin: 0; font-size: 24px; font-weight: 700">Estados del precio</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 12px">
+      <span class="mono" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; background: var(--accent); color: #1E2A30; font-size: 14px; font-weight: 500">▼ −10.000 € · bajada</span>
+      <span class="mono" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border: 1px solid var(--warn); color: var(--warn); font-size: 14px; font-weight: 500">▲ +5.000 € · subida</span>
+      <span class="mono" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border: 1px solid var(--line); color: var(--muted); font-size: 14px">desaparecido · 3 comprobaciones</span>
+      <span class="mono" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; background: var(--accent); color: #1E2A30; font-size: 14px; font-weight: 500">nuevo · hace 2 días</span>
+      <span class="mono" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border: 1px solid var(--geo); color: var(--geo); font-size: 14px">ubicación aproximada</span>
+    </div>
+    <p style="margin: 0; font-size: 14px; color: var(--muted)">El líquen es escaso a propósito: solo marca lo que merece tu atención hoy. Subidas y errores en ferruxe, nunca solo por color: siempre con flecha o texto.</p>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"$preview":{"width":1440,"height":1180}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      themeClass: this.props.dark ? 'dark' : '',
+      swatches: [
+        { name: 'Brétema', hex: '#E6E9E7', role: 'Fondo. Gris niebla frío, nunca crema.' },
+        { name: 'Lousa', hex: '#1E2A30', role: 'Texto principal y fondo del tema oscuro.' },
+        { name: 'Musgo', hex: '#2F5D4E', role: 'Primario: acciones, selección, foco.' },
+        { name: 'Atlántico', hex: '#3C6E8F', role: 'Mapa, enlaces y datos geográficos.' },
+        { name: 'Líquen', hex: '#D4A017', role: 'Acento escaso: novedades y bajadas.' },
+        { name: 'Ferruxe', hex: '#9E4A2F', role: 'Subidas de precio y errores.' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
