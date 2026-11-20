@@ -1,6 +1,6 @@
 # Roadmap issue plan
 
-Reviewable draft of every GitHub label, milestone and issue (R2, R3). Nothing here exists on GitHub yet. After creation, record the issue numbers in the `GitHub #` column of the summary and next to each plan ID.
+Plan of every GitHub label, milestone and issue (R2, R3). Created on GitHub on 2026-11-20; see section 6 for the plan ID → issue mapping.
 
 Conventions: one slice = one vertical, reviewable PR of about 400 authored changed lines (planning heuristic, not a cap), built with strict TDD (D14). Docs paths are relative to `apps/docs/src/content/docs/`. Slices flagged **Needs definition before starting** must be clarified before work begins.
 
@@ -2550,3 +2550,135 @@ Conventions: one slice = one vertical, reviewable PR of about 400 authored chang
 | M6 · Dashboard → Release 1.0 | 1 | 9 |
 | No milestone (HR-F011) | 1 | 0 |
 | **Total** | **13** | **112** |
+
+## 6. GitHub mapping (created 2026-11-20)
+
+Project board: https://github.com/users/JSisques/projects/16 (linked to the repository). Every slice is a sub-issue of its parent; plan IDs in issue bodies were replaced by issue references.
+
+| Plan ID | Issue |
+|---|---|
+| `FOUNDATION` | #3 |
+| `HR-F001` | #4 |
+| `HR-F002` | #5 |
+| `HR-F003` | #6 |
+| `HR-F004` | #7 |
+| `HR-F005` | #8 |
+| `HR-F006` | #9 |
+| `HR-F007` | #10 |
+| `HR-F008` | #11 |
+| `HR-F009` | #12 |
+| `HR-F010` | #13 |
+| `HR-F011` | #14 |
+| `HR-F012` | #15 |
+| `S-M0-01` | #16 |
+| `S-M0-02` | #17 |
+| `S-M0-03` | #18 |
+| `S-M0-04` | #19 |
+| `S-M0-05` | #20 |
+| `S-M0-06` | #21 |
+| `S-M0-07` | #22 |
+| `S-M0-08` | #23 |
+| `S-M0-09` | #24 |
+| `S-M0-10` | #25 |
+| `S-M0-11` | #26 |
+| `S-M0-12` | #27 |
+| `S-M0-13` | #28 |
+| `S-M0-14` | #29 |
+| `S-M0-15` | #30 |
+| `S-M0-16` | #31 |
+| `S-M0-17` | #32 |
+| `S-M0-18` | #33 |
+| `S-M0-19` | #34 |
+| `S-M0-20` | #35 |
+| `S-M0-21` | #36 |
+| `S-M0-22` | #37 |
+| `S-M0-23` | #38 |
+| `S-M0-24` | #39 |
+| `S-M0-25` | #40 |
+| `S-M0-26` | #41 |
+| `S-M1-01` | #42 |
+| `S-M1-02` | #43 |
+| `S-M1-03` | #44 |
+| `S-M1-04` | #45 |
+| `S-M1-05` | #46 |
+| `S-M1-06` | #47 |
+| `S-M1-07` | #48 |
+| `S-M1-08` | #49 |
+| `S-M1-09` | #50 |
+| `S-M1-10` | #51 |
+| `S-M1-11` | #52 |
+| `S-M1-12` | #53 |
+| `S-M1-13` | #54 |
+| `S-M1-14` | #55 |
+| `S-M2-01` | #56 |
+| `S-M2-02` | #57 |
+| `S-M2-03` | #58 |
+| `S-M2-04` | #59 |
+| `S-M2-05` | #60 |
+| `S-M2-06` | #61 |
+| `S-M2-07` | #62 |
+| `S-M2-08` | #63 |
+| `S-M2-09` | #64 |
+| `S-M2-10` | #65 |
+| `S-M2-11` | #66 |
+| `S-M2-12` | #67 |
+| `S-M2-13` | #68 |
+| `S-M2-14` | #69 |
+| `S-M2-15` | #70 |
+| `S-M2-16` | #71 |
+| `S-M3-01` | #72 |
+| `S-M3-02` | #73 |
+| `S-M3-03` | #74 |
+| `S-M3-04` | #75 |
+| `S-M3-05` | #76 |
+| `S-M3-06` | #77 |
+| `S-M3-07` | #78 |
+| `S-M3-08` | #79 |
+| `S-M3-09` | #80 |
+| `S-M3-10` | #81 |
+| `S-M3-11` | #82 |
+| `S-M3-12` | #83 |
+| `S-M3-13` | #84 |
+| `S-M3-14` | #85 |
+| `S-M4-01` | #86 |
+| `S-M4-02` | #87 |
+| `S-M4-03` | #88 |
+| `S-M4-04` | #89 |
+| `S-M4-05` | #90 |
+| `S-M4-06` | #91 |
+| `S-M4-07` | #92 |
+| `S-M4-08` | #93 |
+| `S-M4-09` | #94 |
+| `S-M4-10` | #95 |
+| `S-M4-11` | #96 |
+| `S-M4-12` | #97 |
+| `S-M4-13` | #98 |
+| `S-M4-14` | #99 |
+| `S-M4-15` | #100 |
+| `S-M4-16` | #101 |
+| `S-M5-01` | #102 |
+| `S-M5-02` | #103 |
+| `S-M5-03` | #104 |
+| `S-M5-04` | #105 |
+| `S-M5-05` | #106 |
+| `S-M5-06` | #107 |
+| `S-M5-07` | #108 |
+| `S-M5-08` | #109 |
+| `S-M5-09` | #110 |
+| `S-M5-10` | #111 |
+| `S-M5-11` | #112 |
+| `S-M5-12` | #113 |
+| `S-M5-13` | #114 |
+| `S-M5-14` | #115 |
+| `S-M5-15` | #116 |
+| `S-M5-16` | #117 |
+| `S-M5-17` | #118 |
+| `S-M6-01` | #119 |
+| `S-M6-02` | #120 |
+| `S-M6-03` | #121 |
+| `S-M6-04` | #122 |
+| `S-M6-05` | #123 |
+| `S-M6-06` | #124 |
+| `S-M6-07` | #125 |
+| `S-M6-08` | #126 |
+| `S-M6-09` | #127 |
