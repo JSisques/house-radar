@@ -83,8 +83,37 @@ Consumers: `apps/api` and `apps/ingestion` use both; `apps/web` uses `building-b
 
 Kept from the kit/gardenia: `describe` per class, nested `describe` per method, one `it('should …')` per case/edge case, no `TestingModule` in domain/application unit specs. Runner: Vitest.
 
+### C8. Frontend structure and rules (apps/web)
+
+Baseline: `gardenia-web` conventions, refined.
+
+Kept:
+
+- `src/contexts/<context>/{domain,application,infrastructure,presentation}` + `src/shared/` + `src/design-system/` (`contexts/` instead of gardenia's `core/`, aligned with the API).
+- State by data origin: server data only in TanStack Query; shared client state in Zustand; local state in `useState`/`useReducer`. Server data is never mirrored into a store.
+- Hooks are the only bridge from presentation to application.
+- One folder per component with colocated `.spec.tsx` and `.stories.tsx`; named exports only; no barrels; kebab-case files with role suffixes (`.use-case.ts`, `.repository.port.ts`, `.screen.tsx`, `.hook.ts`, `.store.ts`, `.schema.ts`, …).
+- Tailwind + shadcn/ui, react-hook-form + zod, Storybook, debounced search inputs, mutations return `{ id }` instead of re-fetching.
+
+Refined:
+
+1. Layer boundaries enforced by ESLint (as in the backend).
+2. Composition root: adapters are injected through a provider; no module-scope `new UseCase(repo)` in hooks; tests swap adapters without `vi.mock`.
+3. No server data in Zustand; `application` never imports stores.
+4. Query key factory per context.
+5. i18n through a hook (`useTranslation`) with one namespace per context, behind an adapter (D12); no `dict` prop-drilling; per-context locale parity test kept.
+6. Standard error handling: error boundary + domain-error-to-translated-message mapping.
+7. Formal atomic design in `shared/presentation/components/{atoms,molecules,organisms,templates}`; explicit container/presentational split inside contexts.
+8. MSW for API mocking in tests and Storybook; Playwright for E2E (D14).
+9. Rich domain using `@house-radar/building-blocks` (VOs, models), not interfaces-only.
+10. API access through the OpenAPI-generated client (D22) wrapped by repository adapters.
+
+### C9. Frontend application layer
+
+- Use cases are ALWAYS present (user decision 2026-11-20), one folder per use case (`application/use-cases/<verb-noun>/<verb-noun>.use-case.ts` + spec), even when they only delegate to a port. Reason: a rule without exceptions can be enforced by lint; "only when there is logic" is a judgment rule that erodes (as seen in gardenia).
+
 ## Pending discovery
 
-- Frontend conventions (`apps/web`): structure, DDD + atomic design + container-presentational, state, data fetching, i18n, testing. Reference: `gardenia-web`.
+- Frontend: router, i18n library, remaining details.
 - Lint/format tooling details, import ordering.
 - Documentation output (docs page + ADRs).
