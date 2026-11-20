@@ -14,7 +14,7 @@ Projections ([D19](/adr/d19-search-read-model/)) and cross-context reactions ([D
 
 ## Decision
 
-- The write repository persists the aggregate and its pulled domain events (`pullDomainEvents()`) into an `outbox_event` table of the same schema in the same transaction (MikroORM unit of work, [D6](/adr/d06-persistence/)). Either everything is stored or nothing.
+- The write repository persists the aggregate and its recorded domain events (`peekDomainEvents()`) into an `outbox_event` table of the same schema in the same transaction (MikroORM unit of work, [D6](/adr/d06-persistence/)). Either everything is stored or nothing. Events are cleared from the aggregate (`clearDomainEvents()`) only after the commit, so a failed save that is retried does not lose them.
 - Command handlers no longer call `eventBus.publishAll(...)`.
 - An outbox relay reads rows with `published_at is null`, publishes them through BullMQ ([D7](/adr/d07-queues-and-scheduling/)) and marks them as published.
 - Delivery is at-least-once. Consumers (projections, cross-context handlers) are idempotent and deduplicate by event ID with a `processed_event (event_id, consumer)` table ([D23](/adr/d23-ingestion-concurrency-model/)).

@@ -23,7 +23,7 @@ DDD in `apps/api`, `apps/ingestion` ([D4](/adr/d04-backend-framework/)) and `app
 
 Two own packages, both framework-free TypeScript in strict mode.
 
-- `@house-radar/building-blocks`: generic DDD building blocks with no House Radar concepts. The aggregate keeps its own event buffer (`record()`, `pullDomainEvents()`) and infrastructure publishes to the Nest `EventBus`. It keeps the kit's value object base with mandatory `validate()`, event envelope, builder base, `Criteria` and separate read and write repository ports.
+- `@house-radar/building-blocks`: generic DDD building blocks with no House Radar concepts. The aggregate keeps its own event buffer (`record()`, `peekDomainEvents()`, `clearDomainEvents()`) and infrastructure publishes to the Nest `EventBus`. It keeps the kit's value object base with mandatory `validate()`, event envelope, builder base, `Criteria` and separate read and write repository ports.
 - `@house-radar/shared-kernel`: House Radar concepts used by two or more contexts (`Money`, `Area`, `GeoPoint`, closed catalogs, provenance and cross-context identities). It depends on `building-blocks`.
 
 Details are in [Code conventions](/architecture/conventions/).

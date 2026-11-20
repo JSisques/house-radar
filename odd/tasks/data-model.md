@@ -97,7 +97,7 @@ identity ──(event: AccountCreated)──▶ users
 - Consumers (projections, cross-context handlers) are idempotent (already required by D23) and deduplicate by `eventId`.
 - The outbox doubles as an auditable event log that can be replayed to rebuild projections (M3).
 - Rejected: in-process publication after commit + periodic projection rebuild (a crash between commit and publish leaves projections silently stale for hours, contradicting product principle 1).
-- Follow-up: update conventions (C2/C4/C6, D25) and the backend skill templates — handlers no longer call `eventBus.publishAll(pullDomainEvents())`; the write repository / unit of work persists pulled events into the outbox within the transaction.
+- Follow-up: update conventions (C2/C4/C6, D25) and the backend skill templates — handlers no longer call `eventBus.publishAll(...)`; the write repository persists the aggregate's recorded events (`peekDomainEvents()`) into the outbox within the transaction and calls `clearDomainEvents()` only after commit. Consumers are BullMQ consumers in `transport` that send a command; the idempotent handler uses `ITransactionManager` and `IProcessedEventRepository` ports.
 
 ### M7. Identifiers: UUIDv7 (2026-11-20)
 
@@ -169,6 +169,7 @@ Checks: `pnpm docs:test`, `pnpm docs:check-i18n`, `pnpm docs:check`, `pnpm docs:
 - T1 5fe38ce: ADRs D28-D32 (en + es) and both ADR indexes (D0 to D32).
 - T2 4056280: `ContextMapDiagram.astro`, `architecture/context-map`, `domain/aggregates`, `architecture/database-schema` (en + es); linked from overview, ubiquitous language and HR-F001/F002/F005/F008. Diagram checked visually in headless Chrome (dark theme; text fits in boxes).
 - T3 3db9484: conventions (en + es), D24/D25 superseded notes (en + es), `odd/tasks/code-conventions.md` update note, backend skill (SKILL.md 500 words; handler and spec templates without EventBus; new `write-repository` and `event-consumer` templates).
+- Fix (parent review): aggregate event API `record`/`peekDomainEvents`/`clearDomainEvents` (+ `version`, `isNew()`), managed-entity write repositories, transport consumer + idempotent command handler via ports; commit recorded in git log as `docs: fix outbox templates and aggregate event api`.
 - `pnpm docs:test`: 4 pass, 0 fail. `pnpm docs:check-i18n`: parity OK, 63 pages x 1 locale. `pnpm docs:check`: 0 errors, 0 warnings, 0 hints. `pnpm docs:build`: 127 pages built. Built `context-map` pages (en, es) contain `<svg` with `id="cmd-title"`.
 - Not run: light-theme visual check; skill templates are illustrative and not compiled.
 

@@ -2,7 +2,8 @@
 // Builders are stateful and never injected. Inject the stateless builder factory
 // and call create() on every execution, so no state survives between calls.
 // Handlers never publish events: the aggregate records them and the write repository
-// persists pullDomainEvents() into the outbox in the same transaction (D31).
+// persists peekDomainEvents() into the outbox in the same transaction and clears them
+// after commit (D31).
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 

@@ -14,7 +14,7 @@ Las proyecciones ([D19](/es/adr/d19-search-read-model/)) y las reacciones entre 
 
 ## Decisión
 
-- El repositorio de escritura persiste el agregado y sus eventos de dominio extraídos (`pullDomainEvents()`) en una tabla `outbox_event` del mismo esquema, en la misma transacción (unit of work de MikroORM, [D6](/es/adr/d06-persistence/)). O se guarda todo o no se guarda nada.
+- El repositorio de escritura persiste el agregado y sus eventos de dominio registrados (`peekDomainEvents()`) en una tabla `outbox_event` del mismo esquema, en la misma transacción (unit of work de MikroORM, [D6](/es/adr/d06-persistence/)). O se guarda todo o no se guarda nada. Los eventos se limpian del agregado (`clearDomainEvents()`) solo tras el commit, de modo que un guardado fallido que se reintenta no los pierde.
 - Los handlers de comandos ya no llaman a `eventBus.publishAll(...)`.
 - Un relay del outbox lee las filas con `published_at is null`, las publica mediante BullMQ ([D7](/es/adr/d07-queues-and-scheduling/)) y las marca como publicadas.
 - La entrega es al menos una vez. Los consumidores (proyecciones, handlers entre contextos) son idempotentes y deduplican por ID de evento con una tabla `processed_event (event_id, consumer)` ([D23](/es/adr/d23-ingestion-concurrency-model/)).

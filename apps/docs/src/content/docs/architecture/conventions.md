@@ -26,7 +26,7 @@ Generic DDD building blocks with no House Radar concepts.
 
 | Contents | Rule |
 | --- | --- |
-| `AggregateRoot` base | Keeps its own event buffer: `record(event)` and `pullDomainEvents()`. Identity is any identity value object. Typed, null-safe equality. |
+| `AggregateRoot` base | Keeps its own event buffer: `record(event)`, `peekDomainEvents()` (reads without draining) and `clearDomainEvents()` (called by the write repository only after the transaction commits). Exposes `version` (optimistic locking, [D23](/adr/d23-ingestion-concurrency-model/)) and `isNew()` (true until the first save). Identity is any identity value object. Typed, null-safe equality. |
 | Value object base | Mandatory `validate()`, one typed exception per value object, `toPrimitives()`. |
 | Generic value objects | Option-configured String, Number, Uuid, Enum, Date and Boolean. `DateValueObject` rejects invalid dates and copies defensively. |
 | Domain events | Envelope with `schemaVersion`, `correlationId`, `causationId` and `occurredAt`; `generateEventMetadata()`. |
@@ -88,13 +88,18 @@ src/
 │       │   ├── services/
 │       │   │   ├── write/
 │       │   │   └── read/assert-property-exists/
-│       │   ├── event-handlers/
-│       │   └── ports/property-gateway.port.ts
+│       │   │   └── project-listing-price-change/   # idempotent projection command
+│       │   └── ports/
+│       │       ├── property-gateway.port.ts
+│       │       ├── transaction-manager.port.ts
+│       │       ├── processed-event-repository.port.ts
+│       │       └── property-view-projector.port.ts
 │       ├── infrastructure/
 │       │   ├── persistence/mikro-orm/{schemas,mappers,repositories}/
 │       │   ├── adapters/
-│       │   └── messaging/
+│       │   └── messaging/             # outbox relay, port implementations
 │       ├── transport/
+│       │   ├── messaging/consumers/   # BullMQ consumers: event -> command
 │       │   ├── rest/{controllers,dtos,mappers}/
 │       │   └── exceptions/
 │       └── listings.module.ts
@@ -123,9 +128,9 @@ CQRS with `@nestjs/cqrs` ([D25](/adr/d25-cqrs-and-context-structure/)).
 - Services are split into `services/write/` and `services/read/`.
 - Write repositories expose only `save`, `findById` and `delete`. Read repositories are read-only (`findById`, `findByCriteria`).
 - Domain events are consumed by event handlers and projections, for example the representative price read model ([D19](/adr/d19-search-read-model/)). The aggregate records events with `record()`; handlers never publish them ([D31](/adr/d31-transactional-outbox/)):
-  - The write repository persists the aggregate and its `pullDomainEvents()` into the context's `outbox_event` table in the same transaction (MikroORM unit of work).
+  - The write repository persists the aggregate and its `peekDomainEvents()` into the context's `outbox_event` table in the same transaction (MikroORM unit of work), and calls `clearDomainEvents()` only after the commit, so a failed save and its retry do not lose events.
   - An outbox relay publishes pending rows through BullMQ and marks them as published.
-  - Event consumers are idempotent: they record `(event_id, consumer)` in `processed_event` and skip events already processed.
+  - A BullMQ consumer in `transport/messaging/consumers/` maps the event to a command and sends it through `CommandBus`. The command handler is idempotent through ports: `ITransactionManager.run(fn)` and `IProcessedEventRepository.claim(eventId, consumer)` (`INSERT … ON CONFLICT DO NOTHING` on `processed_event`), and it writes projections through a projector port. Infrastructure implements the ports with MikroORM.
 
 ### Domain model
 
@@ -150,6 +155,8 @@ export const INFRASTRUCTURE_REPOSITORIES = [
 ### Persistence
 
 MikroORM mapped with `EntitySchema` ([D6](/adr/d06-persistence/)), so domain classes carry no ORM decorators. Schemas, mappers and repositories live in `infrastructure/persistence/mikro-orm/`. Mappers translate between schema entities and aggregates.
+
+Write repositories update through the managed entity: load it with `LockMode.OPTIMISTIC` and `lockVersion` (the aggregate's `version`), then `assign` the new state. They insert a new entity only when `isNew()` is true; persisting a fresh object for an existing row would be an `INSERT`.
 
 ### Transport
 

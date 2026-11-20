@@ -64,7 +64,7 @@ Reason: the kit's `BaseAggregate` extends `@nestjs/cqrs` `AggregateRoot` (framew
 **`packages/building-blocks` (`@house-radar/building-blocks`)** — generic DDD building blocks, no House Radar concepts.
 
 - Taken from the kit: value object base with mandatory `validate()`, one typed exception per VO, `toPrimitives()`; option-configured generic VOs (String, Number, Uuid, Enum, Date, Boolean); event envelope (`schemaVersion`, `correlationId`, `causationId`) and `generateEventMetadata()`; builder base with `validate()` throwing `FieldIsRequiredException`, plus `IBuilderFactory<TBuilder>` (new); `Criteria` + `PaginatedResult` + `FilterFieldRegistry`; separate read/write repository ports.
-- Refined: aggregate keeps its own event buffer (`record()`, `pullDomainEvents()`) and infrastructure publishes to the Nest `EventBus`; aggregate identity is any identity VO (not hard-coded UUID); typed, null-safe equality (no `JSON.stringify`); immutability (`Criteria`, defensive copies in `DateValueObject`); `DateValueObject` rejects invalid dates; `DomainException` with `code` and `cause`; `occurredAt` spelling; no `any` in `Filter.value`; strict TypeScript; UUIDs via `globalThis.crypto.randomUUID()` (browser-compatible, used by `apps/web`).
+- Refined: aggregate keeps its own event buffer (`record()`, `peekDomainEvents()`, `clearDomainEvents()`) and infrastructure publishes to the Nest `EventBus`; aggregate identity is any identity VO (not hard-coded UUID); typed, null-safe equality (no `JSON.stringify`); immutability (`Criteria`, defensive copies in `DateValueObject`); `DateValueObject` rejects invalid dates; `DomainException` with `code` and `cause`; `occurredAt` spelling; no `any` in `Filter.value`; strict TypeScript; UUIDs via `globalThis.crypto.randomUUID()` (browser-compatible, used by `apps/web`).
 - Excluded: project-specific VOs mixed in the kit (color, phone, password, user roles…); added only when needed.
 
 **`packages/shared-kernel` (`@house-radar/shared-kernel`)** — House Radar concepts used by two or more contexts; depends on `building-blocks`.
@@ -165,5 +165,5 @@ Open the PR for `docs/code-conventions`; scaffold the monorepo packages in a lat
 
 ## Updates
 
-- 2026-11-20, C6 (event publication): superseded in part by data-model M6 / D31. Handlers no longer call `eventBus.publishAll(pullDomainEvents())`; the write repository persists pulled events into `outbox_event` in the same transaction and a relay publishes through BullMQ. Consumers are idempotent via `processed_event`. See `odd/tasks/data-model.md`.
+- 2026-11-20, C6 (event publication): superseded in part by data-model M6 / D31. Handlers no longer publish; the write repository persists the recorded events (`peekDomainEvents()`) into `outbox_event` in the same transaction and a relay publishes through BullMQ. Consumers are idempotent via `processed_event`. See `odd/tasks/data-model.md`.
 - 2026-11-20, C5/C6 (identifiers): superseded in part by data-model M7 / D32. UUIDs are v7 via the `uuid` package in `building-blocks`, replacing `globalThis.crypto.randomUUID()`.

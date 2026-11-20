@@ -47,10 +47,10 @@ describe('ImportManualListingHandler', () => {
     it('should save an aggregate that carries the recorded ListingImportedEvent', async () => {
       await handler.execute(new ImportManualListingCommand(VALID_INPUT));
 
-      // The handler does not publish: the repository contract persists pullDomainEvents()
+      // The handler does not publish: the repository contract persists peekDomainEvents()
       // into the outbox in the same transaction (covered by the repository integration test).
       const saved = listingWriteRepository.save.mock.calls[0][0];
-      const events = saved.pullDomainEvents();
+      const events = saved.peekDomainEvents(); // peek: never drain events in assertions
       expect(events).toHaveLength(1);
       expect(events[0]).toBeInstanceOf(ListingImportedEvent);
     });
