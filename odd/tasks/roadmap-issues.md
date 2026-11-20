@@ -37,9 +37,9 @@ Conventions: one slice = one vertical, reviewable PR of about 400 authored chang
 | M1 · Walking skeleton | Cross every layer with one real flow: manual import, Listing + Observation, Property 1:1, detail page, basic list. |
 | M2 · Search & map | The real search: geography (IGN import), all filters, typed URL, MapLibre map with clustering. |
 | M3 · History & duplicates | The differentiating value: check listing, history and chart, disappeared listings, duplicate candidates and resolution. |
-| M4 · Users | Complete personal product: auth with seeded account, favorites, saved searches, preferences. |
+| M4 · Users | Complete personal product: auth with seeded account, favorites, saved searches, preferences; deployment to the own server and backups. |
 | M5 · Automated ingestion | Data without manual work: idealista connector (if key granted), runs, retries, automatic disappearance, ingestion panel and alerts. |
-| M6 · Dashboard → Release 1.0 | Close the MVP: statistics and dashboard, deployment, acceptance of the product scope. |
+| M6 · Dashboard → Release 1.0 | Close the MVP: statistics and dashboard, runbooks, acceptance of the product scope and the 1.0.0 cut. |
 
 ## 3. Parent issues
 
@@ -48,7 +48,7 @@ Conventions: one slice = one vertical, reviewable PR of about 400 authored chang
 - Summary: tooling, shared packages, app skeletons, infrastructure, observability baseline, release tooling and release closing work, so that features are written under the agreed rules.
 - Docs page: `architecture/conventions.md`, `architecture/overview.md`, `operations/overview.md`
 - Priority: P0
-- Milestone: M0 · Foundation (later slices S-M4-15 to S-M6-09 close it in M6)
+- Milestone: M0 · Foundation (deployment and backups S-M4-15, S-M4-16 in M4; runbooks and the 1.0 cut S-M6-08, S-M6-09 in M6)
 - Labels: `type:foundation` `parent` `P0`
 
 ### HR-F001 · Listing ingestion
