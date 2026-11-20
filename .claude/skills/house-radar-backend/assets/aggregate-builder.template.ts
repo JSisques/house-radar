@@ -1,7 +1,7 @@
 // Path: src/contexts/<context>/domain/builders/<name>/<name>.builder.ts
 // Aggregate builders build aggregates only (view models are built by mappers/projections).
 import { BaseBuilder, DateValueObject, FieldIsRequiredException } from '@house-radar/building-blocks';
-import { ListingId, Money } from '@house-radar/shared-kernel';
+import { ListingId, ListingUrl, Money } from '@house-radar/shared-kernel';
 
 import { ListingAggregate } from '@contexts/listings/domain/aggregates/listing/listing.aggregate';
 import { ListingTitle } from '@contexts/listings/domain/value-objects/listing-title/listing-title.value-object';
@@ -10,6 +10,7 @@ export class ListingBuilder extends BaseBuilder<ListingAggregate> {
   private id?: ListingId;
   private createdAt?: DateValueObject;
   private updatedAt?: DateValueObject;
+  private sourceUrl?: ListingUrl;
   private title?: ListingTitle;
   private price?: Money;
 
@@ -28,6 +29,11 @@ export class ListingBuilder extends BaseBuilder<ListingAggregate> {
     return this;
   }
 
+  withSourceUrl(sourceUrl: ListingUrl): this {
+    this.sourceUrl = sourceUrl;
+    return this;
+  }
+
   withTitle(title: ListingTitle): this {
     this.title = title;
     return this;
@@ -42,6 +48,7 @@ export class ListingBuilder extends BaseBuilder<ListingAggregate> {
     if (!this.id) throw new FieldIsRequiredException('id');
     if (!this.createdAt) throw new FieldIsRequiredException('createdAt');
     if (!this.updatedAt) throw new FieldIsRequiredException('updatedAt');
+    if (!this.sourceUrl) throw new FieldIsRequiredException('sourceUrl');
     if (!this.title) throw new FieldIsRequiredException('title');
     if (!this.price) throw new FieldIsRequiredException('price');
   }
@@ -52,6 +59,7 @@ export class ListingBuilder extends BaseBuilder<ListingAggregate> {
       id: this.id!,
       createdAt: this.createdAt!,
       updatedAt: this.updatedAt!,
+      sourceUrl: this.sourceUrl!,
       title: this.title!,
       price: this.price!,
     });

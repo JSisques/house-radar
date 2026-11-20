@@ -40,7 +40,7 @@ Discovery closed. Outputs T1-T3 delivered on branch `docs/code-conventions`; all
 
 - Aggregates composed of value objects (never raw primitives), created through builders, events raised in named methods (`create()`, `changePrice()`), `toPrimitives()`.
 - Read and write repositories separated, bound with `Symbol` tokens and `I`-prefixed interfaces.
-- Module providers grouped in named arrays (`COMMAND_HANDLERS`, `QUERY_HANDLERS`, `APPLICATION_SERVICES`, `DOMAIN_BUILDERS`, `INFRASTRUCTURE_MAPPERS`, `INFRASTRUCTURE_REPOSITORIES`, `INFRASTRUCTURE_ADAPTERS`, `REST_CONTROLLERS`); `{ provide, useClass }` bindings, no `useExisting`.
+- Module providers grouped in named arrays (`COMMAND_HANDLERS`, `QUERY_HANDLERS`, `APPLICATION_SERVICES`, `INFRASTRUCTURE_MAPPERS`, `INFRASTRUCTURE_REPOSITORIES`, `INFRASTRUCTURE_ADAPTERS`, `REST_CONTROLLERS`); `{ provide, useClass }` bindings, no `useExisting`.
 - kebab-case file names with role suffixes (`.aggregate`, `.value-object`, `.builder`, `.event`, `.exception`, `.command`, `.query`, `.handler`, `.service`, `.port`, `.adapter`, `.mapper`, `.repository`, `.schema`, `.controller`, `.dto`, `.view-model`, `.primitives`, `.spec`); PascalCase classes with suffix; `UPPER_SNAKE` tokens.
 - One type per file (exception: `{Name}CommandInput`/`{Name}QueryInput` inline in the command/query file).
 - No barrel files. Path aliases (`@contexts/*`, `@core/*`, `@shared/*`); relative imports only within the same directory.

@@ -133,7 +133,7 @@ CQRS con `@nestjs/cqrs` ([D25](/es/adr/d25-cqrs-and-context-structure/)).
 ### Inyección de dependencias
 
 - Repositorios y puertos se enlazan con tokens `Symbol` (`UPPER_SNAKE`) e interfaces con prefijo `I`.
-- Los providers del módulo se agrupan en arrays con nombre: `COMMAND_HANDLERS`, `QUERY_HANDLERS`, `APPLICATION_SERVICES`, `DOMAIN_BUILDERS`, `INFRASTRUCTURE_MAPPERS`, `INFRASTRUCTURE_REPOSITORIES`, `INFRASTRUCTURE_ADAPTERS` y `REST_CONTROLLERS`.
+- Los providers del módulo se agrupan en arrays con nombre: `COMMAND_HANDLERS`, `QUERY_HANDLERS`, `APPLICATION_SERVICES`, `INFRASTRUCTURE_MAPPERS`, `INFRASTRUCTURE_REPOSITORIES`, `INFRASTRUCTURE_ADAPTERS` y `REST_CONTROLLERS`. Los builders no son providers: tienen estado y se instancian en cada ejecución (`new XBuilder()`).
 - Los enlaces usan `{ provide, useClass }`. Sin `useExisting`.
 
 ```ts

@@ -20,7 +20,10 @@ Load when creating or editing code in `apps/api`, `apps/ingestion`, `packages/bu
 - Cross-context calls only through `application/ports/*.port.ts` + `infrastructure/adapters/`, or events.
 - No barrel files. Use aliases (`@contexts/*`, `@core/*`, `@shared/*`); relative imports only in the same directory.
 - One type per file, kebab-case with role suffix. One folder per command/query holding message, handler and spec.
-- Throw typed exceptions (no `Result`). REST only. No `any`.
+- Commands and queries carry value objects built in their constructor from a primitives `Input`.
+- Builders are stateful: instantiate one per execution (`new XBuilder()`); never inject them as providers.
+- A missing entity raises a typed exception through an `Assert…ExistsService`; never return `null` to transport.
+- Throw typed exceptions (no `Result`). REST only. No `any`, no `as never`.
 - Unit specs use Vitest and manual mocks; never `@nestjs/testing`.
 
 ## Decision Gates
@@ -49,4 +52,4 @@ Return: files created or changed, RED and GREEN results, checks run, and any rul
 ## References
 
 - `references/conventions.md`
-- `assets/` templates (command, handler, spec, aggregate, aggregate builder, value object + exception, primitives, query, query handler)
+- `assets/` templates (command, handler, spec, aggregate, aggregate builder, value object + exception, primitives, query, query handler, assert-exists service)

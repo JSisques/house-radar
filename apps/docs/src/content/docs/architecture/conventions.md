@@ -133,7 +133,7 @@ CQRS with `@nestjs/cqrs` ([D25](/adr/d25-cqrs-and-context-structure/)).
 ### Dependency injection
 
 - Repositories and ports are bound with `Symbol` tokens (`UPPER_SNAKE`) and `I`-prefixed interfaces.
-- Module providers are grouped in named arrays: `COMMAND_HANDLERS`, `QUERY_HANDLERS`, `APPLICATION_SERVICES`, `DOMAIN_BUILDERS`, `INFRASTRUCTURE_MAPPERS`, `INFRASTRUCTURE_REPOSITORIES`, `INFRASTRUCTURE_ADAPTERS` and `REST_CONTROLLERS`.
+- Module providers are grouped in named arrays: `COMMAND_HANDLERS`, `QUERY_HANDLERS`, `APPLICATION_SERVICES`, `INFRASTRUCTURE_MAPPERS`, `INFRASTRUCTURE_REPOSITORIES`, `INFRASTRUCTURE_ADAPTERS` and `REST_CONTROLLERS`. Builders are not providers: they are stateful and instantiated per execution (`new XBuilder()`).
 - Bindings use `{ provide, useClass }`. No `useExisting`.
 
 ```ts
