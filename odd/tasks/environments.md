@@ -62,7 +62,29 @@ Define environments, deployment, secrets and backups before M4, so issues #100 (
 - Observability does not block: a slow Grafana must not roll back a healthy app (false positive); the workflow reports it as a warning and D15 alerts cover the rest.
 - Health checks were extended from API-only to every service at the user's request.
 
+### E6. Docs portal hosting (2026-11-20)
+
+- The docs portal is public and hosted on Cloudflare Pages (user decision), served at the root of `<project>.pages.dev` (project name confirmed when the Cloudflare project is created; a custom domain can be added later without changes).
+- Every merge to `main` publishes the portal; every pull request gets a preview deployment, so docs changes are reviewed published.
+- Once the URL exists, it is set as Astro `site` (removes the sitemap warning) and as the repository homepage.
+- Reason: the content has 858 root-absolute internal links; GitHub Pages under `jsisques.github.io/house-radar/` would require `base: '/house-radar'`, which Starlight applies to its navigation but not to content links. Cloudflare Pages serves at the root without buying a domain and adds PR previews.
+- Rejected: GitHub Pages under a subpath (858 links would break); GitHub Pages with a custom domain (requires buying a domain now).
+
+### E7. Production stays undefined (2026-11-20)
+
+- Production hosting, deployment, secrets (`production` GitHub Environment) and backups are not defined now (user decision). They will be designed when the product is published (D0). Backups (#101) move out of M4 to that future work.
+
 ## Pending discovery
 
-- Docs portal hosting (public).
+- None. Next: output (ADRs, operations page, roadmap and issue updates).
 - Output: ADR(s), operations page, issue updates (#100, #101, #41).
+
+## Tasks (output)
+
+| ID | Task | Route | Status | Commit |
+|----|------|-------|--------|--------|
+| T1 | ADR D35 environments, staging deployment and secrets (E1–E5, E7) and ADR D36 docs hosting on Cloudflare Pages (E6), en + es, ADR index | delegated (writer trigger: 2+ files) | [ ] | |
+| T2 | Page `operations/environments` (en + es): environments table, staging deploy flow with health checks and rollback, secrets, docs hosting, production pending; link from `operations/overview` and `product/roadmap`; update roadmap page and `odd/tasks/roadmap.md` (R7: M4 deploy targets disposable staging, backups out of M4) | delegated | [ ] | |
+| T3 | GitHub issue updates (user-confirmed): #100 retitled to staging deployment with E3–E5 criteria, "Needs definition" removed; #101 retitled to production backups, removed from M4, marked post-publication; #41 GHCR registry; new M0 slice for the docs portal on Cloudflare Pages with PR previews | inline (gh) | [ ] | |
+
+Checks: `pnpm docs:test`, `pnpm docs:check-i18n`, `pnpm docs:check`, `pnpm docs:build`.
