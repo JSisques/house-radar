@@ -22,6 +22,10 @@ Primera fuente objetivo: idealista Search API (oficial, acceso bajo solicitud). 
 - Hasta entonces, la importación manual por URL desbloquea el desarrollo de normalización, buscador, fichas e histórico.
 - El conector de idealista se diseña contra el contrato de la API oficial y se implementa al obtener acceso y validar que sus condiciones permiten almacenar snapshots e histórico propio.
 
+## Enmienda (2026-11-20)
+
+[D37](/es/adr/d37-fotocasa-detail-connector/) enmienda esta decisión. El primer conector automático es el conector de páginas de detalle de Fotocasa, que lee páginas de anuncios individuales con las reglas de D37. La idealista Search API pasa a ser opcional, por si algún día se concede la clave. Los feeds autorizados de inmobiliarias siguen siendo candidatos. El rastreo no autorizado de páginas de búsqueda y listado sigue rechazado.
+
 ## Alternativas consideradas
 
 - Fotocasa, Habitaclia y pisos.com: no ofrecen API pública conocida; se descarta el scraping no autorizado (principio de producto 7).

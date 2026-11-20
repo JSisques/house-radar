@@ -26,7 +26,7 @@ P0 (source section 1).
 - [HR-F008](/features/hr-f008-price-history/): runs and manual checks create the observations the history is built from.
 - [HR-F012](/features/hr-f012-admin-observability/): run status, errors, and retries are shown to the administrator.
 - [Ingestion concurrency](/architecture/ingestion-concurrency/): how workers scale without collisions.
-- ADRs: [D3](/adr/d03-source-strategy/), [D7](/adr/d07-queues-and-scheduling/), [D10](/adr/d10-cross-cutting-architecture/), [D17](/adr/d17-manual-import-assisted-form/), [D20](/adr/d20-listing-consolidation-rules/), [D23](/adr/d23-ingestion-concurrency-model/).
+- ADRs: [D3](/adr/d03-source-strategy/), [D7](/adr/d07-queues-and-scheduling/), [D10](/adr/d10-cross-cutting-architecture/), [D17](/adr/d17-manual-import-assisted-form/), [D20](/adr/d20-listing-consolidation-rules/), [D23](/adr/d23-ingestion-concurrency-model/), [D37](/adr/d37-fotocasa-detail-connector/).
 
 ## User stories
 
@@ -91,6 +91,6 @@ P0 (source section 1).
 
 ## Related decisions
 
-[D3](/adr/d03-source-strategy/), [D7](/adr/d07-queues-and-scheduling/), [D10](/adr/d10-cross-cutting-architecture/), [D17](/adr/d17-manual-import-assisted-form/), [D20](/adr/d20-listing-consolidation-rules/), [D23](/adr/d23-ingestion-concurrency-model/), [D28](/adr/d28-bounded-context-map/), [D31](/adr/d31-transactional-outbox/).
+[D3](/adr/d03-source-strategy/), [D7](/adr/d07-queues-and-scheduling/), [D10](/adr/d10-cross-cutting-architecture/), [D17](/adr/d17-manual-import-assisted-form/), [D20](/adr/d20-listing-consolidation-rules/), [D23](/adr/d23-ingestion-concurrency-model/), [D28](/adr/d28-bounded-context-map/), [D31](/adr/d31-transactional-outbox/), [D37](/adr/d37-fotocasa-detail-connector/).
 
 See also: [Context map](/architecture/context-map/), [Database schema](/architecture/database-schema/).

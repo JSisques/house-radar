@@ -5,15 +5,21 @@ sidebar:
   order: 1
 ---
 
-Decision [D3](/adr/d03-source-strategy/) defines the source strategy.
+Decisions [D3](/adr/d03-source-strategy/) and [D37](/adr/d37-fotocasa-detail-connector/) define the source strategy.
 
 ## Order of sources
 
-1. **First target source:** idealista Search API (official, access on request).
-2. **Provisional MVP source:** manual import by URL.
-3. **Second candidate source:** authorized feeds from local real estate agencies in Santiago.
+1. **First automated connector:** Fotocasa detail pages ([D37](/adr/d37-fotocasa-detail-connector/)).
+2. **Optional:** idealista Search API (official, access on request), if the key is ever granted.
+3. **Provisional MVP source:** manual import by URL.
+4. **Candidate:** authorized feeds from local real estate agencies in Santiago.
+5. **Discovery of new listings:** pending a later decision (portal email alerts, agency feeds or the idealista API).
 
-## idealista Search API
+## Fotocasa detail pages
+
+Fotocasa has no public API. The connector reads individual listing pages only: the single page of a URL the user pastes, and the pages of listings the user already tracks (about once a day, one at a time). It honors `robots.txt`, stops on any CAPTCHA or block, never downloads images, never requests search or list pages, is for private use and is disabled in production. See [D37](/adr/d37-fotocasa-detail-connector/).
+
+## idealista Search API (optional)
 
 The API key is requested through the [idealista access request form](https://developers.idealista.com/access-request).
 
@@ -25,9 +31,9 @@ The API key is requested through the [idealista access request form](https://dev
 
 Until API access is granted, manual import by URL unblocks development of normalization, search, property pages, and price history.
 
-## Sources without a known public API
+## Other sources without a known public API
 
-Fotocasa, Habitaclia, and pisos.com have no known public API. Unauthorized scraping is ruled out (product principle 7).
+Habitaclia and pisos.com have no known public API. Unauthorized scraping is ruled out (product principle 7). Crawling Fotocasa search or list pages is also rejected: it contradicts its `robots.txt`.
 
 ## Legal and operational consideration
 

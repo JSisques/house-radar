@@ -11,4 +11,4 @@ sidebar:
 4. **Do not invent information.** Unknown values must remain unknown; features must not be inferred without saying so.
 5. **Design for multiple sources.** Connectors must be independent and produce normalized data.
 6. **Prioritize usefulness over AI.** First build a good database and a reliable search.
-7. **Respect source terms.** Ingestion must rely on APIs, feeds, permissions, or other authorized collection methods.
+7. **Respect source terms.** Ingestion must rely on APIs, feeds, permissions, or other authorized collection methods. Automated reading of a portal is allowed only for individual listing pages, initiated by the user or for listings the user already tracks, honoring `robots.txt`, never bypassing technical protections, and for private use ([D37](/adr/d37-fotocasa-detail-connector/)).

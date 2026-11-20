@@ -5,15 +5,21 @@ sidebar:
   order: 1
 ---
 
-La decisión [D3](/es/adr/d03-source-strategy/) define la estrategia de fuentes.
+Las decisiones [D3](/es/adr/d03-source-strategy/) y [D37](/es/adr/d37-fotocasa-detail-connector/) definen la estrategia de fuentes.
 
 ## Orden de las fuentes
 
-1. **Primera fuente objetivo:** idealista Search API (oficial, acceso bajo solicitud).
-2. **Fuente provisional del MVP:** importación manual por URL.
-3. **Segunda fuente candidata:** feeds autorizados de inmobiliarias locales de Santiago.
+1. **Primer conector automático:** páginas de detalle de Fotocasa ([D37](/es/adr/d37-fotocasa-detail-connector/)).
+2. **Opcional:** idealista Search API (oficial, acceso bajo solicitud), si algún día se concede la clave.
+3. **Fuente provisional del MVP:** importación manual por URL.
+4. **Candidata:** feeds autorizados de inmobiliarias locales de Santiago.
+5. **Descubrimiento de anuncios nuevos:** pendiente de una decisión posterior (alertas de correo del portal, feeds de inmobiliarias o la API de idealista).
 
-## idealista Search API
+## Páginas de detalle de Fotocasa
+
+Fotocasa no ofrece API pública. El conector lee únicamente páginas de anuncios individuales: la única página de una URL que pega el usuario y las páginas de los anuncios que el usuario ya sigue (aproximadamente una vez al día, una a una). Respeta `robots.txt`, se detiene ante cualquier CAPTCHA o bloqueo, nunca descarga imágenes, nunca solicita páginas de búsqueda o listado, es de uso privado y está deshabilitado en producción. Ver [D37](/es/adr/d37-fotocasa-detail-connector/).
+
+## idealista Search API (opcional)
 
 La API key se solicita mediante el [formulario de solicitud de acceso de idealista](https://developers.idealista.com/access-request).
 
@@ -25,9 +31,9 @@ La API key se solicita mediante el [formulario de solicitud de acceso de idealis
 
 Hasta que se obtenga acceso a la API, la importación manual por URL desbloquea el desarrollo de la normalización, el buscador, las fichas y el histórico de precios.
 
-## Fuentes sin API pública conocida
+## Otras fuentes sin API pública conocida
 
-Fotocasa, Habitaclia y pisos.com no ofrecen API pública conocida. Se descarta el scraping no autorizado (principio de producto 7).
+Habitaclia y pisos.com no ofrecen API pública conocida. Se descarta el scraping no autorizado (principio de producto 7). También se rechaza rastrear las páginas de búsqueda o listado de Fotocasa: contradice su `robots.txt`.
 
 ## Consideración legal y operativa
 
