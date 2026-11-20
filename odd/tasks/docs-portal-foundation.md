@@ -55,8 +55,9 @@ RDD mode: on (default). Assess per work-unit commit.
 - Advisory findings (non-blocking):
   - `.gitignore` lost `.env` protection → already fixed in a05e198.
   - Hero links to missing pages at T2 → resolved by T3/T4 on HEAD.
-  - Reference draft note about provisional `house-radar-docs` repo is stale → follow-up.
-  - No automated en/es parity check → follow-up (candidate for CI under D16).
+  - Reference draft note about provisional `house-radar-docs` repo is stale → fixed in a05c24e (also ADR D02 en/es).
+  - No automated en/es parity check → fixed in 0d36785: `apps/docs/scripts/i18n-parity.mjs` (TDD, 4 `node:test` tests: RED observed, then GREEN), scripts `docs:test` / `docs:check-i18n`, workflow `.github/workflows/docs.yml` (tests, parity, astro check, build). Verified locally; workflow not yet run on GitHub (branch not pushed).
+- 0d36785 review: tier high (`process_boundary`, `shell_source`); consent **declined** by user for this candidate.
 
 ## Progress / Evidence
 
