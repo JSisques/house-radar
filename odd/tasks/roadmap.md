@@ -27,7 +27,13 @@ Notes:
 - Authentication is in M4; until then the app runs locally only. Nothing is exposed on the server without authentication.
 - HR-F011 (notifications, P2) is outside release 1.0.
 
+### R2. Issue granularity (2026-11-20)
+
+- One issue per vertical slice (user decision): a deliverable piece of about 400 authored lines with its own acceptance criteria taken from `HR-FNNN-ACn`, built with strict TDD, delivered as one reviewable PR.
+- Each feature is a parent issue; its slices are linked sub-issues.
+- Labels: context/app (`ctx:<context>`, `app:<app>`, `pkg:<package>`), type (`feature`, `foundation`, `docs`), priority (`P0`–`P2`). A GitHub Project board tracks the flow.
+
 ## Pending discovery
 
-- Issue granularity, labels and board.
+- Planning depth (which milestones are sliced now).
 - Docs output (roadmap page en + es).
