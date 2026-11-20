@@ -42,8 +42,8 @@ Front matter unchanged in shape. Sections: Summary; Priority; Responsible module
 | T2 | Domain page update (en + es) | delegated | [x] | 422933d |
 | T3 | HR-F001 ingestion, HR-F002 normalization (en + es) | delegated | [x] | 305dc6a |
 | T4 | HR-F003 search, HR-F004 detail, HR-F005 duplicates, HR-F008 price history (en + es) | delegated | [x] | a217c27 |
-| T5 | HR-F006 map, HR-F007 favorites & saved searches, HR-F009 dashboard (en + es) | delegated | [x] | |
-| T6 | HR-F010 users, HR-F011 notifications, HR-F012 admin & observability (en + es); features index update | delegated | [ ] | |
+| T5 | HR-F006 map, HR-F007 favorites & saved searches, HR-F009 dashboard (en + es) | delegated | [x] | 447da9f |
+| T6 | HR-F010 users, HR-F011 notifications, HR-F012 admin & observability (en + es); features index update | delegated | [x] | |
 
 ## Acceptance criteria
 
@@ -63,7 +63,9 @@ TDD (D14) applies to production code; this is documentation content, verified by
 - T3 done: HR-F001, HR-F002 (en + es) detailed.
 - T4 done: HR-F003, HR-F004, HR-F005, HR-F008 (en + es) detailed.
 - T5 done: HR-F006, HR-F007, HR-F009 (en + es) detailed.
+- T6 done: HR-F010, HR-F011, HR-F012 (en + es) and features index updated.
+- Verification: docs:test, docs:check-i18n, docs:check, docs:build pass; no "To be defined" left in features.
 
 ## Next step
 
-T6.
+Review and delivery (push/PR) by the user.
