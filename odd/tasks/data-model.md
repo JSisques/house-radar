@@ -153,3 +153,13 @@ All tables: `id uuid primary key` (v7) unless stated, `created_at timestamptz no
 ## Pending discovery
 
 - None. Next: output (docs pages, ADRs, conventions and skill updates for M6/M7).
+
+## Tasks (output)
+
+| ID | Task | Route | Status | Commit |
+|----|------|-------|--------|--------|
+| T1 | ADRs D28 bounded context map, D29 aggregate boundaries (own `Observation`, minimal `Property` + projections), D30 schema per context, D31 transactional outbox, D32 UUIDv7 (en + es) + ADR index | delegated (writer trigger: 2+ files) | [ ] | |
+| T2 | Docs pages `architecture/context-map` (with SVG diagram component, like `IngestionFlowDiagram`) and `domain/aggregates` + `architecture/database-schema` (en + es); link from overview, domain page and relevant features | delegated | [ ] | |
+| T3 | Conventions + skill alignment with M6/M7: handlers no longer publish to `EventBus`; write repositories persist pulled events into the outbox within the transaction; relay publishes through BullMQ; consumers idempotent via `processed_event`; UUIDv7 via `uuid` in `building-blocks`. Update `architecture/conventions` (en + es), D25/D24 consequences notes, `.claude/skills/house-radar-backend` (SKILL.md + templates) | delegated | [ ] | |
+
+Checks: `pnpm docs:test`, `pnpm docs:check-i18n`, `pnpm docs:check`, `pnpm docs:build`; diagram verified visually (headless Chrome, light/dark). TDD (D14) not applicable: documentation.
