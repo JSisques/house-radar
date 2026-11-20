@@ -11,12 +11,8 @@ describe('ImportManualListingHandler', () => {
   const buildHandler = () => {
     const listingWriteRepository = { save: vi.fn(), findById: vi.fn(), delete: vi.fn() };
     const eventBus = { publishAll: vi.fn() };
-    const listingBuilder = new ListingBuilder();
-    const handler = new ImportManualListingHandler(
-      listingWriteRepository,
-      listingBuilder,
-      eventBus as never,
-    );
+    const listingBuilder = new ListingBuilder(); // fluent withX() + build(); real builder, not a mock
+    const handler = new ImportManualListingHandler(listingWriteRepository, listingBuilder, eventBus as never);
     return { handler, listingWriteRepository, eventBus };
   };
 

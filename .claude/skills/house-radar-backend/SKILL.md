@@ -49,4 +49,4 @@ Return: files created or changed, RED and GREEN results, checks run, and any rul
 ## References
 
 - `references/conventions.md`
-- `assets/` templates (command, handler, spec, aggregate, value object, query)
+- `assets/` templates (command, handler, spec, aggregate, aggregate builder, value object + exception, primitives, query, query handler)

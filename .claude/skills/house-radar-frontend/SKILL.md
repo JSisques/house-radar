@@ -49,4 +49,4 @@ Return: files created or changed, RED and GREEN results, checks run, and any rul
 ## References
 
 - `references/conventions.md`
-- `assets/` templates (use case, port, hook, container, presentational, query keys)
+- `assets/` templates (use case, port, search filters model, hook, container, presentational, query keys)

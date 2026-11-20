@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { searchQueryKeys } from '@contexts/search/application/query-keys/search.query-keys';
 import { useSearchUseCases } from '@contexts/search/infrastructure/providers/search.provider';
-import type { SearchFilters } from '@contexts/search/domain/repositories/property-search.repository.port';
+import type { SearchFilters } from '@contexts/search/domain/models/search-filters.model';
 
 export function useSearchProperties(filters: SearchFilters) {
   const { searchProperties } = useSearchUseCases();

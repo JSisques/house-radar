@@ -1,5 +1,5 @@
 // Path: src/contexts/<context>/application/query-keys/<context>.query-keys.ts
-import type { SearchFilters } from '@contexts/search/domain/repositories/property-search.repository.port';
+import type { SearchFilters } from '@contexts/search/domain/models/search-filters.model';
 
 export const searchQueryKeys = {
   all: ['search'] as const,

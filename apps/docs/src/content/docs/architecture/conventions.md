@@ -26,7 +26,7 @@ Generic DDD building blocks with no House Radar concepts.
 
 | Contents | Rule |
 | --- | --- |
-| Aggregate base | Keeps its own event buffer: `record(event)` and `pullDomainEvents()`. Identity is any identity value object. Typed, null-safe equality. |
+| `AggregateRoot` base | Keeps its own event buffer: `record(event)` and `pullDomainEvents()`. Identity is any identity value object. Typed, null-safe equality. |
 | Value object base | Mandatory `validate()`, one typed exception per value object, `toPrimitives()`. |
 | Generic value objects | Option-configured String, Number, Uuid, Enum, Date and Boolean. `DateValueObject` rejects invalid dates and copies defensively. |
 | Domain events | Envelope with `schemaVersion`, `correlationId`, `causationId` and `occurredAt`; `generateEventMetadata()`. |
