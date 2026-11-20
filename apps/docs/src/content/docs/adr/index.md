@@ -1,11 +1,11 @@
 ---
 title: "Architecture decision records"
-description: "Index of all architecture decisions D0 to D21."
+description: "Index of all architecture decisions D0 to D22."
 sidebar:
   order: 0
 ---
 
-Product and technical decisions taken before development started. Each decision in the decision log is documented as an ADR whose identifier matches the log (D0 to D21). The ADR numbering is the decision number. Use the [template](/adr/template/) for new decisions.
+Product and technical decisions taken before development started. Each decision in the decision log is documented as an ADR whose identifier matches the log (D0 to D22). The ADR numbering is the decision number. Use the [template](/adr/template/) for new decisions.
 
 | ID | Decision | Result | Date |
 | --- | --- | --- | --- |
@@ -31,3 +31,4 @@ Product and technical decisions taken before development started. Each decision 
 | D19 | [Search read model](/adr/d19-search-read-model/) | Search results are properties, not listings. Representative price is the lowest among the property's active listings. | 2026-11-20 |
 | D20 | [Listing consolidation rules](/adr/d20-listing-consolidation-rules/) | Conflicts flagged with the most recent value, price history per listing, manual observations, disappearance rules, price per m² on built area only, and statistics over active properties with sample size. | 2026-11-20 |
 | D21 | [Duplicate detection policy](/adr/d21-duplicate-detection-policy/) | The system suggests candidates and never merges automatically; the user resolves each one. Thresholds are configurable. | 2026-11-20 |
+| D22 | [API style](/adr/d22-api-style/) | REST over HTTP described by an OpenAPI contract; the web uses a generated typed TypeScript client behind a port. | 2026-11-20 |

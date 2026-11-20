@@ -43,7 +43,7 @@ See also the [Operations overview](/operations/overview/).
 - **HR-F012-BR1 (P1):** services write structured logs with Pino, correlated with traces, and send them to Loki through the OpenTelemetry Collector ([D15](/adr/d15-observability/)).
 - **HR-F012-BR2 (P1):** services expose performance metrics, including runs, durations, errors, and queue depth, collected into Prometheus and visualized in Grafana.
 - **HR-F012-BR3 (P1):** `apps/api` and `apps/ingestion` expose health checks with `@nestjs/terminus` that report the state of their dependencies (PostgreSQL and Redis).
-- **HR-F012-BR4 (P1):** alerts are defined in Grafana for service failures and failed runs.
+- **HR-F012-BR4 (P1):** alerts are defined in Grafana: exactly the three alerts of D15 (ingestion without successful runs, extraction error rate, health checks down).
 - **HR-F012-BR5 (P1):** pending, running, and failed jobs can be inspected in Bull Board ([D7](/adr/d07-queues-and-scheduling/)).
 - **HR-F012-BR6 (P2):** the administration area shows each connector's status, its latest runs with outcome and counts, the processed listings, and the extraction errors.
 - **HR-F012-BR7 (P2):** the administrator can retry a failed run and can see pending jobs.
