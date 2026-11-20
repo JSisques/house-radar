@@ -91,9 +91,15 @@ identity ──(event: AccountCreated)──▶ users
 - One PostgreSQL schema per bounded context (user decision): `ingestion`, `listings`, `properties`, `geography`, `identity`, `users`. No foreign keys across schemas; contexts reference each other by ID. Each context owns its migrations and permissions. Cross-context reads go through projections (M3), never cross-schema `JOIN`s.
 - Defaults (not contested): money as `bigint` cents; locations as `geography(Point, 4326)` (radius in metres with `ST_DWithin`); municipality boundaries as `geometry(MultiPolygon, 4326)` (point-in-polygon); unknown values as `NULL` plus an origin column (`declared` / `calculated` / `inferred`) where the origin matters (D20, product principle 4).
 
-## Pending discovery
+### M6. Event delivery: transactional outbox (2026-11-20)
 
-- Event delivery reliability (in-process vs outbox).
+- Domain events are written to an `outbox` table in the same transaction as the aggregate (user decision). A relay reads pending rows, publishes them through BullMQ (D7) and marks them as sent. Either everything is stored or nothing: an event cannot be lost between commit and publish.
+- Consumers (projections, cross-context handlers) are idempotent (already required by D23) and deduplicate by `eventId`.
+- The outbox doubles as an auditable event log that can be replayed to rebuild projections (M3).
+- Rejected: in-process publication after commit + periodic projection rebuild (a crash between commit and publish leaves projections silently stale for hours, contradicting product principle 1).
+- Follow-up: update conventions (C2/C4/C6, D25) and the backend skill templates — handlers no longer call `eventBus.publishAll(pullDomainEvents())`; the write repository / unit of work persists pulled events into the outbox within the transaction.
+
+## Pending discovery
 - Identifier format.
 - Table-level schema.
 - Read models / projections.
