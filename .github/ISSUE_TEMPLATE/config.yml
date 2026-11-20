@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation portal
+    url: https://github.com/JSisques/house-radar/tree/main/apps/docs
+    about: Read the product vision, ADRs and conventions before opening an issue.
+  - name: Security vulnerability
+    url: https://github.com/JSisques/house-radar/security/policy
+    about: Report vulnerabilities privately. Do not open a public issue.
