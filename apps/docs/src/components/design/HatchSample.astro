@@ -8,7 +8,8 @@ interface Props {
 }
 
 const { label, value, note } = Astro.props;
-const known = value !== undefined;
+// Empty or null is not a value: it must render as unknown, never as a blank cell.
+const known = value !== undefined && value !== null && value.trim() !== '';
 ---
 
 <div class:list={['not-content', 'hr-ds', 'cell', { 'hr-unk': !known, unknown: !known }]}>

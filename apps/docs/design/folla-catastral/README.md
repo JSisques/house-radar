@@ -3,7 +3,7 @@
 Source files of the House Radar visual direction canvas ("Folla catastral"), approved on 2026-11-20.
 
 - Live canvas (private, owner access): https://claude.ai/artifact/QNTu3Ju5qq638caejSDqmk
-- Rendered guide in the docs portal: `apps/docs/src/content/docs/architecture/design-system.md`
+- Rendered guide in the docs portal: `apps/docs/src/content/docs/architecture/design-system.mdx`
 - Decision: ADR D34 (`apps/docs/src/content/docs/adr/d34-visual-direction.md`)
 
 ## Files
