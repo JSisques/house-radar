@@ -64,6 +64,7 @@ TDD (D14) applies to production code; this is documentation content, verified by
 - T4 done: HR-F003, HR-F004, HR-F005, HR-F008 (en + es) detailed.
 - T5 done: HR-F006, HR-F007, HR-F009 (en + es) detailed.
 - T6 done: HR-F010, HR-F011, HR-F012 (en + es) and features index updated.
+- T7 done: user-accepted answers (2026-11-20) applied as business rules and acceptance criteria in HR-F001..F010 and HR-F012 (en + es); open questions removed except HR-F011 (post-MVP). D21 amended (same source + external identifier is not a candidate; municipality criterion for non-exact precision) in ADR, domain page and HR-F005.
 - Verification: docs:test, docs:check-i18n, docs:check, docs:build pass; no "To be defined" left in features.
 
 ## Next step
