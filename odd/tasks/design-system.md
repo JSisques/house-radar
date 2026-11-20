@@ -24,8 +24,18 @@ Record the approved visual direction "Folla catastral" in the repository: canvas
 
 | ID | Task | Route | Status | Commit |
 |----|------|-------|--------|--------|
-| T1 | Store canvas sources + README in `apps/docs/design/folla-catastral/` | inline (mechanical copy) | [ ] | |
-| T2 | ADR D34 visual direction (en + es) + index; docs page `architecture/design-system` (en + es) rendering palette, type and hatch live; link from overview and conventions | delegated (writer trigger: 2+ files) | [ ] | |
-| T3 | Frontend agent skill: hard rules for tokens, typography, hatch for unknown, color-not-alone; link the design page and canvas sources | delegated | [ ] | |
+| T1 | Store canvas sources + README in `apps/docs/design/folla-catastral/` | inline (mechanical copy) | [x] | 0bfa161 |
+| T2 | ADR D34 visual direction (en + es) + index; docs page `architecture/design-system` (en + es) rendering palette, type and hatch live; link from overview and conventions | delegated (writer trigger: 2+ files) | [x] | fb00217 (ADR D34), 5eb576c (design page) |
+| T3 | Frontend agent skill: hard rules for tokens, typography, hatch for unknown, color-not-alone; link the design page and canvas sources | delegated | [x] | b543f7f |
 
 Checks: `pnpm docs:test`, `pnpm docs:check-i18n`, `pnpm docs:check`, `pnpm docs:build`; visual check of the design page (headless Chrome, light and dark).
+
+## Progress
+
+- T1 done (0bfa161). T2 done: ADR D34 en + es with both indexes (fb00217); design page en + es with Astro components in `apps/docs/src/components/design/`, linked from overview and conventions (5eb576c). T3 done (b543f7f): hard rules in the frontend skill, body ~487 words.
+- Route: T2 and T3 delegated to one writer (writer trigger).
+
+## Verification
+
+- `pnpm docs:test`: 4 pass. `pnpm docs:check-i18n`: 67 pages OK. `pnpm docs:check`: 0 errors. `pnpm docs:build`: 135 pages built.
+- Pending: visual check of the design page (headless Chrome, light and dark).
