@@ -21,7 +21,7 @@ Load when creating or editing code in `apps/api`, `apps/ingestion`, `packages/bu
 - No barrel files. Use aliases (`@contexts/*`, `@core/*`, `@shared/*`); relative imports only in the same directory.
 - One type per file, kebab-case with role suffix. One folder per command/query holding message, handler and spec.
 - Commands and queries carry value objects built in their constructor from a primitives `Input`.
-- Builders are stateful: instantiate one per execution (`new XBuilder()`); never inject them as providers.
+- Builders are stateful and never providers. Inject the stateless `I<Name>BuilderFactory` (Symbol token, registered in `DOMAIN_BUILDER_FACTORIES`) and call `create()` per execution. Factories live in `domain/`, without `@Injectable()`.
 - A missing entity raises a typed exception through an `Assert…ExistsService`; never return `null` to transport.
 - Throw typed exceptions (no `Result`). REST only. No `any`, no `as never`.
 - Unit specs use Vitest and manual mocks; never `@nestjs/testing`.
@@ -52,4 +52,4 @@ Return: files created or changed, RED and GREEN results, checks run, and any rul
 ## References
 
 - `references/conventions.md`
-- `assets/` templates (command, handler, spec, aggregate, aggregate builder, value object + exception, primitives, query, query handler, assert-exists service)
+- `assets/` templates (command, handler, spec, aggregate, aggregate builder, aggregate builder factory, value object + exception, primitives, query, query handler, assert-exists service)

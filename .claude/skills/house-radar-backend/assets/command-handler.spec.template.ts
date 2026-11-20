@@ -4,6 +4,7 @@
 import { EventBus } from '@nestjs/cqrs';
 import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
+import { ListingBuilderFactory } from '@contexts/listings/domain/builders/listing/listing-builder.factory';
 import { ListingImportedEvent } from '@contexts/listings/domain/events/listing-imported/listing-imported.event';
 import { IListingWriteRepository } from '@contexts/listings/domain/repositories/write/listing-write.repository';
 
@@ -24,7 +25,11 @@ describe('ImportManualListingHandler', () => {
   beforeEach(() => {
     listingWriteRepository = { save: vi.fn(), findById: vi.fn(), delete: vi.fn() };
     eventBus = { publishAll: vi.fn() };
-    handler = new ImportManualListingHandler(listingWriteRepository, eventBus as unknown as EventBus);
+    handler = new ImportManualListingHandler(
+      listingWriteRepository,
+      new ListingBuilderFactory(), // real factory: builders are pure domain code
+      eventBus as unknown as EventBus,
+    );
   });
 
   describe('execute', () => {

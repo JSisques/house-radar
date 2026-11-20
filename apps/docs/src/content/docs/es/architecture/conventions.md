@@ -30,7 +30,7 @@ Bloques DDD genéricos, sin conceptos de House Radar.
 | Base de value object | `validate()` obligatorio, una excepción tipada por value object, `toPrimitives()`. |
 | Value objects genéricos | String, Number, Uuid, Enum, Date y Boolean configurables por opciones. `DateValueObject` rechaza fechas inválidas y copia defensivamente. |
 | Eventos de dominio | Envoltorio con `schemaVersion`, `correlationId`, `causationId` y `occurredAt`; `generateEventMetadata()`. |
-| Base de builder | `validate()` lanza `FieldIsRequiredException`. |
+| Base de builder | `validate()` lanza `FieldIsRequiredException`. Contrato `IBuilderFactory<TBuilder>` para fábricas de builders sin estado. |
 | Consultas | `Criteria` inmutable, `PaginatedResult`, `FilterFieldRegistry`. Sin `any` en `Filter.value`. |
 | Puertos de repositorio | Puertos de lectura y de escritura separados. |
 | `DomainException` | Lleva un `code` y una `cause` opcional. |
@@ -133,7 +133,7 @@ CQRS con `@nestjs/cqrs` ([D25](/es/adr/d25-cqrs-and-context-structure/)).
 ### Inyección de dependencias
 
 - Repositorios y puertos se enlazan con tokens `Symbol` (`UPPER_SNAKE`) e interfaces con prefijo `I`.
-- Los providers del módulo se agrupan en arrays con nombre: `COMMAND_HANDLERS`, `QUERY_HANDLERS`, `APPLICATION_SERVICES`, `INFRASTRUCTURE_MAPPERS`, `INFRASTRUCTURE_REPOSITORIES`, `INFRASTRUCTURE_ADAPTERS` y `REST_CONTROLLERS`. Los builders no son providers: tienen estado y se instancian en cada ejecución (`new XBuilder()`).
+- Los providers del módulo se agrupan en arrays con nombre: `COMMAND_HANDLERS`, `QUERY_HANDLERS`, `APPLICATION_SERVICES`, `DOMAIN_BUILDER_FACTORIES`, `INFRASTRUCTURE_MAPPERS`, `INFRASTRUCTURE_REPOSITORIES`, `INFRASTRUCTURE_ADAPTERS` y `REST_CONTROLLERS`. Los builders tienen estado y nunca son providers: cada agregado tiene una fábrica de builders sin estado (`ListingBuilderFactory`, sin dependencias de framework, en `domain/builders/`), registrada con un token `Symbol` e inyectada en los handlers, que llaman a `create()` en cada ejecución. Se aplica a todos los builders, tengan o no dependencias, de modo que la regla no tiene excepciones y los handlers pueden recibir una fábrica de prueba.
 - Los enlaces usan `{ provide, useClass }`. Sin `useExisting`.
 
 ```ts
@@ -165,6 +165,7 @@ Los archivos van en kebab-case con un sufijo de rol. Las clases van en PascalCas
 | `.aggregate` | Raíz de agregado |
 | `.value-object` | Value object |
 | `.builder` | Builder de agregado |
+| `.factory` | Fábrica de builders (sin estado, inyectada) |
 | `.event` | Evento de dominio |
 | `.exception` | Excepción tipada |
 | `.primitives` | Forma primitiva de un agregado |

@@ -30,7 +30,7 @@ Generic DDD building blocks with no House Radar concepts.
 | Value object base | Mandatory `validate()`, one typed exception per value object, `toPrimitives()`. |
 | Generic value objects | Option-configured String, Number, Uuid, Enum, Date and Boolean. `DateValueObject` rejects invalid dates and copies defensively. |
 | Domain events | Envelope with `schemaVersion`, `correlationId`, `causationId` and `occurredAt`; `generateEventMetadata()`. |
-| Builder base | `validate()` throws `FieldIsRequiredException`. |
+| Builder base | `validate()` throws `FieldIsRequiredException`. `IBuilderFactory<TBuilder>` contract for stateless builder factories. |
 | Querying | Immutable `Criteria`, `PaginatedResult`, `FilterFieldRegistry`. No `any` in `Filter.value`. |
 | Repository ports | Separate read and write ports. |
 | `DomainException` | Carries a `code` and an optional `cause`. |
@@ -133,7 +133,7 @@ CQRS with `@nestjs/cqrs` ([D25](/adr/d25-cqrs-and-context-structure/)).
 ### Dependency injection
 
 - Repositories and ports are bound with `Symbol` tokens (`UPPER_SNAKE`) and `I`-prefixed interfaces.
-- Module providers are grouped in named arrays: `COMMAND_HANDLERS`, `QUERY_HANDLERS`, `APPLICATION_SERVICES`, `INFRASTRUCTURE_MAPPERS`, `INFRASTRUCTURE_REPOSITORIES`, `INFRASTRUCTURE_ADAPTERS` and `REST_CONTROLLERS`. Builders are not providers: they are stateful and instantiated per execution (`new XBuilder()`).
+- Module providers are grouped in named arrays: `COMMAND_HANDLERS`, `QUERY_HANDLERS`, `APPLICATION_SERVICES`, `DOMAIN_BUILDER_FACTORIES`, `INFRASTRUCTURE_MAPPERS`, `INFRASTRUCTURE_REPOSITORIES`, `INFRASTRUCTURE_ADAPTERS` and `REST_CONTROLLERS`. Builders are stateful and never providers: each aggregate has a stateless builder factory (`ListingBuilderFactory`, framework-free, in `domain/builders/`), bound with a `Symbol` token and injected into handlers, which call `create()` on every execution. This applies to every builder, with or without dependencies, so the rule has no exceptions and handlers can receive a test factory.
 - Bindings use `{ provide, useClass }`. No `useExisting`.
 
 ```ts
@@ -165,6 +165,7 @@ Files are kebab-case with a role suffix. Classes are PascalCase with the same su
 | `.aggregate` | Aggregate root |
 | `.value-object` | Value object |
 | `.builder` | Aggregate builder |
+| `.factory` | Builder factory (stateless, injected) |
 | `.event` | Domain event |
 | `.exception` | Typed exception |
 | `.primitives` | Primitive shape of an aggregate |

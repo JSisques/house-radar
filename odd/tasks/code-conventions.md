@@ -40,7 +40,7 @@ Discovery closed. Outputs T1-T3 delivered on branch `docs/code-conventions`; all
 
 - Aggregates composed of value objects (never raw primitives), created through builders, events raised in named methods (`create()`, `changePrice()`), `toPrimitives()`.
 - Read and write repositories separated, bound with `Symbol` tokens and `I`-prefixed interfaces.
-- Module providers grouped in named arrays (`COMMAND_HANDLERS`, `QUERY_HANDLERS`, `APPLICATION_SERVICES`, `INFRASTRUCTURE_MAPPERS`, `INFRASTRUCTURE_REPOSITORIES`, `INFRASTRUCTURE_ADAPTERS`, `REST_CONTROLLERS`); `{ provide, useClass }` bindings, no `useExisting`.
+- Module providers grouped in named arrays (`COMMAND_HANDLERS`, `QUERY_HANDLERS`, `APPLICATION_SERVICES`, `DOMAIN_BUILDER_FACTORIES`, `INFRASTRUCTURE_MAPPERS`, `INFRASTRUCTURE_REPOSITORIES`, `INFRASTRUCTURE_ADAPTERS`, `REST_CONTROLLERS`); `{ provide, useClass }` bindings, no `useExisting`.
 - kebab-case file names with role suffixes (`.aggregate`, `.value-object`, `.builder`, `.event`, `.exception`, `.command`, `.query`, `.handler`, `.service`, `.port`, `.adapter`, `.mapper`, `.repository`, `.schema`, `.controller`, `.dto`, `.view-model`, `.primitives`, `.spec`); PascalCase classes with suffix; `UPPER_SNAKE` tokens.
 - One type per file (exception: `{Name}CommandInput`/`{Name}QueryInput` inline in the command/query file).
 - No barrel files. Path aliases (`@contexts/*`, `@core/*`, `@shared/*`); relative imports only within the same directory.
@@ -54,6 +54,7 @@ Discovery closed. Outputs T1-T3 delivered on branch `docs/code-conventions`; all
 3. Exception-to-HTTP status mapping is registered by each context, not imported by `core` (adding a context must not edit core).
 4. Domain events have consumers: event handlers and projections are first-class (e.g. the D19 representative price read model).
 5. Builders have a single role: aggregate builders build aggregates; view models are built by mappers/projections.
+7. Builders are stateful and never providers. Every aggregate has a stateless builder factory (`I<Name>BuilderFactory`, `Symbol` token, framework-free in `domain/builders/`, registered in `DOMAIN_BUILDER_FACTORIES`) injected into handlers, which call `create()` per execution. Default for every builder, with or without dependencies (user decision 2026-11-20: cleanest, exception-free, testable). `@nestjs` scopes rejected: `TRANSIENT` is per consumer (singleton handler keeps one builder), `REQUEST` propagates to the whole chain and does not exist in BullMQ workers.
 6. Tooling: Vitest instead of Jest (D14), ESLint flat config, `@typescript-eslint/no-explicit-any` enabled, commitlint enforced (D16), strict TypeScript.
 
 ### C6. Shared packages (own base, not `@sisques-labs/nestjs-kit`)
@@ -62,7 +63,7 @@ Reason: the kit's `BaseAggregate` extends `@nestjs/cqrs` `AggregateRoot` (framew
 
 **`packages/building-blocks` (`@house-radar/building-blocks`)** — generic DDD building blocks, no House Radar concepts.
 
-- Taken from the kit: value object base with mandatory `validate()`, one typed exception per VO, `toPrimitives()`; option-configured generic VOs (String, Number, Uuid, Enum, Date, Boolean); event envelope (`schemaVersion`, `correlationId`, `causationId`) and `generateEventMetadata()`; builder base with `validate()` throwing `FieldIsRequiredException`; `Criteria` + `PaginatedResult` + `FilterFieldRegistry`; separate read/write repository ports.
+- Taken from the kit: value object base with mandatory `validate()`, one typed exception per VO, `toPrimitives()`; option-configured generic VOs (String, Number, Uuid, Enum, Date, Boolean); event envelope (`schemaVersion`, `correlationId`, `causationId`) and `generateEventMetadata()`; builder base with `validate()` throwing `FieldIsRequiredException`, plus `IBuilderFactory<TBuilder>` (new); `Criteria` + `PaginatedResult` + `FilterFieldRegistry`; separate read/write repository ports.
 - Refined: aggregate keeps its own event buffer (`record()`, `pullDomainEvents()`) and infrastructure publishes to the Nest `EventBus`; aggregate identity is any identity VO (not hard-coded UUID); typed, null-safe equality (no `JSON.stringify`); immutability (`Criteria`, defensive copies in `DateValueObject`); `DateValueObject` rejects invalid dates; `DomainException` with `code` and `cause`; `occurredAt` spelling; no `any` in `Filter.value`; strict TypeScript; UUIDs via `globalThis.crypto.randomUUID()` (browser-compatible, used by `apps/web`).
 - Excluded: project-specific VOs mixed in the kit (color, phone, password, user roles…); added only when needed.
 
