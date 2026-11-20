@@ -116,8 +116,14 @@ Refined:
 
 - TanStack Router (user decision 2026-11-20). Search params typed and validated with zod in the route definition (invalid values fall back to defaults), type-safe navigation (broken links are compile errors), integration with TanStack Query. Reason: the search state lives in the URL (HR-F003-BR11, ~20 filters), so typing and validating the URL is typing and validating the search.
 
+### C11. Internationalization library
+
+- react-i18next (user decision 2026-11-20), behind the i18n adapter (D12): one namespace per context, typed keys via TypeScript resource declaration (a misspelled key does not compile), lazy loading per locale, locale parity verified by test.
+- Prices, areas and dates are formatted with the native `Intl` API (`Intl.NumberFormat` with `currency: 'EUR'`, `Intl.DateTimeFormat`) inside the adapter.
+- Adding Galician or Catalan means adding translation files only.
+
 ## Pending discovery
 
-- Frontend: i18n library, remaining details.
+- Tooling: lint/format stack, import ordering.
 - Lint/format tooling details, import ordering.
 - Documentation output (docs page + ADRs).
