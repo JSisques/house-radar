@@ -1,7 +1,6 @@
 // Path: src/contexts/<context>/application/commands/<verb-noun>/<verb-noun>.handler.spec.ts
 // RED first: write this spec, watch it fail, then implement. No @nestjs/testing.
 // Mocks are typed against the port; no `as never` / `as any` casts.
-import { EventBus } from '@nestjs/cqrs';
 import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
 import { ListingBuilderFactory } from '@contexts/listings/domain/builders/listing/listing-builder.factory';
@@ -19,16 +18,13 @@ const VALID_INPUT = {
 
 describe('ImportManualListingHandler', () => {
   let listingWriteRepository: Mocked<IListingWriteRepository>;
-  let eventBus: Mocked<Pick<EventBus, 'publishAll'>>;
   let handler: ImportManualListingHandler;
 
   beforeEach(() => {
     listingWriteRepository = { save: vi.fn(), findById: vi.fn(), delete: vi.fn() };
-    eventBus = { publishAll: vi.fn() };
     handler = new ImportManualListingHandler(
       listingWriteRepository,
       new ListingBuilderFactory(), // real factory: builders are pure domain code
-      eventBus as unknown as EventBus,
     );
   });
 
@@ -48,22 +44,21 @@ describe('ImportManualListingHandler', () => {
       expect(result).toEqual({ id: saved.id.value });
     });
 
-    it('should publish a ListingImportedEvent after saving', async () => {
+    it('should save an aggregate that carries the recorded ListingImportedEvent', async () => {
       await handler.execute(new ImportManualListingCommand(VALID_INPUT));
 
-      const [events] = eventBus.publishAll.mock.calls[0];
+      // The handler does not publish: the repository contract persists pullDomainEvents()
+      // into the outbox in the same transaction (covered by the repository integration test).
+      const saved = listingWriteRepository.save.mock.calls[0][0];
+      const events = saved.pullDomainEvents();
       expect(events).toHaveLength(1);
       expect(events[0]).toBeInstanceOf(ListingImportedEvent);
-      expect(listingWriteRepository.save.mock.invocationCallOrder[0]).toBeLessThan(
-        eventBus.publishAll.mock.invocationCallOrder[0],
-      );
     });
 
-    it('should not publish events when saving fails', async () => {
+    it('should propagate the error when saving fails', async () => {
       listingWriteRepository.save.mockRejectedValueOnce(new Error('db down'));
 
       await expect(handler.execute(new ImportManualListingCommand(VALID_INPUT))).rejects.toThrow('db down');
-      expect(eventBus.publishAll).not.toHaveBeenCalled();
     });
   });
 });

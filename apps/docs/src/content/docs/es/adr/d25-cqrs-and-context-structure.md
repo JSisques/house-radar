@@ -30,6 +30,7 @@ Los detalles están en [Convenciones de código](/es/architecture/conventions/).
 - Las reglas de dependencias se pueden comprobar con ESLint ([D16](/es/adr/d16-quality-and-workflow/)).
 - Más archivos por funcionalidad que con una única clase de servicio.
 - El agregado no extiende el `AggregateRoot` del framework, así que los handlers de comandos publican los eventos que registró ([D24](/es/adr/d24-own-building-blocks/)).
+- Sustituida en parte por [D31](/es/adr/d31-transactional-outbox/): los handlers ya no publican eventos mediante el `EventBus`; el repositorio de escritura los persiste en un outbox en la misma transacción que el agregado.
 
 ## Alternativas consideradas
 

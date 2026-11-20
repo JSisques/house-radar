@@ -35,6 +35,7 @@ Los detalles están en [Convenciones de código](/es/architecture/conventions/).
 - Las buenas ideas del kit se portan con correcciones: igualdad tipada y segura ante nulos, `Criteria` inmutable, fechas inválidas rechazadas, `DomainException` con `code` y `cause`, sin `any` en los filtros.
 - Un value object nace en su contexto y pasa a `shared-kernel` solo cuando un segundo contexto lo necesita.
 - Las correcciones del kit no llegan automáticamente a este proyecto.
+- Sustituida en parte por [D31](/es/adr/d31-transactional-outbox/) y [D32](/es/adr/d32-uuid-v7/): la infraestructura ya no publica los eventos en el `EventBus` tras guardar, sino que se persisten en un outbox, y los UUID son v7 generados con el paquete `uuid` en lugar de `randomUUID()`.
 
 ## Alternativas consideradas
 

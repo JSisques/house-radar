@@ -35,7 +35,7 @@ Bloques DDD genéricos, sin conceptos de House Radar.
 | Puertos de repositorio | Puertos de lectura y de escritura separados. |
 | `DomainException` | Lleva un `code` y una `cause` opcional. |
 
-Los UUID se generan con `globalThis.crypto.randomUUID()`, de modo que el paquete también funciona en el navegador (`apps/web`). Aquí nunca se añaden value objects específicos del proyecto.
+Los IDs son UUIDv7, generados con el paquete `uuid` (`v7()`), de modo que el paquete también funciona en el navegador (`apps/web`) ([D32](/es/adr/d32-uuid-v7/)). Aquí nunca se añaden value objects específicos del proyecto.
 
 ### `packages/shared-kernel` (`@house-radar/shared-kernel`)
 
@@ -122,7 +122,10 @@ CQRS con `@nestjs/cqrs` ([D25](/es/adr/d25-cqrs-and-context-structure/)).
 - Los handlers pasan por repositorios y servicios. El transporte pasa solo por `CommandBus` y `QueryBus`.
 - Los servicios se dividen en `services/write/` y `services/read/`.
 - Los repositorios de escritura exponen solo `save`, `findById` y `delete`. Los de lectura son de solo lectura (`findById`, `findByCriteria`).
-- Los eventos de dominio los consumen handlers de eventos y proyecciones, por ejemplo el modelo de lectura del precio representativo ([D19](/es/adr/d19-search-read-model/)). El agregado registra eventos con `record()`; el handler del comando publica `pullDomainEvents()` en el `EventBus`.
+- Los eventos de dominio los consumen handlers de eventos y proyecciones, por ejemplo el modelo de lectura del precio representativo ([D19](/es/adr/d19-search-read-model/)). El agregado registra eventos con `record()`; los handlers nunca los publican ([D31](/es/adr/d31-transactional-outbox/)):
+  - El repositorio de escritura persiste el agregado y sus `pullDomainEvents()` en la tabla `outbox_event` del contexto, en la misma transacción (unit of work de MikroORM).
+  - Un relay del outbox publica las filas pendientes mediante BullMQ y las marca como publicadas.
+  - Los consumidores de eventos son idempotentes: registran `(event_id, consumer)` en `processed_event` y omiten los eventos ya procesados.
 
 ### Modelo de dominio
 

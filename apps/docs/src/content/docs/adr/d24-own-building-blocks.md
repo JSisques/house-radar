@@ -35,6 +35,7 @@ Details are in [Code conventions](/architecture/conventions/).
 - Good ideas from the kit are ported, with fixes: typed null-safe equality, immutable `Criteria`, invalid dates rejected, `DomainException` with `code` and `cause`, no `any` in filters.
 - A value object starts in its context and moves to `shared-kernel` only when a second context needs it.
 - Fixes in the kit do not flow automatically to this project.
+- Superseded in part by [D31](/adr/d31-transactional-outbox/) and [D32](/adr/d32-uuid-v7/): events are no longer published to the `EventBus` by infrastructure after saving but persisted to an outbox, and UUIDs are v7 generated with the `uuid` package instead of `randomUUID()`.
 
 ## Alternatives considered
 

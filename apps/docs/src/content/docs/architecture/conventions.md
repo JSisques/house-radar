@@ -35,7 +35,7 @@ Generic DDD building blocks with no House Radar concepts.
 | Repository ports | Separate read and write ports. |
 | `DomainException` | Carries a `code` and an optional `cause`. |
 
-UUIDs are generated with `globalThis.crypto.randomUUID()`, so the package also works in the browser (`apps/web`). Project-specific value objects are never added here.
+IDs are UUIDv7, generated with the `uuid` package (`v7()`), so the package also works in the browser (`apps/web`) ([D32](/adr/d32-uuid-v7/)). Project-specific value objects are never added here.
 
 ### `packages/shared-kernel` (`@house-radar/shared-kernel`)
 
@@ -122,7 +122,10 @@ CQRS with `@nestjs/cqrs` ([D25](/adr/d25-cqrs-and-context-structure/)).
 - Handlers go through repositories and services. Transport goes only through `CommandBus` and `QueryBus`.
 - Services are split into `services/write/` and `services/read/`.
 - Write repositories expose only `save`, `findById` and `delete`. Read repositories are read-only (`findById`, `findByCriteria`).
-- Domain events are consumed by event handlers and projections, for example the representative price read model ([D19](/adr/d19-search-read-model/)). The aggregate records events with `record()`; the command handler publishes `pullDomainEvents()` to the `EventBus`.
+- Domain events are consumed by event handlers and projections, for example the representative price read model ([D19](/adr/d19-search-read-model/)). The aggregate records events with `record()`; handlers never publish them ([D31](/adr/d31-transactional-outbox/)):
+  - The write repository persists the aggregate and its `pullDomainEvents()` into the context's `outbox_event` table in the same transaction (MikroORM unit of work).
+  - An outbox relay publishes pending rows through BullMQ and marks them as published.
+  - Event consumers are idempotent: they record `(event_id, consumer)` in `processed_event` and skip events already processed.
 
 ### Domain model
 

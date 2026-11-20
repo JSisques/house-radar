@@ -162,3 +162,8 @@ Checks: `pnpm docs:test`, `pnpm docs:check-i18n`, `pnpm docs:check`, `pnpm docs:
 Open the PR for `docs/code-conventions`; scaffold the monorepo packages in a later feature.
 
 - Review (branch main..5e840e2): medium risk (skills are agent-executed instructions), consent granted, **approved and acknowledged**. Findings fixed in 05fca7e: commands/queries now carry value objects; builders instantiated per execution (never injected; `DOMAIN_BUILDERS` removed from provider arrays, documented); command handler spec without `as never`, asserting saved values, event type and save-before-publish order; query handler uses `AssertPropertyViewModelExistsService` (new template) instead of returning `null`; `sourceUrl` added consistently to aggregate, builder and primitives.
+
+## Updates
+
+- 2026-11-20, C6 (event publication): superseded in part by data-model M6 / D31. Handlers no longer call `eventBus.publishAll(pullDomainEvents())`; the write repository persists pulled events into `outbox_event` in the same transaction and a relay publishes through BullMQ. Consumers are idempotent via `processed_event`. See `odd/tasks/data-model.md`.
+- 2026-11-20, C5/C6 (identifiers): superseded in part by data-model M7 / D32. UUIDs are v7 via the `uuid` package in `building-blocks`, replacing `globalThis.crypto.randomUUID()`.
