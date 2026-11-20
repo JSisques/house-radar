@@ -28,7 +28,7 @@ Define environments, deployment, secrets and backups before M4, so issues #100 (
 
 ### E3. Deployment to staging (2026-11-20)
 
-- Images are built in GitHub Actions and pushed to GitHub Container Registry (GHCR), tagged with the commit SHA (and the product version on releases, D33). This resolves the registry question of the Docker images slice (#42).
+- Images are built in GitHub Actions and pushed to GitHub Container Registry (GHCR), tagged with the commit SHA (and the product version on releases, D33). This resolves the registry question of the Docker images slice (#41).
 - Every merge to `main` deploys to staging automatically (user decision): the workflow joins the tailnet with the official Tailscale GitHub Action using an ephemeral, tagged auth key restricted by ACL to the staging server, connects over SSH with a restricted deploy key, and runs `docker compose pull && docker compose up -d` with the new SHA.
 - Versioned releases (release-please) are reserved for production.
 
@@ -36,4 +36,4 @@ Define environments, deployment, secrets and backups before M4, so issues #100 (
 
 - Secrets management.
 - Health check / rollback on failed staging deploy.
-- Output: ADR(s), operations page, issue updates (#100, #101, #42).
+- Output: ADR(s), operations page, issue updates (#100, #101, #41).
