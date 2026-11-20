@@ -112,8 +112,12 @@ Refined:
 
 - Use cases are ALWAYS present (user decision 2026-11-20), one folder per use case (`application/use-cases/<verb-noun>/<verb-noun>.use-case.ts` + spec), even when they only delegate to a port. Reason: a rule without exceptions can be enforced by lint; "only when there is logic" is a judgment rule that erodes (as seen in gardenia).
 
+### C10. Router
+
+- TanStack Router (user decision 2026-11-20). Search params typed and validated with zod in the route definition (invalid values fall back to defaults), type-safe navigation (broken links are compile errors), integration with TanStack Query. Reason: the search state lives in the URL (HR-F003-BR11, ~20 filters), so typing and validating the URL is typing and validating the search.
+
 ## Pending discovery
 
-- Frontend: router, i18n library, remaining details.
+- Frontend: i18n library, remaining details.
 - Lint/format tooling details, import ordering.
 - Documentation output (docs page + ADRs).
