@@ -57,3 +57,5 @@ Features that improve operation and recurring use.
 | Infrastructure | Docker Compose |
 | Language | TypeScript end to end ([D1](/adr/d01-language/)) |
 | Repository | `house-radar` monorepo ([D2](/adr/d02-repository-strategy/)) |
+
+The order in which these features are delivered is described in the [roadmap](/product/roadmap/).
