@@ -46,7 +46,15 @@ Notes:
 - Versioning and releases belong to M0 · Foundation.
 - Rejected: independent versions per app/package (cross-version compatibility overhead without independent deployments or npm publishing).
 
+### R5. Release tooling (2026-11-20)
+
+- release-please (GitHub Action), single root package (user decision). On every merge to `main` it maintains a Release PR accumulating the changelog and the next version computed from Conventional Commits (`fix` → patch, `feat` → minor, breaking → major). Merging the Release PR creates the tag, the GitHub Release and updates `CHANGELOG.md`: version and changelog are automatic, publishing is a human decision.
+- `0.x` versions until M6; `1.0.0` coincides with Release 1.0. Before 1.0, breaking changes bump the minor (`bump-minor-pre-major`).
+- Docker images tagged with the product version and the commit SHA, so the server deploys an exact version and can roll back.
+- Rejected: semantic-release (publishes on every qualifying push, no human gate); Changesets (per-PR changeset files, npm-oriented, redundant with Conventional Commits).
+- To be documented as ADR D33 with the roadmap docs output.
+
 ## Pending discovery
 
-- Release tooling.
+- None for the issue plan. Docs output: roadmap page (en + es) and ADR D33.
 - Docs output (roadmap page en + es).
