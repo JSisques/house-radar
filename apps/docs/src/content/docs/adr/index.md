@@ -1,11 +1,11 @@
 ---
 title: "Architecture decision records"
-description: "Index of all architecture decisions D0 to D32."
+description: "Index of all architecture decisions D0 to D33."
 sidebar:
   order: 0
 ---
 
-Product and technical decisions taken before development started. Each decision in the decision log is documented as an ADR whose identifier matches the log (D0 to D32). The ADR numbering is the decision number. Use the [template](/adr/template/) for new decisions.
+Product and technical decisions taken before development started. Each decision in the decision log is documented as an ADR whose identifier matches the log (D0 to D33). The ADR numbering is the decision number. Use the [template](/adr/template/) for new decisions.
 
 | ID | Decision | Result | Date |
 | --- | --- | --- | --- |
@@ -42,3 +42,4 @@ Product and technical decisions taken before development started. Each decision 
 | D30 | [One PostgreSQL schema per context](/adr/d30-schema-per-context/) | One schema per bounded context, no cross-schema foreign keys, and cross-context reads through projections. | 2026-11-20 |
 | D31 | [Transactional outbox](/adr/d31-transactional-outbox/) | Domain events are written to `outbox_event` in the aggregate's transaction; a relay publishes through BullMQ and consumers are idempotent. | 2026-11-20 |
 | D32 | [UUIDv7 identifiers](/adr/d32-uuid-v7/) | Time-ordered UUIDv7 for aggregate, event and outbox IDs, generated with the `uuid` package. | 2026-11-20 |
+| D33 | [Versioning and releases](/adr/d33-versioning-and-releases/) | One product version for the monorepo with release-please (Release PR, `0.x` until Release 1.0) and Docker images tagged with version and commit SHA. | 2026-11-20 |

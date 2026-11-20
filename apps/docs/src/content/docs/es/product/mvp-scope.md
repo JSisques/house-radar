@@ -57,3 +57,5 @@ Funcionalidades que mejoran la operación y la recurrencia de uso.
 | Infraestructura | Docker Compose |
 | Lenguaje | TypeScript de punta a punta ([D1](/es/adr/d01-language/)) |
 | Repositorio | Monorepo `house-radar` ([D2](/es/adr/d02-repository-strategy/)) |
+
+La secuencia de entrega de estas funcionalidades se describe en el [roadmap](/es/product/roadmap/).
