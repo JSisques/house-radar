@@ -1,0 +1,44 @@
+---
+title: Operations overview
+description: Deployment, observability, and alerts. Sections without source content are marked as to be defined.
+sidebar:
+  order: 1
+---
+
+## Deployment
+
+Decision [D8](/adr/d08-deployment/): own server with Docker Compose. Deployment is platform-agnostic: the same Compose setup must be movable to a VPS without changes.
+
+Services in the Compose setup: PostgreSQL + PostGIS, Redis, OpenTelemetry Collector, Prometheus, Loki, Tempo, and Grafana (see the [architecture overview](/architecture/overview/)).
+
+Deployment procedure and environments: **To be defined.**
+
+## Observability
+
+Decision [D15](/adr/d15-observability/): full stack from the MVP.
+
+- OpenTelemetry (Collector) to Prometheus (metrics), Loki (logs), and Tempo (traces).
+- Grafana for dashboards and alerts.
+- Structured logs with Pino.
+- Health checks with `@nestjs/terminus`.
+- Bull Board for job status.
+
+Instrumentation uses OpenTelemetry behind an adapter, so the backends are interchangeable.
+
+## Alerts
+
+Grafana alerts, as a minimum, for:
+
+- Ingestion without successful runs within a configurable period.
+- Extraction error rate.
+- Failing health checks.
+
+Thresholds and notification channels: **To be defined.**
+
+## Ingestion runbooks
+
+**To be defined.**
+
+## Backups and recovery
+
+**To be defined.**
