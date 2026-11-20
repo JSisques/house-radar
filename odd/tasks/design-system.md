@@ -16,7 +16,7 @@ Record the approved visual direction "Folla catastral" in the repository: canvas
   - Ferruxe `#9E4A2F` — price rises and errors (dark `#E39575`); never conveyed by color alone (arrow or text).
   - Support tokens: surface `#F3F5F4` / `#26343B`, muted `#4A575E` / `#AEB8B4`, line `#C3CAC7` / `#3E4E56`, hatch `#9AA4A0` / `#5C6B71`, map `#D5DEDB` / `#22323A`.
 - Typography: Schibsted Grotesk (display, 700–800, restrained), Public Sans (body/UI), IBM Plex Mono with tabular figures (prices, areas, coordinates, dates).
-- Signature: unknown values are drawn with a cartographic hatch (135° 1px lines every 7px in the hatch token, dashed border, "sin dato" + "no declarado"), never `—`, empty or zero. Price history draws the period before the first observation as a hatched "sin observar" area. Attribute conflicts use a ferruxe border and name the other source's value.
+- Signature: unknown values are drawn with a cartographic hatch (135° 1px lines every 8px in the hatch token at 55% opacity, so text over it stays legible, dashed border, "sin dato" + "no declarado"), never `—`, empty or zero. Price history draws the period before the first observation as a hatched "sin observar" area. Attribute conflicts use a ferruxe border and name the other source's value.
 - Screens (walking skeleton references): search (filter rail, property results "N anuncios, desde", map with "Buscar en esta zona", approximate location as a dashed circle), detail (data sheet grid, observed history, listings table, duplicate resolution), assisted import (form with "El anuncio no lo dice", map pin with precision, detected municipality, live preview).
 - Canvas sources kept in `apps/docs/design/folla-catastral/` as the versioned guide; the live canvas stays at https://claude.ai/artifact/QNTu3Ju5qq638caejSDqmk.
 
@@ -38,4 +38,4 @@ Checks: `pnpm docs:test`, `pnpm docs:check-i18n`, `pnpm docs:check`, `pnpm docs:
 ## Verification
 
 - `pnpm docs:test`: 4 pass. `pnpm docs:check-i18n`: 67 pages OK. `pnpm docs:check`: 0 errors. `pnpm docs:build`: 135 pages built.
-- Pending: visual check of the design page (headless Chrome, light and dark).
+- Visual check (headless Chrome, light and dark, en and es): found and fixed (a) the hatch never rendered — `.hr-ds .hr-unk` was a descendant selector but both classes sit on the same element; now `.hr-ds.hr-unk`; (b) the hatch hurt legibility of text over it — now the hatch token at 55% opacity every 8px (spec updated in ADR D34, page, decision record and canvas sources, canvas republished); (c) unknown cells sat ~16px lower because of Starlight content margins — cells use `not-content`. Re-checked after the fix.

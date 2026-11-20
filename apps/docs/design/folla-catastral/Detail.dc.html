@@ -14,7 +14,7 @@
 body{margin:0}
 .hr{--bg:#E6E9E7;--surface:#F3F5F4;--ink:#1E2A30;--muted:#4A575E;--line:#C3CAC7;--primary:#2F5D4E;--on-primary:#F3F5F4;--geo:#3C6E8F;--accent:#D4A017;--warn:#9E4A2F;--hatch:#9AA4A0;background:var(--bg);color:var(--ink);font-family:'Public Sans',system-ui,sans-serif}
 .hr.dark{--bg:#1E2A30;--surface:#26343B;--ink:#E6E9E7;--muted:#AEB8B4;--line:#3E4E56;--primary:#8CC2AC;--on-primary:#13201A;--geo:#8DB8D6;--accent:#D4A017;--warn:#E39575;--hatch:#5C6B71}
-.unk{background:repeating-linear-gradient(135deg,var(--hatch) 0 1px,transparent 1px 7px)}
+.unk{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--hatch) 55%,transparent) 0 1px,transparent 1px 8px)}
 .mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
 .display{font-family:'Schibsted Grotesk',system-ui,sans-serif}
 a{color:var(--geo)}a:hover{color:var(--primary)}
@@ -64,7 +64,7 @@ button{font:inherit}
       <div style="background: var(--surface); border: 1px solid var(--line); padding: 20px">
         <svg role="img" aria-label="Precio más bajo activo: 255.000 € el 2 de septiembre, 249.000 € el 14 de octubre y 245.000 € el 11 de noviembre. Antes del 2 de septiembre no hay observaciones." viewBox="0 0 1000 260" style="width: 100%; height: auto; display: block">
           <defs>
-            <pattern id="hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" stroke="var(--hatch)" stroke-width="1"></line></pattern>
+            <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="8" stroke="var(--hatch)" stroke-width="1" stroke-opacity="0.55"></line></pattern>
           </defs>
           <rect x="60" y="20" width="240" height="190" fill="url(#hatch)"></rect>
           <text x="180" y="120" text-anchor="middle" class="mono" style="font-size: 13px; fill: var(--muted)">sin observar</text>

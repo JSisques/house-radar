@@ -30,8 +30,9 @@
   --hr-hatch: #5c6b71;
   --hr-map: #22323a;
 }
+.hr-ds.hr-unk,
 .hr-ds .hr-unk {
-  background: repeating-linear-gradient(135deg, var(--hr-hatch) 0 1px, transparent 1px 7px);
+  background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--hr-hatch) 55%, transparent) 0 1px, transparent 1px 8px);
 }
 .hr-ds .hr-mono {
   font-family: var(--hr-font-mono);

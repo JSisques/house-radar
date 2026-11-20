@@ -50,7 +50,7 @@ Prices, areas, coordinates and dates always use the data role so columns of numb
 
 ## Signature: unknown values are drawn
 
-A value the source does not declare is not filled in or hidden. It is drawn with a cartographic hatch (135° lines, 1px every 7px, hatch token), a dashed border, and the texts "sin dato" and "no declarado" (translated per locale). It is never rendered as `—`, empty or zero, so "it has none" and "we do not know" stay distinct. In the app this is one shared component.
+A value the source does not declare is not filled in or hidden. It is drawn with a cartographic hatch (135° lines, 1px every 8px, hatch token at 55% opacity so text over it stays legible, hatch token), a dashed border, and the texts "sin dato" and "no declarado" (translated per locale). It is never rendered as `—`, empty or zero, so "it has none" and "we do not know" stay distinct. In the app this is one shared component.
 
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:0.75rem;margin:1rem 0">
   <HatchSample label="Built area" value="186 m²" note="declarado · idealista" />

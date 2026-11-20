@@ -34,7 +34,7 @@ sidebar:
 
 **Tipografía.** Schibsted Grotesk para títulos (700 a 800, con moderación), Public Sans para cuerpo e interfaz e IBM Plex Mono con cifras tabulares para precios, superficies, coordenadas y fechas.
 
-**Firma: lo desconocido se dibuja.** Un valor que la fuente no declara se dibuja con una trama cartográfica (líneas a 135°, 1px cada 7px, con el token de trama), un borde discontinuo y los textos «sin dato» y «no declarado» (traducidos por idioma). Nunca se muestra como `—`, vacío o cero. El gráfico del historial de precios dibuja el periodo anterior a la primera observación como un área rayada «sin observar».
+**Firma: lo desconocido se dibuja.** Un valor que la fuente no declara se dibuja con una trama cartográfica (líneas a 135°, 1px cada 8px, token de trama al 55 % de opacidad para que el texto encima siga siendo legible, con el token de trama), un borde discontinuo y los textos «sin dato» y «no declarado» (traducidos por idioma). Nunca se muestra como `—`, vacío o cero. El gráfico del historial de precios dibuja el periodo anterior a la primera observación como un área rayada «sin observar».
 
 **Reglas.**
 

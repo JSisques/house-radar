@@ -34,7 +34,7 @@ sidebar:
 
 **Typography.** Schibsted Grotesk for display (700 to 800, restrained), Public Sans for body and UI, IBM Plex Mono with tabular figures for prices, areas, coordinates and dates.
 
-**Signature: unknown values are drawn.** A value the source does not declare is drawn with a cartographic hatch (135° lines, 1px every 7px, in the hatch token), a dashed border and the texts "sin dato" and "no declarado" (translated per locale). It is never rendered as `—`, empty or zero. The price history chart draws the period before the first observation as a hatched "sin observar" area.
+**Signature: unknown values are drawn.** A value the source does not declare is drawn with a cartographic hatch (135° lines, 1px every 8px, hatch token at 55% opacity so text over it stays legible, in the hatch token), a dashed border and the texts "sin dato" and "no declarado" (translated per locale). It is never rendered as `—`, empty or zero. The price history chart draws the period before the first observation as a hatched "sin observar" area.
 
 **Rules.**
 

@@ -11,7 +11,7 @@ const { label, value, note } = Astro.props;
 const known = value !== undefined;
 ---
 
-<div class:list={['hr-ds', 'cell', { 'hr-unk': !known, unknown: !known }]}>
+<div class:list={['not-content', 'hr-ds', 'cell', { 'hr-unk': !known, unknown: !known }]}>
   <span class="label">{label}</span>
   <span class="hr-mono value">{known ? value : 'sin dato'}</span>
   <span class="hr-mono note">{note}</span>

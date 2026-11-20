@@ -50,7 +50,7 @@ Los precios, superficies, coordenadas y fechas usan siempre el rol de datos para
 
 ## Firma: lo desconocido se dibuja
 
-Un valor que la fuente no declara no se rellena ni se oculta. Se dibuja con una trama cartográfica (líneas a 135°, 1px cada 7px, token de trama), un borde discontinuo y los textos «sin dato» y «no declarado» (traducidos por idioma). Nunca se muestra como `—`, vacío o cero, de modo que «no tiene» y «no lo sabemos» siguen siendo distintos. En la aplicación es un único componente compartido.
+Un valor que la fuente no declara no se rellena ni se oculta. Se dibuja con una trama cartográfica (líneas a 135°, 1px cada 8px, token de trama al 55 % de opacidad para que el texto encima siga siendo legible, token de trama), un borde discontinuo y los textos «sin dato» y «no declarado» (traducidos por idioma). Nunca se muestra como `—`, vacío o cero, de modo que «no tiene» y «no lo sabemos» siguen siendo distintos. En la aplicación es un único componente compartido.
 
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:0.75rem;margin:1rem 0">
   <HatchSample label="Superficie construida" value="186 m²" note="declarado · idealista" />
