@@ -10,7 +10,7 @@ sidebar:
 
 ## Contexto
 
-El código, la infraestructura y la documentación requerían una organización de repositorios. El repositorio provisional `house-radar-docs` se moverá a `apps/docs` cuando se cree el monorepo.
+El código, la infraestructura y la documentación requerían una organización de repositorios. Inicialmente se creó un repositorio provisional `house-radar-docs`; se descartó y la documentación vive ahora en `apps/docs` dentro del monorepo.
 
 ## Decisión
 

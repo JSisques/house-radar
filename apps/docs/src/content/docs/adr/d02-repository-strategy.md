@@ -10,7 +10,7 @@ sidebar:
 
 ## Context
 
-Code, infrastructure, and documentation needed a repository layout. The provisional `house-radar-docs` repository will be moved to `apps/docs` when the monorepo is created.
+Code, infrastructure, and documentation needed a repository layout. A provisional `house-radar-docs` repository was initially created; it was discarded and the documentation now lives in `apps/docs` within the monorepo.
 
 ## Decision
 

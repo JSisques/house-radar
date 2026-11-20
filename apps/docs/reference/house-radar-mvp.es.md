@@ -208,8 +208,8 @@ Estructura de contenidos:
     │   └── domain/       # Modelo normalizado compartido
     └── infra/            # Docker Compose y configuración de despliegue
 
-> **Nota:** el repositorio `house-radar-docs` es provisional. Su
-> contenido se moverá a `apps/docs` cuando se cree el monorepo.
+> **Nota:** el repositorio provisional `house-radar-docs` se descartó.
+> La documentación vive en `apps/docs` dentro del monorepo `house-radar`.
 
 ------------------------------------------------------------------------
 
