@@ -68,6 +68,8 @@ Cómo escalan los workers de ingesta sin colisiones y respetan las cuotas por fu
 
 Las reglas de estructura, capas, nomenclatura, testing y herramientas para backend, frontend y paquetes compartidos están en [Convenciones de código](/es/architecture/conventions/).
 
+El sistema visual (paleta, tipografía, la trama para valores desconocidos) está en [Sistema de diseño](/es/architecture/design-system/) ([D34](/es/adr/d34-visual-direction/)).
+
 ## Servicios en ejecución
 
 Todos los servicios se ejecutan con Docker Compose ([D8](/es/adr/d08-deployment/)).

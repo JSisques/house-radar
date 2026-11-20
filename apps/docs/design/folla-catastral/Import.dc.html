@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Importar anuncio</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=Public+Sans:wght@400;500;600&amp;family=Schibsted+Grotesk:wght@500;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.hr{--bg:#E6E9E7;--surface:#F3F5F4;--ink:#1E2A30;--muted:#4A575E;--line:#C3CAC7;--primary:#2F5D4E;--on-primary:#F3F5F4;--geo:#3C6E8F;--accent:#D4A017;--warn:#9E4A2F;--hatch:#9AA4A0;--map:#D5DEDB;background:var(--bg);color:var(--ink);font-family:'Public Sans',system-ui,sans-serif}
+.hr.dark{--bg:#1E2A30;--surface:#26343B;--ink:#E6E9E7;--muted:#AEB8B4;--line:#3E4E56;--primary:#8CC2AC;--on-primary:#13201A;--geo:#8DB8D6;--accent:#D4A017;--warn:#E39575;--hatch:#5C6B71;--map:#22323A}
+.unk{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--hatch) 55%,transparent) 0 1px,transparent 1px 8px)}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.display{font-family:'Schibsted Grotesk',system-ui,sans-serif}
+a{color:var(--geo)}a:hover{color:var(--primary)}
+input,select,button{font:inherit}
+.field{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600}
+.field input,.field select{padding:11px 12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-weight:400}
+.hint{font-size:12px;font-weight:400;color:var(--muted)}
+</style>
+</helmet>
+<div class="hr {{themeClass}}" style="min-height: 1100px; display: flex; flex-direction: column">
+  <header style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding: 14px clamp(16px, 3vw, 32px); border-bottom: 1px solid var(--line); background: var(--surface)">
+    <a href="Main.dc.html" class="display" style="font-size: 20px; font-weight: 800; color: var(--ink); text-decoration: none">House Radar</a>
+    <nav aria-label="Principal" style="display: flex; flex-wrap: wrap; gap: 4px">
+      <a href="Search.dc.html" style="padding: 10px 14px; color: var(--muted); text-decoration: none">Buscar</a>
+      <a href="Import.dc.html" style="padding: 10px 14px; color: var(--ink); font-weight: 600; text-decoration: none; border-bottom: 2px solid var(--primary)">Importar anuncio</a>
+      <a href="#" style="padding: 10px 14px; color: var(--muted); text-decoration: none">Panel</a>
+    </nav>
+  </header>
+
+  <div style="box-sizing: border-box; width: 100%; max-width: 1280px; margin: 0 auto; padding: 40px clamp(16px, 3vw, 32px); display: flex; flex-wrap: wrap; gap: 40px">
+    <form style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 28px">
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <h1 class="display" style="margin: 0; font-size: 36px; font-weight: 800; letter-spacing: -0.02em">Importar un anuncio</h1>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: var(--muted)">Pega el enlace y copia los datos que muestra el anuncio. Lo que no aparezca, márcalo como «no lo dice»: quedará como desconocido, nunca como cero.</p>
+      </div>
+
+      <label class="field">Enlace al anuncio original
+        <input type="url" value="https://www.idealista.com/inmueble/104882731/" class="mono">
+        <span class="hint">Se guarda como procedencia y para volver al original. No se lee nada de esa página.</span>
+      </label>
+
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
+        <label class="field">Título<input value="Casa de piedra con finca"></label>
+        <label class="field">Precio (€)<input class="mono" value="245.000"></label>
+        <label class="field">Tipo de inmueble<select><option>Casa independiente</option><option>Casa rústica</option><option>Piso</option></select></label>
+        <label class="field">Estado<select><option>Buen estado</option><option>A reformar</option><option>Obra nueva</option><option>Desconocido</option></select></label>
+      </div>
+
+      <fieldset style="border: 0; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
+        <legend class="display" style="font-size: 18px; font-weight: 700; margin-bottom: 12px">Superficies</legend>
+        <label class="field">Construida (m²)<input class="mono" value="186"></label>
+        <div class="field">
+          <label for="usable">Útil (m²)</label>
+          <input id="usable" class="mono unk" value="" placeholder="no lo dice" disabled="{{true}}" style="border-style: dashed">
+          <label class="hint" style="display: flex; align-items: center; gap: 8px; min-height: 32px"><input type="checkbox" checked="{{true}}" style="width: 18px; height: 18px; accent-color: var(--primary)">El anuncio no lo dice</label>
+        </div>
+        <label class="field">Parcela (m²)<input class="mono" value="2.400"></label>
+      </fieldset>
+
+      <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px">
+        <legend class="display" style="font-size: 18px; font-weight: 700; margin-bottom: 12px">Ubicación</legend>
+        <div style="position: relative; height: 240px; background: var(--map); border: 1px solid var(--line); overflow: hidden">
+          <svg aria-hidden="true" viewBox="0 0 800 240" preserveAspectRatio="none" style="position: absolute; inset: 0; width: 100%; height: 100%">
+            <g fill="none" stroke="var(--hatch)" stroke-width="1" opacity="0.7"><path d="M0 60 C200 20 400 100 800 50"></path><path d="M0 130 C220 90 420 170 800 120"></path><path d="M0 200 C200 160 420 240 800 190"></path></g>
+          </svg>
+          <span aria-hidden="true" style="position: absolute; left: 46%; top: 38%; width: 18px; height: 18px; border-radius: 50%; background: var(--primary); border: 3px solid var(--surface); box-shadow: 0 0 0 1px var(--ink)"></span>
+          <span class="mono" style="position: absolute; left: 12px; bottom: 10px; font-size: 12px; color: var(--muted)">Haz clic en el mapa para colocar el pin · 42.8607, -8.6512</span>
+        </div>
+        <div role="radiogroup" aria-label="Precisión de la ubicación" style="display: flex; flex-wrap: wrap; gap: 8px">
+          <label style="display: flex; align-items: center; gap: 8px; padding: 10px 14px; border: 1px solid var(--primary); background: var(--surface); font-size: 14px"><input type="radio" name="precision" checked="{{true}}" style="accent-color: var(--primary)">Exacta</label>
+          <label style="display: flex; align-items: center; gap: 8px; padding: 10px 14px; border: 1px solid var(--line); font-size: 14px"><input type="radio" name="precision" style="accent-color: var(--primary)">Aproximada</label>
+          <label style="display: flex; align-items: center; gap: 8px; padding: 10px 14px; border: 1px solid var(--line); font-size: 14px"><input type="radio" name="precision" style="accent-color: var(--primary)">Solo el municipio</label>
+        </div>
+        <span class="hint">Municipio detectado por el pin: <strong>Ames (A Coruña)</strong></span>
+      </fieldset>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 12px">
+        <button type="submit" style="padding: 13px 20px; background: var(--primary); color: var(--on-primary); border: 0; font-weight: 600; cursor: pointer">Importar anuncio</button>
+        <a href="Search.dc.html" style="padding: 13px 4px">Cancelar</a>
+      </div>
+    </form>
+
+    <aside aria-label="Vista previa de la ficha" style="flex: 1 1 340px; min-width: 0; align-self: flex-start; display: flex; flex-direction: column; gap: 12px">
+      <span class="mono" style="font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted)">Así quedará la ficha</span>
+      <div style="background: var(--surface); border: 1px solid var(--line); padding: 20px; display: flex; flex-direction: column; gap: 14px">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <strong class="display" style="font-size: 20px">Casa de piedra con finca</strong>
+          <span style="font-size: 13px; color: var(--muted)">Casa independiente · Ames</span>
+        </div>
+        <span class="mono" style="font-size: 28px; font-weight: 500">245.000 €</span>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+          <div style="border: 1px solid var(--line); padding: 10px 12px"><div style="font-size: 12px; color: var(--muted)">Construida</div><div class="mono" style="font-size: 16px">186 m²</div></div>
+          <div class="unk" style="border: 1px dashed var(--hatch); padding: 10px 12px"><div style="font-size: 12px; color: var(--muted)">Útil</div><div class="mono" style="font-size: 16px; color: var(--muted)">sin dato</div></div>
+          <div style="border: 1px solid var(--line); padding: 10px 12px"><div style="font-size: 12px; color: var(--muted)">Parcela</div><div class="mono" style="font-size: 16px">2.400 m²</div></div>
+          <div style="border: 1px solid var(--line); padding: 10px 12px"><div style="font-size: 12px; color: var(--muted)">€/m²</div><div class="mono" style="font-size: 16px">1.317</div></div>
+          <div class="unk" style="border: 1px dashed var(--hatch); padding: 10px 12px"><div style="font-size: 12px; color: var(--muted)">Dormitorios</div><div class="mono" style="font-size: 16px; color: var(--muted)">sin dato</div></div>
+          <div class="unk" style="border: 1px dashed var(--hatch); padding: 10px 12px"><div style="font-size: 12px; color: var(--muted)">Año</div><div class="mono" style="font-size: 16px; color: var(--muted)">sin dato</div></div>
+        </div>
+        <p style="margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted)">3 datos quedarán como desconocidos. Puedes completarlos más tarde con «comprobar anuncio».</p>
+      </div>
+    </aside>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { themeClass: this.props.dark ? 'dark' : '' };
+  }
+}
+</script>
+</body>
+</html>

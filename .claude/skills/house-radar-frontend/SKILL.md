@@ -23,6 +23,11 @@ Load when creating or editing code in `apps/web`.
 - Containers fetch; presentational components only render props. Reusable pieces go in `shared/presentation/components/{atoms,molecules,organisms,templates}`.
 - One folder per component with `.spec.tsx` and `.stories.tsx`. Named exports, no barrels, aliases, kebab-case with role suffix. No `any`.
 - API access only through the OpenAPI client wrapped by repository adapters. Mock with MSW.
+- Visual system "Folla catastral" (D34): use design tokens (CSS variables / Tailwind theme), never raw hex in components.
+- Typography roles: Schibsted Grotesk for display, Public Sans for body/UI, IBM Plex Mono with tabular figures for prices, areas, coordinates and dates.
+- Unknown values render only through the shared Unknown (hatch) component with "sin dato" / "no declarado" texts via i18n. Never `—`, empty or `0`. Price history draws the pre-observation period as a hatched "sin observar" area.
+- Price rises and errors (Ferruxe) are never conveyed by color alone: add an arrow or text. Attribute conflicts get a Ferruxe border and name the other source's value.
+- Líquen (accent) is only for new items and price drops, always with dark text; never decorative.
 
 ## Decision Gates
 

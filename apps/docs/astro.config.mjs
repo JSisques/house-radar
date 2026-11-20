@@ -6,6 +6,16 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'House Radar',
+      // Visual direction "Folla catastral" (ADR D34): self-hosted fonts + theme tokens.
+      customCss: [
+        '@fontsource/public-sans/400.css',
+        '@fontsource/public-sans/600.css',
+        '@fontsource/schibsted-grotesk/700.css',
+        '@fontsource/schibsted-grotesk/800.css',
+        '@fontsource/ibm-plex-mono/400.css',
+        '@fontsource/ibm-plex-mono/500.css',
+        './src/styles/theme.css',
+      ],
       defaultLocale: 'root',
       locales: {
         root: { label: 'English', lang: 'en' },

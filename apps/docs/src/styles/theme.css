@@ -1,0 +1,64 @@
+/*
+ * House Radar docs theme: "Folla catastral" (ADR D34) mapped onto Starlight's
+ * theme variables. Only colors and fonts change; Starlight's structure stays.
+ * Fonts are self-hosted through Fontsource (imported in astro.config.mjs).
+ */
+
+/* Dark theme (Starlight's default :root). Background is Lousa. */
+:root {
+  --sl-color-white: #f3f5f4;
+  --sl-color-gray-1: #e6e9e7;
+  --sl-color-gray-2: #c3cac7;
+  --sl-color-gray-3: #aeb8b4;
+  --sl-color-gray-4: #6e7c82;
+  --sl-color-gray-5: #3e4e56;
+  --sl-color-gray-6: #26343b;
+  --sl-color-black: #1e2a30;
+
+  --sl-color-accent-low: #1f3a31;
+  --sl-color-accent: #8cc2ac;
+  --sl-color-accent-high: #d6ede3;
+
+  --sl-font: 'Public Sans', system-ui, sans-serif;
+  --sl-font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --hr-font-display: 'Schibsted Grotesk', system-ui, sans-serif;
+}
+
+/*
+ * Light theme. Long-form reading happens on Surface (#F3F5F4); Brétema
+ * (#E6E9E7) is used for the chrome (header, sidebars), so long pages do not
+ * sit on the darker fog grey.
+ */
+:root[data-theme='light'] {
+  --sl-color-white: #1e2a30;
+  --sl-color-gray-1: #26343b;
+  --sl-color-gray-2: #34434a;
+  --sl-color-gray-3: #4a575e;
+  --sl-color-gray-4: #7d8a86;
+  --sl-color-gray-5: #c3cac7;
+  --sl-color-gray-6: #e6e9e7;
+  --sl-color-gray-7: #edf0ee;
+  --sl-color-black: #f3f5f4;
+
+  --sl-color-accent-low: #d4e5dd;
+  --sl-color-accent: #2f5d4e;
+  --sl-color-accent-high: #234a3e;
+}
+
+/* Display face for headings and the site title, used with restraint. */
+.sl-markdown-content :is(h1, h2, h3, h4),
+h1#_top,
+.site-title {
+  font-family: var(--hr-font-display);
+  letter-spacing: -0.01em;
+}
+
+h1#_top {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* Data reads as data: tabular figures in code and tables. */
+.sl-markdown-content :is(code, table) {
+  font-variant-numeric: tabular-nums;
+}

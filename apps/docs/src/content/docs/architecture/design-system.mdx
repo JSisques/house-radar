@@ -1,0 +1,96 @@
+---
+title: Design system
+description: "The Folla catastral visual system rendered live: palette, typography, the hatch signature for unknown values, price states and accessibility rules."
+sidebar:
+  order: 5
+---
+
+import Swatch from '../../../components/design/Swatch.astro';
+import TypeSample from '../../../components/design/TypeSample.astro';
+import HatchSample from '../../../components/design/HatchSample.astro';
+import HatchHistory from '../../../components/design/HatchHistory.astro';
+import PriceChip from '../../../components/design/PriceChip.astro';
+
+Decision [D34](/adr/d34-visual-direction/). Every sample below is rendered by small components in `apps/docs/src/components/design/`, so the page shows the real tokens and follows the light and dark theme of the portal. The tokens will be implemented as CSS variables and a Tailwind theme in `apps/web` ([D5](/adr/d05-frontend-framework/)).
+
+## Principle
+
+"Folla catastral" is a surveyor's data sheet, not a property showroom. Every datum has a source and a date; what was not measured is drawn as unmeasured land. It puts into the interface the product principle of not inventing information: a missing value is visible and distinguishable from a value that is zero or absent.
+
+## Palette
+
+Each swatch shows the light value (left) and the dark value (right).
+
+| Token | Swatch | Light | Dark | Role |
+| --- | --- | --- | --- | --- |
+| Brétema (background) | <Swatch name="Brétema" light="#E6E9E7" dark="#1E2A30" /> | `#E6E9E7` | `#1E2A30` | Cool fog grey, never cream; the dark base is Lousa |
+| Lousa (ink) | <Swatch name="Lousa" light="#1E2A30" dark="#E6E9E7" /> | `#1E2A30` | `#E6E9E7` | Main text; dark theme background |
+| Musgo (primary) | <Swatch name="Musgo" light="#2F5D4E" dark="#8CC2AC" /> | `#2F5D4E` | `#8CC2AC` | Actions, selection, focus |
+| Atlántico (geo) | <Swatch name="Atlántico" light="#3C6E8F" dark="#8DB8D6" /> | `#3C6E8F` | `#8DB8D6` | Map, links, geographic data |
+| Líquen (accent) | <Swatch name="Líquen" light="#D4A017" dark="#D4A017" /> | `#D4A017` | `#D4A017` | Scarce accent: new items and price drops; always with dark text |
+| Ferruxe (warn) | <Swatch name="Ferruxe" light="#9E4A2F" dark="#E39575" /> | `#9E4A2F` | `#E39575` | Price rises and errors; never by color alone |
+| Surface | <Swatch name="Surface" light="#F3F5F4" dark="#26343B" /> | `#F3F5F4` | `#26343B` | Cards and panels |
+| Muted | <Swatch name="Muted" light="#4A575E" dark="#AEB8B4" /> | `#4A575E` | `#AEB8B4` | Secondary text |
+| Line | <Swatch name="Line" light="#C3CAC7" dark="#3E4E56" /> | `#C3CAC7` | `#3E4E56` | Borders and dividers |
+| Hatch | <Swatch name="Hatch" light="#9AA4A0" dark="#5C6B71" /> | `#9AA4A0` | `#5C6B71` | Unknown-value pattern |
+| Map | <Swatch name="Map" light="#D5DEDB" dark="#22323A" /> | `#D5DEDB` | `#22323A` | Map background |
+
+## Typography
+
+Three roles, three typefaces. They are self-hosted with Fontsource (no third-party requests) and loaded for the whole portal; system font stacks remain as fallback (`system-ui`, `ui-monospace`), so the page stays readable.
+
+<TypeSample role="display" caption="Display · Schibsted Grotesk 700-800, restrained">Casa con terreno en Ames</TypeSample>
+<TypeSample role="body" caption="Body and UI · Public Sans 400-600">Vivienda unifamiliar de piedra con finca cerrada, a 9 km del centro de Santiago.</TypeSample>
+<TypeSample role="mono" caption="Data · IBM Plex Mono, tabular figures">245.000 € · 186 m² · 1.317 €/m²</TypeSample>
+
+Prices, areas, coordinates and dates always use the data role so columns of numbers align.
+
+## Signature: unknown values are drawn
+
+A value the source does not declare is not filled in or hidden. It is drawn with a cartographic hatch (135° lines, 1px every 8px, hatch token at 55% opacity so text over it stays legible, hatch token), a dashed border, and the texts "sin dato" and "no declarado" (translated per locale). It is never rendered as `—`, empty or zero, so "it has none" and "we do not know" stay distinct. In the app this is one shared component.
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:0.75rem;margin:1rem 0">
+  <HatchSample label="Built area" value="186 m²" note="declarado · idealista" />
+  <HatchSample label="Usable area" note="no declarado" />
+  <HatchSample label="Price per m²" value="1.317 €/m²" note="calculado · construida" />
+  <HatchSample label="Year built" note="no declarado" />
+</div>
+
+### History: "sin observar"
+
+In the price history, the period before the first observation is drawn as a hatched "sin observar" area. The line starts where the first observation exists; nothing is extrapolated backwards.
+
+<HatchHistory label="Price history: hatched area for the period before the first observation, then the observed price line" />
+
+## Price states
+
+<PriceChip kind="drop">▼ −10.000 € · bajada</PriceChip>
+<PriceChip kind="rise">▲ +5.000 € · subida</PriceChip>
+<PriceChip kind="new">nuevo · hace 2 días</PriceChip>
+<PriceChip kind="gone">desaparecido · 3 comprobaciones</PriceChip>
+<PriceChip kind="approx">ubicación aproximada</PriceChip>
+
+- Líquen is scarce on purpose: only new items and price drops, always with dark text.
+- Rises and errors use Ferruxe and never rely on color alone: an arrow or text always accompanies it.
+- An approximate location is a dashed circle on the map, not a pin.
+
+## Conflicts
+
+When two sources disagree on an attribute ([D20](/adr/d20-listing-consolidation-rules/)), the attribute gets a Ferruxe border and names the other source's value, so the user sees both and the source of each.
+
+## Accessibility
+
+- Text and state colors keep sufficient contrast in light and dark; Líquen always carries dark text.
+- Color is never the only signal: price changes and errors include an arrow or text.
+- Unknown values are announced as text ("sin dato", "no declarado"), not conveyed only by the hatch.
+- Fonts are self-hosted (Fontsource), always with system fallbacks.
+
+## Screens
+
+The reference screens for the walking skeleton are:
+
+- **Search:** filter rail, property results ("N anuncios, desde"), a map with "Buscar en esta zona" and approximate locations as dashed circles.
+- **Detail:** data sheet grid, observed history, listings table and duplicate resolution.
+- **Assisted import:** form with "El anuncio no lo dice", a map pin with precision, the detected municipality and a live preview.
+
+Their canvas sources are versioned in [`apps/docs/design/folla-catastral/`](https://github.com/JSisques/house-radar/tree/main/apps/docs/design/folla-catastral). The live canvas is private; the versioned sources are the guide.

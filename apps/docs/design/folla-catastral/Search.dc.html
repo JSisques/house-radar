@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Buscador de propiedades</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=Public+Sans:wght@400;500;600&amp;family=Schibsted+Grotesk:wght@500;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.hr{--bg:#E6E9E7;--surface:#F3F5F4;--ink:#1E2A30;--muted:#4A575E;--line:#C3CAC7;--primary:#2F5D4E;--on-primary:#F3F5F4;--geo:#3C6E8F;--accent:#D4A017;--warn:#9E4A2F;--hatch:#9AA4A0;--map:#D5DEDB;background:var(--bg);color:var(--ink);font-family:'Public Sans',system-ui,sans-serif}
+.hr.dark{--bg:#1E2A30;--surface:#26343B;--ink:#E6E9E7;--muted:#AEB8B4;--line:#3E4E56;--primary:#8CC2AC;--on-primary:#13201A;--geo:#8DB8D6;--accent:#D4A017;--warn:#E39575;--hatch:#5C6B71;--map:#22323A}
+.unk{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--hatch) 55%,transparent) 0 1px,transparent 1px 8px)}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.display{font-family:'Schibsted Grotesk',system-ui,sans-serif}
+a{color:var(--geo)}a:hover{color:var(--primary)}
+input,select,button{font:inherit}
+</style>
+</helmet>
+<div class="hr {{themeClass}}" style="min-height: 1000px; display: flex; flex-direction: column">
+  <header style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding: 14px clamp(16px, 3vw, 32px); border-bottom: 1px solid var(--line); background: var(--surface)">
+    <a href="Main.dc.html" class="display" style="font-size: 20px; font-weight: 800; letter-spacing: -0.01em; color: var(--ink); text-decoration: none">House Radar</a>
+    <nav aria-label="Principal" style="display: flex; flex-wrap: wrap; gap: 4px">
+      <a href="Search.dc.html" style="padding: 10px 14px; color: var(--ink); font-weight: 600; text-decoration: none; border-bottom: 2px solid var(--primary)">Buscar</a>
+      <a href="Import.dc.html" style="padding: 10px 14px; color: var(--muted); text-decoration: none">Importar anuncio</a>
+      <a href="#" style="padding: 10px 14px; color: var(--muted); text-decoration: none">Panel</a>
+    </nav>
+  </header>
+
+  <div style="display: flex; flex-wrap: wrap; flex: 1">
+    <aside aria-label="Filtros" style="flex: 1 1 260px; max-width: 100%; box-sizing: border-box; padding: 24px; border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: 22px">
+      <div style="display: flex; justify-content: space-between; align-items: baseline">
+        <h2 class="display" style="margin: 0; font-size: 18px; font-weight: 700">Filtros</h2>
+        <button type="button" style="background: none; border: 0; padding: 8px 0; color: var(--geo); cursor: pointer">Limpiar filtros</button>
+      </div>
+      <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+        <legend style="font-size: 13px; font-weight: 600; margin-bottom: 8px">Precio</legend>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+          <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted)">Mínimo<input class="mono" value="120.000" style="padding: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink)"></label>
+          <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted)">Máximo<input class="mono" value="280.000" style="padding: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink)"></label>
+        </div>
+      </fieldset>
+      <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+        <legend style="font-size: 13px; font-weight: 600; margin-bottom: 8px">Tipo de inmueble</legend>
+        <sc-for list="{{types}}" as="t" hint-placeholder-count="4">
+          <label style="display: flex; align-items: center; gap: 10px; min-height: 32px; font-size: 15px"><input type="checkbox" checked="{{t.on}}" style="width: 18px; height: 18px; accent-color: var(--primary)">{{t.label}}</label>
+        </sc-for>
+      </fieldset>
+      <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+        <legend style="font-size: 13px; font-weight: 600; margin-bottom: 8px">Terreno mínimo</legend>
+        <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted)">m² de parcela<input class="mono" value="1.000" style="padding: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink)"></label>
+      </fieldset>
+      <label style="display: flex; align-items: center; gap: 10px; min-height: 32px; font-size: 15px"><input type="checkbox" style="width: 18px; height: 18px; accent-color: var(--primary)">Incluir anuncios desaparecidos</label>
+    </aside>
+
+    <main style="flex: 999 1 520px; min-width: 0; display: flex; flex-wrap: wrap">
+      <section aria-label="Resultados" style="flex: 1 1 420px; min-width: 0; box-sizing: border-box; padding: 24px; display: flex; flex-direction: column; gap: 16px">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px">
+          <p style="margin: 0; font-size: 15px"><strong class="mono">37</strong> propiedades en <strong>Santiago y comarca</strong></p>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted)">Ordenar
+            <select style="padding: 8px 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink)"><option>Precio por m², menor</option><option>Precio, menor</option><option>Más recientes</option></select>
+          </label>
+        </div>
+        <sc-for list="{{results}}" as="r" hint-placeholder-count="5">
+          <article style="display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 16px; padding: 16px; background: var(--surface); border: 1px solid {{r.border}}">
+            <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+              <a href="Detail.dc.html" class="display" style="font-size: 18px; font-weight: 700; color: var(--ink); text-decoration: none">{{r.title}}</a>
+              <span style="font-size: 14px; color: var(--muted)">{{r.place}}</span>
+            </div>
+            <div style="text-align: right">
+              <div class="mono" style="font-size: 20px; font-weight: 500">{{r.price}}</div>
+              <div class="mono" style="font-size: 12px; color: var(--muted)">{{r.listings}}</div>
+            </div>
+            <div style="grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+              <span class="mono" style="font-size: 13px; padding: 4px 8px; border: 1px solid var(--line)">{{r.area}}</span>
+              <sc-if value="{{r.ppmKnown}}" hint-placeholder-val="{{true}}">
+                <span class="mono" style="font-size: 13px; padding: 4px 8px; border: 1px solid var(--line)">{{r.ppm}}</span>
+              </sc-if>
+              <sc-if value="{{r.ppmUnknown}}" hint-placeholder-val="{{false}}">
+                <span class="mono unk" style="font-size: 13px; padding: 4px 8px; border: 1px dashed var(--hatch); color: var(--muted)">€/m² sin dato</span>
+              </sc-if>
+              <sc-if value="{{r.drop}}" hint-placeholder-val="{{false}}">
+                <span class="mono" style="font-size: 13px; padding: 4px 8px; background: var(--accent); color: #1E2A30; font-weight: 500">{{r.drop}}</span>
+              </sc-if>
+            </div>
+          </article>
+        </sc-for>
+      </section>
+
+      <section aria-label="Mapa" style="flex: 1 1 380px; min-height: 520px; position: relative; background: var(--map); border-left: 1px solid var(--line); overflow: hidden">
+        <svg aria-hidden="true" viewBox="0 0 600 900" preserveAspectRatio="xMidYMid slice" style="position: absolute; inset: 0; width: 100%; height: 100%">
+          <g fill="none" stroke="var(--hatch)" stroke-width="1" opacity="0.7">
+            <path d="M-20 140 C120 90 220 180 360 130 S560 60 640 120"></path>
+            <path d="M-20 260 C140 210 230 300 380 250 S560 190 640 240"></path>
+            <path d="M-20 390 C110 350 260 430 400 380 S570 320 640 370"></path>
+            <path d="M-20 520 C150 470 240 560 390 510 S580 450 640 500"></path>
+            <path d="M-20 650 C120 610 250 690 410 640 S570 590 640 630"></path>
+            <path d="M-20 780 C140 740 260 820 400 770 S560 720 640 760"></path>
+          </g>
+          <path d="M180 0 C200 200 140 380 230 520 S300 760 260 900" fill="none" stroke="var(--geo)" stroke-width="3" opacity="0.5"></path>
+        </svg>
+        <button type="button" style="position: absolute; top: 16px; left: 50%; transform: translateX(-50%); padding: 10px 16px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); cursor: pointer; font-weight: 600">Buscar en esta zona</button>
+        <sc-for list="{{pins}}" as="p" hint-placeholder-count="5">
+          <span class="mono" style="position: absolute; left: {{p.x}}; top: {{p.y}}; padding: 5px 9px; font-size: 13px; font-weight: 500; background: {{p.bg}}; color: {{p.fg}}; border: 1px solid var(--ink)">{{p.label}}</span>
+        </sc-for>
+        <span class="mono" style="position: absolute; left: 62%; top: 30%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--geo); color: #F3F5F4; font-size: 14px; font-weight: 500">12</span>
+        <span class="mono" style="position: absolute; left: 30%; top: 70%; width: 120px; height: 120px; border-radius: 50%; border: 2px dashed var(--geo)"></span>
+        <span class="mono" style="position: absolute; left: calc(30% + 10px); top: calc(70% + 126px); font-size: 11px; color: var(--muted)">ubicación aproximada</span>
+        <span style="position: absolute; right: 8px; bottom: 6px; font-size: 11px; color: var(--muted)">© OpenStreetMap</span>
+      </section>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const base = { border: 'var(--line)', ppmKnown: true, ppmUnknown: false, drop: '' };
+    return {
+      themeClass: this.props.dark ? 'dark' : '',
+      types: [
+        { label: 'Casa independiente', on: true },
+        { label: 'Casa rústica', on: true },
+        { label: 'Adosada o pareada', on: false },
+        { label: 'Piso', on: false }
+      ],
+      results: [
+        { ...base, title: 'Casa de piedra con finca', place: 'Bertamiráns · Ames', price: '245.000 €', listings: '2 anuncios, desde', area: '186 m² · 2.400 m² parcela', ppm: '1.317 €/m²', drop: '▼ −10.000 € en 3 semanas', border: 'var(--primary)' },
+        { ...base, title: 'Casa rústica para reformar', place: 'Calo · Teo', price: '132.000 €', listings: '1 anuncio', area: 'construida sin dato · 3.100 m² parcela', ppmKnown: false, ppmUnknown: true },
+        { ...base, title: 'Unifamiliar con jardín', place: 'Oroso · Sigüeiro', price: '219.500 €', listings: '1 anuncio', area: '164 m² · 900 m² parcela', ppm: '1.338 €/m²' },
+        { ...base, title: 'Casa con hórreo y viña', place: 'Boqueixón', price: '178.000 €', listings: '3 anuncios, desde', area: '142 m² · 4.050 m² parcela', ppm: '1.254 €/m²', drop: 'nuevo · hace 2 días' },
+        { ...base, title: 'Casa independiente en aldea', place: 'Brión', price: '264.000 €', listings: '1 anuncio', area: '210 m² · 1.500 m² parcela', ppm: '1.257 €/m²' }
+      ],
+      pins: [
+        { x: '22%', y: '38%', label: '245k', bg: 'var(--primary)', fg: 'var(--on-primary)' },
+        { x: '48%', y: '58%', label: '132k', bg: 'var(--surface)', fg: 'var(--ink)' },
+        { x: '58%', y: '16%', label: '219k', bg: 'var(--surface)', fg: 'var(--ink)' },
+        { x: '72%', y: '52%', label: '178k', bg: 'var(--accent)', fg: '#1E2A30' },
+        { x: '12%', y: '22%', label: '264k', bg: 'var(--surface)', fg: 'var(--ink)' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

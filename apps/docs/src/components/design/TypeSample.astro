@@ -1,0 +1,47 @@
+---
+import './tokens.css';
+
+interface Props {
+  role: 'display' | 'body' | 'mono';
+  caption: string;
+}
+
+const { role, caption } = Astro.props;
+---
+
+<div class="hr-ds sample">
+  <span class="hr-mono caption">{caption}</span>
+  <span class={`text ${role}`}><slot /></span>
+</div>
+
+<style>
+  .sample {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    border-top: 1px solid var(--hr-line);
+    padding: 0.75rem 0;
+  }
+  .caption {
+    font-size: 0.75rem;
+    color: var(--hr-muted);
+  }
+  .display {
+    font-family: var(--hr-font-display);
+    font-size: 2.25rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+  .body {
+    font-family: var(--hr-font-body);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  .mono {
+    font-family: var(--hr-font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 1.35rem;
+    font-weight: 500;
+  }
+</style>

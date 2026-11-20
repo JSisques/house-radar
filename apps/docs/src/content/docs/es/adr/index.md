@@ -1,11 +1,11 @@
 ---
 title: "Registros de decisiones de arquitectura"
-description: "Índice de todas las decisiones de arquitectura D0 a D33."
+description: "Índice de todas las decisiones de arquitectura D0 a D34."
 sidebar:
   order: 0
 ---
 
-Decisiones de producto y técnicas tomadas antes de empezar el desarrollo. Cada decisión del registro se documenta como un ADR cuyo identificador coincide con el del registro (D0 a D33). La numeración de los ADR es el número de la decisión. Usa la [plantilla](/es/adr/template/) para nuevas decisiones.
+Decisiones de producto y técnicas tomadas antes de empezar el desarrollo. Cada decisión del registro se documenta como un ADR cuyo identificador coincide con el del registro (D0 a D34). La numeración de los ADR es el número de la decisión. Usa la [plantilla](/es/adr/template/) para nuevas decisiones.
 
 | ID | Decisión | Resultado | Fecha |
 | --- | --- | --- | --- |
@@ -43,3 +43,4 @@ Decisiones de producto y técnicas tomadas antes de empezar el desarrollo. Cada 
 | D31 | [Outbox transaccional](/es/adr/d31-transactional-outbox/) | Los eventos de dominio se escriben en `outbox_event` en la transacción del agregado; un relay publica con BullMQ y los consumidores son idempotentes. | 2026-11-20 |
 | D32 | [Identificadores UUIDv7](/es/adr/d32-uuid-v7/) | UUIDv7 ordenado en el tiempo para IDs de agregados, eventos y outbox, generado con el paquete `uuid`. | 2026-11-20 |
 | D33 | [Versionado y releases](/es/adr/d33-versioning-and-releases/) | Una única versión de producto para el monorepo con release-please (Release PR, `0.x` hasta la Release 1.0) e imágenes Docker etiquetadas con versión y SHA del commit. | 2026-11-20 |
+| D34 | [Dirección visual](/es/adr/d34-visual-direction/) | «Folla catastral»: identidad de ficha de topógrafo con paleta gris niebla fría, tres tipografías y una trama cartográfica que dibuja los valores desconocidos en lugar de ocultarlos. | 2026-11-20 |

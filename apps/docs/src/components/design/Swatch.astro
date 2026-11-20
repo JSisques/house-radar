@@ -1,0 +1,29 @@
+---
+import './tokens.css';
+
+interface Props {
+  name: string;
+  light: string;
+  dark: string;
+}
+
+const { name, light, dark } = Astro.props;
+---
+
+<span class="hr-ds swatch" role="img" aria-label={`${name}: light ${light}, dark ${dark}`}>
+  <span class="chip" style={`background:${light}`}></span>
+  <span class="chip" style={`background:${dark}`}></span>
+</span>
+
+<style>
+  .swatch {
+    display: inline-flex;
+    border: 1px solid var(--hr-line);
+    vertical-align: middle;
+  }
+  .chip {
+    display: block;
+    width: 2rem;
+    height: 1.5rem;
+  }
+</style>

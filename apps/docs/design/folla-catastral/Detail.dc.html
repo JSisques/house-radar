@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Ficha de propiedad</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=Public+Sans:wght@400;500;600&amp;family=Schibsted+Grotesk:wght@500;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.hr{--bg:#E6E9E7;--surface:#F3F5F4;--ink:#1E2A30;--muted:#4A575E;--line:#C3CAC7;--primary:#2F5D4E;--on-primary:#F3F5F4;--geo:#3C6E8F;--accent:#D4A017;--warn:#9E4A2F;--hatch:#9AA4A0;background:var(--bg);color:var(--ink);font-family:'Public Sans',system-ui,sans-serif}
+.hr.dark{--bg:#1E2A30;--surface:#26343B;--ink:#E6E9E7;--muted:#AEB8B4;--line:#3E4E56;--primary:#8CC2AC;--on-primary:#13201A;--geo:#8DB8D6;--accent:#D4A017;--warn:#E39575;--hatch:#5C6B71}
+.unk{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--hatch) 55%,transparent) 0 1px,transparent 1px 8px)}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.display{font-family:'Schibsted Grotesk',system-ui,sans-serif}
+a{color:var(--geo)}a:hover{color:var(--primary)}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);font-size:14px}
+th{font-weight:600;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:0.06em}
+button{font:inherit}
+</style>
+</helmet>
+<div class="hr {{themeClass}}" style="min-height: 1500px; display: flex; flex-direction: column">
+  <header style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding: 14px clamp(16px, 3vw, 32px); border-bottom: 1px solid var(--line); background: var(--surface)">
+    <a href="Main.dc.html" class="display" style="font-size: 20px; font-weight: 800; color: var(--ink); text-decoration: none">House Radar</a>
+    <a href="Search.dc.html" style="padding: 10px 0">← Volver a los resultados</a>
+  </header>
+
+  <div style="box-sizing: border-box; width: 100%; max-width: 1200px; margin: 0 auto; padding: 40px clamp(16px, 3vw, 32px); display: flex; flex-direction: column; gap: 40px">
+    <section style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 24px; border-bottom: 1px solid var(--line); padding-bottom: 28px">
+      <div style="display: flex; flex-direction: column; gap: 10px; max-width: 680px">
+        <span class="mono" style="font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted)">Casa independiente · Bertamiráns, Ames (A Coruña)</span>
+        <h1 class="display" style="margin: 0; font-size: clamp(32px, 4vw, 48px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.05">Casa de piedra con finca</h1>
+        <span class="mono" style="font-size: 13px; color: var(--geo)">42.8607° N · 8.6512° O · ubicación exacta</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px">
+        <span style="font-size: 13px; color: var(--muted)">2 anuncios activos, desde</span>
+        <span class="mono" style="font-size: 40px; font-weight: 500; line-height: 1">245.000 €</span>
+        <span class="mono" style="font-size: 14px; padding: 4px 10px; background: var(--accent); color: #1E2A30; font-weight: 500">▼ −10.000 € desde la primera observación</span>
+      </div>
+    </section>
+
+    <section aria-labelledby="sheet" style="display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 12px">
+        <h2 id="sheet" class="display" style="margin: 0; font-size: 22px; font-weight: 700">Hoja de datos</h2>
+        <span style="font-size: 13px; color: var(--muted)">Trama = el anuncio no lo declara. No es lo mismo que «no tiene».</span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px">
+        <sc-for list="{{fields}}" as="f" hint-placeholder-count="12">
+          <div class="{{f.cls}}" style="padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; border: 1px {{f.borderStyle}} {{f.borderColor}}; background-color: {{f.fill}}">
+            <span style="font-size: 13px; color: var(--muted)">{{f.label}}</span>
+            <span class="mono" style="font-size: 19px; font-weight: 500; color: {{f.valueColor}}">{{f.value}}</span>
+            <span class="mono" style="font-size: 11px; color: {{f.metaColor}}">{{f.meta}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section aria-labelledby="history" style="display: flex; flex-direction: column; gap: 16px">
+      <h2 id="history" class="display" style="margin: 0; font-size: 22px; font-weight: 700">Histórico observado</h2>
+      <div style="background: var(--surface); border: 1px solid var(--line); padding: 20px">
+        <svg role="img" aria-label="Precio más bajo activo: 255.000 € el 2 de septiembre, 249.000 € el 14 de octubre y 245.000 € el 11 de noviembre. Antes del 2 de septiembre no hay observaciones." viewBox="0 0 1000 260" style="width: 100%; height: auto; display: block">
+          <defs>
+            <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="8" stroke="var(--hatch)" stroke-width="1" stroke-opacity="0.55"></line></pattern>
+          </defs>
+          <rect x="60" y="20" width="240" height="190" fill="url(#hatch)"></rect>
+          <text x="180" y="120" text-anchor="middle" class="mono" style="font-size: 13px; fill: var(--muted)">sin observar</text>
+          <g stroke="var(--line)" stroke-width="1"><line x1="60" y1="60" x2="980" y2="60"></line><line x1="60" y1="135" x2="980" y2="135"></line><line x1="60" y1="210" x2="980" y2="210"></line></g>
+          <g class="mono" style="font-size: 12px; fill: var(--muted)"><text x="52" y="64" text-anchor="end">255k</text><text x="52" y="139" text-anchor="end">250k</text><text x="52" y="214" text-anchor="end">245k</text>
+          <text x="300" y="240" text-anchor="middle">2 sep</text><text x="640" y="240" text-anchor="middle">14 oct</text><text x="940" y="240" text-anchor="middle">11 nov</text></g>
+          <polyline points="300,60 640,60 640,150 940,150 940,210 980,210" fill="none" stroke="var(--primary)" stroke-width="3"></polyline>
+          <g fill="var(--primary)"><circle cx="300" cy="60" r="5"></circle><circle cx="640" cy="150" r="5"></circle><circle cx="940" cy="210" r="5"></circle></g>
+        </svg>
+        <p style="margin: 12px 0 0; font-size: 13px; color: var(--muted)">House Radar empezó a observar este inmueble el 2 sep 2026. Lo anterior no se conoce y no se dibuja como si se conociera.</p>
+      </div>
+    </section>
+
+    <section aria-labelledby="listings" style="display: flex; flex-direction: column; gap: 16px">
+      <h2 id="listings" class="display" style="margin: 0; font-size: 22px; font-weight: 700">Anuncios de este inmueble</h2>
+      <div style="overflow-x: auto; background: var(--surface); border: 1px solid var(--line)">
+        <table style="width: 100%; min-width: 640px; border-collapse: collapse">
+          <thead><tr><th scope="col">Fuente</th><th scope="col">Precio</th><th scope="col">Estado</th><th scope="col">Última comprobación</th><th scope="col"><span style="position: absolute; left: -9999px">Enlace</span></th></tr></thead>
+          <tbody>
+            <tr><td>idealista</td><td class="mono">245.000 €</td><td>Activo</td><td class="mono">11 nov 2026</td><td><a href="#">Ver original</a></td></tr>
+            <tr><td>Inmobiliaria local · importación manual</td><td class="mono">249.000 €</td><td>Activo</td><td class="mono">9 nov 2026</td><td><a href="#">Ver original</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border: 1px solid var(--geo); background: var(--surface)">
+        <span style="font-size: 14px">Posible duplicado: un anuncio en Brión a 80 m, 188 m² y 3 dormitorios.</span>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px">
+          <button type="button" style="padding: 10px 14px; background: var(--primary); color: var(--on-primary); border: 0; cursor: pointer">Es el mismo inmueble</button>
+          <button type="button" style="padding: 10px 14px; background: none; color: var(--ink); border: 1px solid var(--line); cursor: pointer">Es otro inmueble</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const known = (label, value, meta) => ({ label, value, meta, cls: '', borderStyle: 'solid', borderColor: 'var(--line)', fill: 'var(--surface)', valueColor: 'var(--ink)', metaColor: 'var(--muted)' });
+    const unknown = (label) => ({ label, value: 'sin dato', meta: 'no declarado', cls: 'unk', borderStyle: 'dashed', borderColor: 'var(--hatch)', fill: 'transparent', valueColor: 'var(--muted)', metaColor: 'var(--muted)' });
+    const conflict = (label, value, meta) => ({ label, value, meta, cls: '', borderStyle: 'solid', borderColor: 'var(--warn)', fill: 'var(--surface)', valueColor: 'var(--ink)', metaColor: 'var(--warn)' });
+    return {
+      themeClass: this.props.dark ? 'dark' : '',
+      fields: [
+        known('Superficie construida', '186 m²', 'declarado · idealista'),
+        unknown('Superficie útil'),
+        known('Parcela', '2.400 m²', 'declarado · 2 fuentes'),
+        known('Precio por m²', '1.317 €/m²', 'calculado · construida'),
+        conflict('Dormitorios', '4', 'conflicto: 3 en la otra fuente'),
+        known('Baños', '2', 'declarado · 2 fuentes'),
+        known('Estado', 'Buen estado', 'declarado · idealista'),
+        unknown('Año de construcción'),
+        known('Calefacción', 'Sí · gasóleo', 'declarado · idealista'),
+        unknown('Certificado energético'),
+        known('Garaje', 'No', 'declarado · inmobiliaria'),
+        known('Saneamiento', 'Fosa séptica', 'declarado · idealista')
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

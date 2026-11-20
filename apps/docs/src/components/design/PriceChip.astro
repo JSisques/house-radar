@@ -1,0 +1,43 @@
+---
+import './tokens.css';
+
+interface Props {
+  kind: 'drop' | 'rise' | 'new' | 'gone' | 'approx';
+}
+
+const { kind } = Astro.props;
+---
+
+<span class={`hr-ds hr-mono chip ${kind}`}><slot /></span>
+
+<style>
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border: 1px solid transparent;
+    margin: 0 0.5rem 0.5rem 0;
+  }
+  .drop,
+  .new {
+    background: var(--hr-accent);
+    color: var(--hr-on-accent);
+  }
+  .rise {
+    border-color: var(--hr-warn);
+    color: var(--hr-warn);
+  }
+  .gone {
+    border-color: var(--hr-line);
+    color: var(--hr-muted);
+    font-weight: 400;
+  }
+  .approx {
+    border-color: var(--hr-geo);
+    color: var(--hr-geo);
+    font-weight: 400;
+  }
+</style>

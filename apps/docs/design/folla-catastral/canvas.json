@@ -1,0 +1,19 @@
+{
+  "v": 3,
+  "createdOnFiles": { "v": 1, "at": "2026-11-20T15:05:00Z" },
+  "title": "House Radar · Folla catastral",
+  "launch": { "view": "canvas" },
+  "pages": [],
+  "boards": {
+    "Main.dc.html": { "x": 0, "y": 0, "w": 1440, "h": 1180, "title": "Sistema visual", "expand": "fill" },
+    "Search.dc.html": { "x": 1520, "y": 0, "w": 1440, "h": 1000, "title": "Buscador", "expand": "fill" },
+    "Detail.dc.html": { "x": 0, "y": 1600, "w": 1440, "h": 1500, "title": "Ficha de propiedad", "expand": "fill" },
+    "Import.dc.html": { "x": 1520, "y": 1600, "w": 1440, "h": 1100, "title": "Importación manual", "expand": "fill" }
+  },
+  "order": ["Main.dc.html", "Search.dc.html", "Detail.dc.html", "Import.dc.html"],
+  "notes": {
+    "row1": { "x": 0, "y": -300, "text": "Folla catastral · sistema y buscador", "kind": "title1", "maxW": 2960 },
+    "row2": { "x": 0, "y": 1300, "text": "Ficha y importación asistida", "kind": "title1", "maxW": 2960 }
+  },
+  "designSystems": []
+}

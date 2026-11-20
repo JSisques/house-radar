@@ -1,0 +1,49 @@
+---
+import './tokens.css';
+
+interface Props {
+  label: string;
+  value?: string;
+  note: string;
+}
+
+const { label, value, note } = Astro.props;
+// Empty or null is not a value: it must render as unknown, never as a blank cell.
+const known = value !== undefined && value !== null && value.trim() !== '';
+---
+
+<div class:list={['not-content', 'hr-ds', 'cell', { 'hr-unk': !known, unknown: !known }]}>
+  <span class="label">{label}</span>
+  <span class="hr-mono value">{known ? value : 'sin dato'}</span>
+  <span class="hr-mono note">{note}</span>
+</div>
+
+<style>
+  .cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--hr-line);
+    background-color: var(--hr-surface);
+  }
+  .cell.unknown {
+    border: 1px dashed var(--hr-hatch);
+    background-color: transparent;
+  }
+  .label {
+    font-size: 0.8rem;
+    color: var(--hr-muted);
+  }
+  .value {
+    font-size: 1.25rem;
+    font-weight: 500;
+  }
+  .unknown .value {
+    color: var(--hr-muted);
+  }
+  .note {
+    font-size: 0.7rem;
+    color: var(--hr-muted);
+  }
+</style>
