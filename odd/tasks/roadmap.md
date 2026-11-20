@@ -33,7 +33,11 @@ Notes:
 - Each feature is a parent issue; its slices are linked sub-issues.
 - Labels: context/app (`ctx:<context>`, `app:<app>`, `pkg:<package>`), type (`feature`, `foundation`, `docs`), priority (`P0`–`P2`). A GitHub Project board tracks the flow.
 
-## Pending discovery
+### R3. Planning depth (2026-11-20)
 
-- Planning depth (which milestones are sliced now).
+- Everything is sliced now (user decision): all seven milestones get their vertical-slice issues, plus one parent issue per feature and one for the foundation. HR-F011 (P2, post-1.0) gets a parent issue without milestone.
+- The user authorized creating milestones, labels, a GitHub Project board and the issues in the public repository.
+- Process: (1) draft the full issue plan in `odd/tasks/roadmap-issues.md` (reviewable, versioned); (2) create everything in GitHub from that plan; (3) record created numbers back in the plan.
+
+## Pending discovery
 - Docs output (roadmap page en + es).
