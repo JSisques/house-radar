@@ -48,7 +48,7 @@ Conventions: one slice = one vertical, reviewable PR of about 400 authored chang
 - Summary: tooling, shared packages, app skeletons, infrastructure, observability baseline, release tooling and release closing work, so that features are written under the agreed rules.
 - Docs page: `architecture/conventions.md`, `architecture/overview.md`, `operations/overview.md`
 - Priority: P0
-- Milestone: M0 · Foundation (later slices S-M6-08 to S-M6-11 close it in M6)
+- Milestone: M0 · Foundation (later slices S-M4-15 to S-M6-09 close it in M6)
 - Labels: `type:foundation` `parent` `P0`
 
 ### HR-F001 · Listing ingestion
@@ -415,7 +415,7 @@ Conventions: one slice = one vertical, reviewable PR of about 400 authored chang
 - Given Docker, When `pnpm infra:up` runs, Then Postgres (with PostGIS extension available) and Redis become healthy.
 - Given `infra:down`, When run, Then containers stop and data volumes persist.
 
-**Out of scope.** Observability services (S-M0-25); production compose (S-M6-08).
+**Out of scope.** Observability services (S-M0-25); production compose (S-M4-15).
 
 **References.** `operations/overview.md`, D6, D8.
 
@@ -714,7 +714,7 @@ Conventions: one slice = one vertical, reviewable PR of about 400 authored chang
 - Given release tag `v0.3.0`, When the workflow runs, Then images are tagged `0.3.0` and with the commit SHA.
 - Given a built image, When started with minimal env, Then the process boots.
 
-**Out of scope.** Server deployment (S-M6-08).
+**Out of scope.** Server deployment (S-M4-15).
 
 **References.** `odd/tasks/roadmap.md` R5, D8.
 
@@ -1951,6 +1951,50 @@ Conventions: one slice = one vertical, reviewable PR of about 400 authored chang
 
 **References.** `features/hr-f007-favorites-saved-searches.md`, D12.
 
+#### S-M4-15 · [M4] Production deployment with Docker Compose
+
+- Milestone: M4 · Users
+- Parent: FOUNDATION
+- Labels: `type:foundation` `infra` `P0`
+- Depends on: S-M0-26, S-M4-05
+
+**Goal.** Deploy a tagged version to the own server and roll back by tag.
+
+**Needs definition before starting:** deployment procedure, environments and secrets management are marked to be defined in the docs.
+
+**Scope.** Production compose file using versioned images, environment configuration, deployment and rollback procedure documented in `operations/overview.md`; nothing exposed without authentication.
+
+**Acceptance criteria**
+
+- Given a release tag, When deployed, Then the stack runs that exact version.
+- Given a previous tag, When rolled back, Then the previous version runs.
+- Given the deployed stack, When accessed unauthenticated, Then only login and health respond.
+
+**Out of scope.** Other servers/platforms. Production alerting is wired later (S-M5-12); until then the observability baseline (S-M0-24, S-M0-25) applies.
+
+**References.** `operations/overview.md`, D8, `odd/tasks/roadmap.md` R1.
+
+#### S-M4-16 · [M4] Backups and recovery
+
+- Milestone: M4 · Users
+- Parent: FOUNDATION
+- Labels: `type:foundation` `type:docs` `infra` `P0`
+- Depends on: S-M4-15
+
+**Goal.** Recoverable data for PostgreSQL.
+
+**Needs definition before starting:** strategy, frequency, retention and storage location.
+
+**Scope.** Backup job and restore procedure documented and tested.
+
+**Acceptance criteria**
+
+- Given a backup, When restored into a clean instance, Then data matches and the app boots.
+
+**Out of scope.** -
+
+**References.** `operations/overview.md` (Backups and recovery), D8.
+
 ### M5 · Automated ingestion
 
 #### S-M5-01 · [M5] ingestion: IngestionRun and ExtractionError aggregates
@@ -2452,51 +2496,7 @@ Conventions: one slice = one vertical, reviewable PR of about 400 authored chang
 
 **References.** `features/hr-f009-dashboard.md`.
 
-#### S-M6-08 · [M6] Production deployment with Docker Compose
-
-- Milestone: M6 · Dashboard → Release 1.0
-- Parent: FOUNDATION
-- Labels: `type:foundation` `infra` `P0`
-- Depends on: S-M0-26, S-M5-12, S-M4-05
-
-**Goal.** Deploy a tagged version to the own server and roll back by tag.
-
-**Needs definition before starting:** deployment procedure, environments and secrets management are marked to be defined in the docs.
-
-**Scope.** Production compose file using versioned images, environment configuration, deployment and rollback procedure documented in `operations/overview.md`; nothing exposed without authentication.
-
-**Acceptance criteria**
-
-- Given a release tag, When deployed, Then the stack runs that exact version.
-- Given a previous tag, When rolled back, Then the previous version runs.
-- Given the deployed stack, When accessed unauthenticated, Then only login and health respond.
-
-**Out of scope.** Other servers/platforms.
-
-**References.** `operations/overview.md`, D8, `odd/tasks/roadmap.md` R1.
-
-#### S-M6-09 · [M6] Backups and recovery
-
-- Milestone: M6 · Dashboard → Release 1.0
-- Parent: FOUNDATION
-- Labels: `type:foundation` `type:docs` `infra` `P0`
-- Depends on: S-M6-08
-
-**Goal.** Recoverable data for PostgreSQL.
-
-**Needs definition before starting:** strategy, frequency, retention and storage location.
-
-**Scope.** Backup job and restore procedure documented and tested.
-
-**Acceptance criteria**
-
-- Given a backup, When restored into a clean instance, Then data matches and the app boots.
-
-**Out of scope.** -
-
-**References.** `operations/overview.md` (Backups and recovery), D8.
-
-#### S-M6-10 · [M6] Ingestion runbooks
+#### S-M6-08 · [M6] Ingestion runbooks
 
 - Milestone: M6 · Dashboard → Release 1.0
 - Parent: FOUNDATION
@@ -2517,12 +2517,12 @@ Conventions: one slice = one vertical, reviewable PR of about 400 authored chang
 
 **References.** `operations/overview.md` (Ingestion runbooks), D15.
 
-#### S-M6-11 · [M6] Release 1.0 acceptance and 1.0.0 cut
+#### S-M6-09 · [M6] Release 1.0 acceptance and 1.0.0 cut
 
 - Milestone: M6 · Dashboard → Release 1.0
 - Parent: FOUNDATION
 - Labels: `type:foundation` `P0`
-- Depends on: S-M6-07, S-M6-08, S-M5-17
+- Depends on: S-M6-07, S-M4-15, S-M5-17
 
 **Goal.** Close the MVP against the product scope.
 
@@ -2545,8 +2545,8 @@ Conventions: one slice = one vertical, reviewable PR of about 400 authored chang
 | M1 · Walking skeleton | 3 | 14 |
 | M2 · Search & map | 2 | 16 |
 | M3 · History & duplicates | 2 | 14 |
-| M4 · Users | 2 | 14 |
+| M4 · Users | 2 | 16 |
 | M5 · Automated ingestion | 1 | 17 |
-| M6 · Dashboard → Release 1.0 | 1 | 11 |
+| M6 · Dashboard → Release 1.0 | 1 | 9 |
 | No milestone (HR-F011) | 1 | 0 |
 | **Total** | **13** | **112** |

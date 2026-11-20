@@ -54,6 +54,12 @@ Notes:
 - Rejected: semantic-release (publishes on every qualifying push, no human gate); Changesets (per-PR changeset files, npm-oriented, redundant with Conventional Commits).
 - To be documented as ADR D33 with the roadmap docs output.
 
+### R6. Deployment in M4 (2026-11-20)
+
+- Deployment to the own server (S-M4-15) and backups (S-M4-16) move from M6 to M4, together with authentication (user decision): from M4 House Radar runs on the server with real data and starts accumulating history, its main asset. Production alerting follows in M5 (S-M5-12).
+- Consequence: deployment procedure, environments, secrets management and backup strategy must be defined before starting M4 (both slices are flagged "Needs definition before starting").
+- Runbooks and the 1.0 cut stay in M6 (renumbered S-M6-08, S-M6-09).
+
 ## Pending discovery
 
 - None for the issue plan. Docs output: roadmap page (en + es) and ADR D33.
