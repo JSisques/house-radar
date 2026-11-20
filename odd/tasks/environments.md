@@ -32,8 +32,14 @@ Define environments, deployment, secrets and backups before M4, so issues #100 (
 - Every merge to `main` deploys to staging automatically (user decision): the workflow joins the tailnet with the official Tailscale GitHub Action using an ephemeral, tagged auth key restricted by ACL to the staging server, connects over SSH with a restricted deploy key, and runs `docker compose pull && docker compose up -d` with the new SHA.
 - Versioned releases (release-please) are reserved for production.
 
-## Pending discovery
+### E4. Secrets (2026-11-20)
 
-- Secrets management.
+- GitHub Environments (user decision): a `staging` environment in the repository holds the application secrets (Postgres password, seed account credentials, session secret, later the idealista key) and the deployment secrets (Tailscale ephemeral auth key, SSH deploy key, server host). On each deploy the workflow writes the server's `.env` (mode `600`) from those secrets and starts the stack.
+- Single source of truth: changing a secret means editing it in GitHub and redeploying. Recreating the staging server is a redeploy.
+- Production will be a separate `production` environment with its own secrets and required reviewers.
+- `.env.example` in the repository documents every variable without values.
+- Rejected: `.env` only on the server (not versioned or documented, lost with the server); SOPS + age (extra tool and key management, too much ceremony for a disposable staging).
+
+## Pending discovery
 - Health check / rollback on failed staging deploy.
 - Output: ADR(s), operations page, issue updates (#100, #101, #41).
