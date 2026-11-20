@@ -233,6 +233,18 @@ Restricciones e índices:
 - Índice GiST sobre `location`.
 - Índices B-tree sobre precio, superficies, tipo y municipio.
 
+#### `properties.projected_listing`
+
+Estado por anuncio tal como lo aplicaron por última vez las proyecciones; las filas de propiedad de `property_search_view` se recalculan a partir de él. Protección de orden: un evento de anuncio se aplica solo si su `aggregate_version` es mayor que `version`.
+
+| Columna | Tipo | Notas |
+|---|---|---|
+| `listing_id` | `uuid pk` | Anuncio (de `listings`, sin FK). |
+| `property_id` | `uuid not null` | Propiedad a la que pertenece. |
+| `version` | `int not null` | Última versión aplicada del anuncio. |
+| `price_cents` | `bigint null` | Último precio aplicado. |
+| `status` | `text not null` | Último estado aplicado. |
+
 #### `properties.property_price_point`
 
 Proyección: evolución del precio activo más bajo.
@@ -360,6 +372,7 @@ Cada esquema que emite eventos (`ingestion`, `listings`, `properties`, `identity
 | `id` | `uuid` | Clave primaria; igual al ID del evento (UUIDv7). |
 | `aggregate_type` | `text not null` | Tipo del agregado emisor. |
 | `aggregate_id` | `uuid not null` | Agregado emisor. |
+| `aggregate_version` | `int not null` | Versión del agregado producida por el cambio; los consumidores ignoran eventos más antiguos que la versión ya aplicada (protección de orden). |
 | `event_type` | `text not null` | Nombre del evento, por ejemplo `ListingPriceChanged`. |
 | `schema_version` | `int not null` | Versión del esquema del payload. |
 | `payload` | `jsonb not null` | Datos del evento. |

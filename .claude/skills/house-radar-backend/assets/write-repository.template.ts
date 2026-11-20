@@ -7,8 +7,10 @@
 //   persisting a new object for an existing row would be an INSERT.
 // - Optimistic locking (D23): the load checks the version the aggregate was read with;
 //   a concurrent change raises OptimisticLockError and the command is retried.
-// - Events are cleared from the aggregate only AFTER the transaction commits, so a failed
-//   save (and its retry with the same aggregate instance) does not lose them.
+// - Events are cleared and the version synced (`markPersisted`) only AFTER the commit: if the
+//   transaction fails, the aggregate keeps its events and its read version. The repository
+//   integration spec (Testcontainers) asserts it: a forced failure leaves no listing row, no
+//   outbox row, and the events still on the aggregate.
 import { Injectable } from '@nestjs/common';
 import { EntityManager, LockMode } from '@mikro-orm/postgresql';
 
@@ -31,7 +33,7 @@ export class ListingMikroormWriteRepository implements IListingWriteRepository {
   async save(listing: ListingAggregate): Promise<void> {
     const events = listing.peekDomainEvents();
 
-    await this.em.transactional(async (tx) => {
+    const persisted = await this.em.transactional(async (tx) => {
       const existing = listing.isNew()
         ? null
         : await tx.findOneOrFail(ListingEntity, listing.id.value, {
@@ -39,17 +41,20 @@ export class ListingMikroormWriteRepository implements IListingWriteRepository {
             lockVersion: listing.version,
           });
 
-      if (existing) {
-        tx.assign(existing, this.mapper.toEntityData(listing));
-      } else {
-        tx.persist(tx.create(ListingEntity, this.mapper.toEntityData(listing)));
-      }
+      const entity = existing
+        ? tx.assign(existing, this.mapper.toEntityData(listing))
+        : tx.create(ListingEntity, this.mapper.toEntityData(listing));
+      tx.persist(entity);
 
       for (const event of events) {
         tx.persist(this.outboxEventMapper.toEntity(tx, event, 'Listing'));
       }
+      return entity;
     }); // commit: aggregate row + outbox rows together, or rollback of both
 
+    // Only after commit: sync the version bumped by the database (a second save of the same
+    // instance must not fail the optimistic lock) and drop the events now stored in the outbox.
+    listing.markPersisted(persisted.version);
     listing.clearDomainEvents();
   }
 

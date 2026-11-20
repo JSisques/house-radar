@@ -55,10 +55,14 @@ describe('ImportManualListingHandler', () => {
       expect(events[0]).toBeInstanceOf(ListingImportedEvent);
     });
 
-    it('should propagate the error when saving fails', async () => {
+    it('should propagate the error and keep the recorded events when saving fails', async () => {
       listingWriteRepository.save.mockRejectedValueOnce(new Error('db down'));
 
       await expect(handler.execute(new ImportManualListingCommand(VALID_INPUT))).rejects.toThrow('db down');
+
+      // The handler must not clear or drain events itself: only the repository does, after commit.
+      const attempted = listingWriteRepository.save.mock.calls[0][0];
+      expect(attempted.peekDomainEvents()).toHaveLength(1);
     });
   });
 });

@@ -2,6 +2,10 @@
 // Idempotent projection command handler (D31). Application layer: it depends only on ports
 // (`application/ports/`), never on MikroORM or infrastructure entities.
 // Claim + projection write share ONE transaction: a crash rolls both back, a redelivery is a no-op.
+// Ordering: BullMQ workers may deliver an older event after a newer one. Every event carries the
+// aggregate `version` it produced; the projector applies a change only if that version is newer
+// than the one already projected for the listing (`projected_listing.version`), so a late event
+// is a no-op instead of overwriting newer state.
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
@@ -50,4 +54,6 @@ export class ProjectListingPriceChangeHandler
 //   ITransactionManager         { run<T>(fn: () => Promise<T>): Promise<T> }
 //   IProcessedEventRepository   { claim(eventId: string, consumer: string): Promise<boolean> }
 //   IPropertyViewProjector      { applyPriceChange(command: ProjectListingPriceChangeCommand): Promise<void> }
+//                               // implementation: UPDATE projected_listing ... WHERE listing_id = :id
+//                               //   AND version < :listingVersion, then recompute the property row
 // Infrastructure implements them with MikroORM (see processed-event-repository.template.ts).

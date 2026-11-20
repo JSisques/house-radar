@@ -2,7 +2,8 @@
 // Framework-free: no NestJS, MikroORM or @nestjs/cqrs imports.
 // AggregateRoot (building-blocks) provides record(), peekDomainEvents(), clearDomainEvents(),
 // `version` (optimistic locking, D23) and isNew(). `version` is hydrated from persistence;
-// a freshly built aggregate has none, so isNew() is true until the first save.
+// a freshly built aggregate has none, so isNew() is true until the first save. The write
+// repository calls markPersisted(version) after commit to sync the version bumped by the database.
 // Constructor only hydrates. State changes happen in named methods: mutate, record(), touch().
 import { AggregateRoot, DateValueObject } from '@house-radar/building-blocks';
 import { ListingId, ListingUrl, Money } from '@house-radar/shared-kernel';

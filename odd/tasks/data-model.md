@@ -95,6 +95,7 @@ identity ──(event: AccountCreated)──▶ users
 
 - Domain events are written to an `outbox` table in the same transaction as the aggregate (user decision). A relay reads pending rows, publishes them through BullMQ (D7) and marks them as sent. Either everything is stored or nothing: an event cannot be lost between commit and publish.
 - Consumers (projections, cross-context handlers) are idempotent (already required by D23) and deduplicate by `eventId`.
+- Ordering: delivery order is not guaranteed; outbox rows carry `aggregate_version` and consumers apply an event only if it is newer than the version already applied (`properties.projected_listing`). Added after the review of the outbox templates (2026-11-20).
 - The outbox doubles as an auditable event log that can be replayed to rebuild projections (M3).
 - Rejected: in-process publication after commit + periodic projection rebuild (a crash between commit and publish leaves projections silently stale for hours, contradicting product principle 1).
 - Follow-up: update conventions (C2/C4/C6, D25) and the backend skill templates — handlers no longer call `eventBus.publishAll(...)`; the write repository persists the aggregate's recorded events (`peekDomainEvents()`) into the outbox within the transaction and calls `clearDomainEvents()` only after commit. Consumers are BullMQ consumers in `transport` that send a command; the idempotent handler uses `ITransactionManager` and `IProcessedEventRepository` ports.
@@ -127,6 +128,7 @@ All tables: `id uuid primary key` (v7) unless stated, `created_at timestamptz no
 - `property_listing`: `property_id` (fk, same schema), `listing_id` unique (a listing belongs to exactly one property).
 - `duplicate_candidate`: `listing_a_id`, `listing_b_id` (ordered pair, `a < b`), `status`, `reason`, `resolved_at null`; unique `(listing_a_id, listing_b_id)`.
 - `property_search_view` (projection): `property_id pk`, consolidated attributes, `conflicts jsonb`, `representative_price_cents null`, `active_listing_count`, `listing_count`, `municipality_code`, `province_code`, `location geography`, `location_precision`, `price_per_m2_cents null`, `first_seen_at`, `last_updated_at`; search indexes (GiST `location`, btree on price, areas, type, municipality).
+- `projected_listing` (projection support): `listing_id pk`, `property_id`, `version`, `price_cents null`, `status`; property rows are recomputed from it; ordering guard for late events.
 - `property_price_point` (projection): `property_id`, `observed_at`, `lowest_active_price_cents`; index `(property_id, observed_at)`.
 - `processed_event` (consumer idempotency): `event_id`, `consumer`, `processed_at`; pk `(event_id, consumer)`.
 
@@ -148,7 +150,7 @@ All tables: `id uuid primary key` (v7) unless stated, `created_at timestamptz no
 
 **Outbox** (in every schema that emits events: `ingestion`, `listings`, `properties`, `identity`)
 
-- `outbox_event`: `id` = event ID (v7), `aggregate_type`, `aggregate_id`, `event_type`, `schema_version`, `payload jsonb`, `metadata jsonb` (correlation/causation), `occurred_at`, `published_at null`; partial index on `occurred_at` where `published_at is null`.
+- `outbox_event`: `id` = event ID (v7), `aggregate_type`, `aggregate_id`, `aggregate_version int`, `event_type`, `schema_version`, `payload jsonb`, `metadata jsonb` (correlation/causation), `occurred_at`, `published_at null`; partial index on `occurred_at` where `published_at is null`.
 
 ## Pending discovery
 
@@ -176,3 +178,5 @@ Checks: `pnpm docs:test`, `pnpm docs:check-i18n`, `pnpm docs:check`, `pnpm docs:
 ## Next step
 
 Open the PR for `docs/data-model` (about 400+ changed lines: apply the delivery strategy, `ask-on-risk`).
+
+- Review (skill-only slice of main..ef0b148; full branch exceeded the reviewer context budget): medium risk, consent granted, **approved and acknowledged**. Findings fixed: `markPersisted(version)` after commit (a second save of the same instance no longer fails the optimistic lock); write-repository comment no longer over-claims (failure guarantees asserted by the repository integration spec); out-of-order delivery guarded by `aggregate_version` + `projected_listing`; handler spec asserts events survive a failed save. Suggestion not applied: payload validation in the consumer (to be covered when the first consumer is implemented).

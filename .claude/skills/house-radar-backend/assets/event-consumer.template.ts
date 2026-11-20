@@ -12,6 +12,7 @@ interface IOutboxMessage {
   eventId: string; // outbox_event.id (UUIDv7)
   eventType: string;
   occurredAt: string;
+  aggregateVersion: number; // version of the aggregate after the change (ordering guard)
   payload: { id: string; newPrice: { amountCents: number } };
 }
 
@@ -29,6 +30,7 @@ export class ListingPriceChangedConsumer extends WorkerHost {
       new ProjectListingPriceChangeCommand({
         eventId: job.data.eventId,
         listingId: job.data.payload.id,
+        listingVersion: job.data.aggregateVersion,
         newPriceCents: job.data.payload.newPrice.amountCents,
         occurredAt: new Date(job.data.occurredAt),
       }),

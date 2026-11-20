@@ -30,6 +30,7 @@ Los detalles están en [Esquema de base de datos](/es/architecture/database-sche
 - La publicación es asíncrona: las proyecciones son eventualmente consistentes, con un pequeño retraso marcado por el relay.
 - Hay que operar y observar un relay y una política de retención de las filas publicadas ([D15](/es/adr/d15-observability/)).
 - Los consumidores deben ser idempotentes y registrarse en `processed_event`.
+- El orden de entrega no está garantizado (varios workers de BullMQ): cada fila del outbox lleva `aggregate_version` y los consumidores aplican un evento solo si es más reciente que la versión ya aplicada (`properties.projected_listing.version`), de modo que un evento tardío nunca sobrescribe un estado más nuevo.
 - Sustituye en parte la publicación de eventos descrita en D24 y D25.
 
 ## Alternativas consideradas

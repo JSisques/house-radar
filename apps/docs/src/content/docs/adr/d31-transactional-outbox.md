@@ -30,6 +30,7 @@ Details are in [Database schema](/architecture/database-schema/) and [Code conve
 - Publication is asynchronous: projections are eventually consistent, with a small delay set by the relay.
 - A relay and a retention policy for published rows must be operated and observed ([D15](/adr/d15-observability/)).
 - Consumers must be idempotent and tracked in `processed_event`.
+- Delivery order is not guaranteed (several BullMQ workers): every outbox row carries `aggregate_version`, and consumers apply an event only if it is newer than the version already applied (`properties.projected_listing.version`), so a late event never overwrites newer state.
 - Supersedes in part the event publication described in D24 and D25.
 
 ## Alternatives considered

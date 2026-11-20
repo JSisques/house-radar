@@ -26,7 +26,7 @@ Bloques DDD genéricos, sin conceptos de House Radar.
 
 | Contenido | Regla |
 | --- | --- |
-| Base `AggregateRoot` | Mantiene su propio búfer de eventos: `record(event)`, `peekDomainEvents()` (lee sin vaciar) y `clearDomainEvents()` (lo llama el repositorio de escritura solo tras confirmar la transacción). Expone `version` (bloqueo optimista, [D23](/es/adr/d23-ingestion-concurrency-model/)) e `isNew()` (verdadero hasta el primer guardado). La identidad es cualquier value object de identidad. Igualdad tipada y segura ante nulos. |
+| Base `AggregateRoot` | Mantiene su propio búfer de eventos: `record(event)`, `peekDomainEvents()` (lee sin vaciar) y `clearDomainEvents()` (lo llama el repositorio de escritura solo tras confirmar la transacción). Expone `version` (bloqueo optimista, [D23](/es/adr/d23-ingestion-concurrency-model/)) e `isNew()` (verdadero hasta el primer guardado); el repositorio de escritura llama a `markPersisted(version)` tras el commit para sincronizar la versión incrementada por la base de datos. La identidad es cualquier value object de identidad. Igualdad tipada y segura ante nulos. |
 | Base de value object | `validate()` obligatorio, una excepción tipada por value object, `toPrimitives()`. |
 | Value objects genéricos | String, Number, Uuid, Enum, Date y Boolean configurables por opciones. `DateValueObject` rechaza fechas inválidas y copia defensivamente. |
 | Eventos de dominio | Envoltorio con `schemaVersion`, `correlationId`, `causationId` y `occurredAt`; `generateEventMetadata()`. |

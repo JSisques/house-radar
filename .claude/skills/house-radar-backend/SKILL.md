@@ -15,7 +15,7 @@ Load when creating or editing code in `apps/api`, `apps/ingestion`, `packages/bu
 
 - Dependencies point inward: `transport`/`infrastructure` -> `application` -> `domain`. Domain imports no NestJS, MikroORM or `@nestjs/cqrs`.
 - Aggregates use value objects, never raw primitives; they `record()` events in named methods and never publish.
-- Events: aggregates `record()`; the write repository saves the aggregate and `peekDomainEvents()` into `outbox_event` in one `em.transactional`, then `clearDomainEvents()` after commit. Never publish from handlers (no `EventBus`).
+- Events: aggregates `record()`; the write repository saves the aggregate and `peekDomainEvents()` into `outbox_event` in one `em.transactional`, then `markPersisted(version)` and `clearDomainEvents()` after commit. Never publish from handlers (no `EventBus`).
 - Write repositories update the managed entity (`LockMode.OPTIMISTIC` + `lockVersion`, then `assign`); insert only when `isNew()`.
 - IDs are UUIDv7 (`uuid` package, `v7()`), never `crypto.randomUUID()`.
 - Write repositories expose only `save`, `findById`, `delete`. Read repositories are read-only.
@@ -38,7 +38,7 @@ Load when creating or editing code in `apps/api`, `apps/ingestion`, `packages/bu
 | Call another context | Port in `application/ports` + adapter |
 | New value object used by 2+ contexts | `packages/shared-kernel`; otherwise inside the context |
 | Generic DDD base, no House Radar concept | `packages/building-blocks` |
-| React to an event | `transport/messaging/consumers/` BullMQ consumer -> command via `CommandBus`; handler idempotent through ports (`ITransactionManager`, `IProcessedEventRepository.claim`) |
+| React to an event | `transport/messaging/consumers/` BullMQ consumer -> command via `CommandBus`; handler idempotent through ports (`ITransactionManager`, `IProcessedEventRepository.claim`) and ordered by `aggregate_version` (ignore events older than the applied version) |
 | Persist aggregate | Write repository saving aggregate + outbox events in one transaction (`write-repository.template.ts`) |
 
 ## Execution Steps

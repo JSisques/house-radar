@@ -233,6 +233,18 @@ Constraints and indexes:
 - GiST index on `location`.
 - B-tree indexes on price, areas, type and municipality.
 
+#### `properties.projected_listing`
+
+Per-listing state as last applied by the projections; the property rows in `property_search_view` are recomputed from it. Ordering guard: a listing event is applied only if its `aggregate_version` is greater than `version`.
+
+| Column | Type | Notes |
+|---|---|---|
+| `listing_id` | `uuid pk` | Listing (from `listings`, no FK). |
+| `property_id` | `uuid not null` | Owning property. |
+| `version` | `int not null` | Last applied listing version. |
+| `price_cents` | `bigint null` | Last applied price. |
+| `status` | `text not null` | Last applied status. |
+
 #### `properties.property_price_point`
 
 Projection: evolution of the lowest active price.
@@ -353,13 +365,14 @@ Also has: `processed_event` (see below).
 
 ## Outbox
 
-Every schema that emits events (`ingestion`, `listings`, `properties`, `identity`) has an `outbox_event` table ([D31](/adr/d31-transactional-outbox/)). The write repository inserts the aggregate's pulled events in the same transaction; a relay publishes unpublished rows through BullMQ and sets `published_at`. The table is also an auditable event log that can be replayed to rebuild projections.
+Every schema that emits events (`ingestion`, `listings`, `properties`, `identity`) has an `outbox_event` table ([D31](/adr/d31-transactional-outbox/)). The write repository inserts the aggregate's recorded events (`peekDomainEvents()`) in the same transaction; a relay publishes unpublished rows through BullMQ and sets `published_at`. The table is also an auditable event log that can be replayed to rebuild projections.
 
 | Column | Type | Notes |
 | --- | --- | --- |
 | `id` | `uuid` | Primary key; equals the event ID (UUIDv7). |
 | `aggregate_type` | `text not null` | Type of the emitting aggregate. |
 | `aggregate_id` | `uuid not null` | Emitting aggregate. |
+| `aggregate_version` | `int not null` | Aggregate version produced by the change; consumers ignore events older than the version they already applied (ordering guard). |
 | `event_type` | `text not null` | Event name, for example `ListingPriceChanged`. |
 | `schema_version` | `int not null` | Version of the payload schema. |
 | `payload` | `jsonb not null` | Event data. |
