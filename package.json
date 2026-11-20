@@ -1,6 +1,7 @@
 {
   "name": "house-radar",
   "private": true,
+  "license": "AGPL-3.0-only",
   "description": "House Radar: real estate discovery and analysis platform.",
   "packageManager": "pnpm@10.34.6",
   "engines": {
