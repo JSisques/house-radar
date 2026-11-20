@@ -24,6 +24,10 @@ Manual import is an assisted form. The user pastes the URL of the original listi
 - No legal review of any portal's terms is required for this source, because no portal content is accessed.
 - Data entry effort falls on the user; the form must keep required fields to a minimum and accept unknown values.
 
+## Amendment (2026-11-20)
+
+[D37](/adr/d37-fotocasa-detail-connector/) amends this decision. The assisted form may be prefilled by reading the single page of the pasted URL when a detail connector exists for that portal. Manual entry remains the fallback and the user always confirms the data. Where no such connector exists, the original decision above applies unchanged.
+
 ## Alternatives considered
 
 - **URL plus pasted text parsed locally:** the user pastes the listing text and House Radar extracts fields from it. Discarded for the MVP: parsing is fragile and each portal formats text differently, and it adds an extraction component that would be replaced by the official connector. It remains a possible later improvement.

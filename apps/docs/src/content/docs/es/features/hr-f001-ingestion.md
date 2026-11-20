@@ -26,7 +26,7 @@ P0 (sección de origen 1).
 - [HR-F008](/es/features/hr-f008-price-history/): las ejecuciones y comprobaciones manuales crean las observaciones con las que se construye el histórico.
 - [HR-F012](/es/features/hr-f012-admin-observability/): el estado de las ejecuciones, los errores y los reintentos se muestran al administrador.
 - [Concurrencia de la ingesta](/es/architecture/ingestion-concurrency/): cómo escalan los workers sin colisiones.
-- ADR: [D3](/es/adr/d03-source-strategy/), [D7](/es/adr/d07-queues-and-scheduling/), [D10](/es/adr/d10-cross-cutting-architecture/), [D17](/es/adr/d17-manual-import-assisted-form/), [D20](/es/adr/d20-listing-consolidation-rules/), [D23](/es/adr/d23-ingestion-concurrency-model/).
+- ADR: [D3](/es/adr/d03-source-strategy/), [D7](/es/adr/d07-queues-and-scheduling/), [D10](/es/adr/d10-cross-cutting-architecture/), [D17](/es/adr/d17-manual-import-assisted-form/), [D20](/es/adr/d20-listing-consolidation-rules/), [D23](/es/adr/d23-ingestion-concurrency-model/), [D37](/es/adr/d37-fotocasa-detail-connector/).
 
 ## Historias de usuario
 
@@ -91,6 +91,6 @@ P0 (sección de origen 1).
 
 ## Decisiones relacionadas
 
-[D3](/es/adr/d03-source-strategy/), [D7](/es/adr/d07-queues-and-scheduling/), [D10](/es/adr/d10-cross-cutting-architecture/), [D17](/es/adr/d17-manual-import-assisted-form/), [D20](/es/adr/d20-listing-consolidation-rules/), [D23](/es/adr/d23-ingestion-concurrency-model/), [D28](/es/adr/d28-bounded-context-map/), [D31](/es/adr/d31-transactional-outbox/).
+[D3](/es/adr/d03-source-strategy/), [D7](/es/adr/d07-queues-and-scheduling/), [D10](/es/adr/d10-cross-cutting-architecture/), [D17](/es/adr/d17-manual-import-assisted-form/), [D20](/es/adr/d20-listing-consolidation-rules/), [D23](/es/adr/d23-ingestion-concurrency-model/), [D28](/es/adr/d28-bounded-context-map/), [D31](/es/adr/d31-transactional-outbox/), [D37](/es/adr/d37-fotocasa-detail-connector/).
 
 Véase también: [Mapa de contextos](/es/architecture/context-map/), [Esquema de base de datos](/es/architecture/database-schema/).

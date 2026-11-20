@@ -24,6 +24,10 @@ La importación manual es un formulario asistido. El usuario pega la URL del anu
 - No se requiere revisión legal de las condiciones de ningún portal para esta fuente, porque no se accede a contenido de portales.
 - El esfuerzo de introducción de datos recae en el usuario; el formulario debe mantener al mínimo los campos obligatorios y admitir valores desconocidos.
 
+## Enmienda (2026-11-20)
+
+[D37](/es/adr/d37-fotocasa-detail-connector/) enmienda esta decisión. El formulario asistido puede rellenarse de antemano leyendo la única página de la URL pegada cuando exista un conector de detalle para ese portal. La entrada manual sigue siendo la alternativa y el usuario siempre confirma los datos. Donde no exista ese conector, se aplica sin cambios la decisión original anterior.
+
 ## Alternativas consideradas
 
 - **URL más texto pegado analizado localmente:** el usuario pega el texto del anuncio y House Radar extrae los campos. Descartada para el MVP: el análisis es frágil, cada portal formatea el texto de forma distinta y añade un componente de extracción que sería sustituido por el conector oficial. Sigue siendo una posible mejora posterior.

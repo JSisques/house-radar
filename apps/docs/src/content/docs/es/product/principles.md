@@ -11,4 +11,4 @@ sidebar:
 4. **No inventar información.** Los valores desconocidos deben seguir siendo desconocidos; no se deben inferir características sin indicarlo.
 5. **Diseñar para múltiples fuentes.** Los conectores deben ser independientes y producir datos normalizados.
 6. **Priorizar la utilidad antes que la IA.** Primero construir una buena base de datos y un buscador fiable.
-7. **Respetar las condiciones de las fuentes.** La ingesta debe basarse en APIs, feeds, permisos o métodos de recopilación autorizados.
+7. **Respetar las condiciones de las fuentes.** La ingesta debe basarse en APIs, feeds, permisos o métodos de recopilación autorizados. La lectura automatizada de un portal solo se permite para páginas de anuncios individuales, iniciada por el usuario o para anuncios que el usuario ya sigue, respetando `robots.txt`, sin eludir nunca protecciones técnicas y para uso privado ([D37](/es/adr/d37-fotocasa-detail-connector/)).
