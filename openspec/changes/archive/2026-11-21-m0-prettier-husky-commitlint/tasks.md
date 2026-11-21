@@ -88,8 +88,8 @@ Runner: `pnpm test:workspace` (`node --test --test-concurrency=1 'tests/workspac
 ## Phase 6: Final verification
 
 - [x] 6.1 Run `pnpm format:check`, `pnpm lint`, `pnpm lint:root`, `pnpm typecheck`, `pnpm test`, `pnpm test:workspace`, `pnpm docs:check-i18n`, `pnpm docs:build`; all exit 0 and `git status --porcelain` is clean (the suite writes nothing; spec "Suite leaves a clean tree").
-- [ ] 6.2 Edit `openspec/config.yaml` to add `formatter: "pnpm format:check"` for `apps/docs` and `packages/building-blocks`, if the file has a matching section (verify/archive step, same as the previous change).
-- [ ] 6.3 Record in the apply report: selected versions with `npm view` evidence, every verify-at-apply outcome and fallback taken (turbo `--affected`, Prettier `.gitignore`, jsonc, husky PATH and no-`.git`, ESLint flags), RED/GREEN evidence per commit, the measured line count per commit, and the single-PR or split decision.
+- [x] 6.2 Edit `openspec/config.yaml` to add `formatter: "pnpm format:check"` for `apps/docs` and `packages/building-blocks`, if the file has a matching section (verify/archive step, same as the previous change).
+- [x] 6.3 Record in the apply report: selected versions with `npm view` evidence, every verify-at-apply outcome and fallback taken (turbo `--affected`, Prettier `.gitignore`, jsonc, husky PATH and no-`.git`, ESLint flags), RED/GREEN evidence per commit, the measured line count per commit, and the single-PR or split decision.
 
 ## PR Slice Boundaries
 
