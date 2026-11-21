@@ -111,15 +111,15 @@ Commit 5: `test(turbo): assert lint task hashes the shared eslint config`
 
 Commit 6: `docs: document eslint setup, aliases and lint scripts in conventions`
 
-- [ ] 6.1 Edit `apps/docs/src/content/docs/architecture/conventions.md` `## Tooling`: `lint` per workspace (`eslint .`), `lint:root`, the rule set (boundaries and context isolation, no `../` imports, import order groups, no explicit `any`), aliases declared once in `tsconfig.base.json` with `${configDir}`, fixtures ignored from normal lint, `.astro` not linted.
-- [ ] 6.2 Edit `apps/docs/src/content/docs/es/architecture/conventions.md` with the equivalent Spanish content (neutral register).
-- [ ] 6.3 GREEN checks: `pnpm docs:check-i18n` and `pnpm docs:build` exit 0.
+- [x] 6.1 Edit `apps/docs/src/content/docs/architecture/conventions.md` `## Tooling`: `lint` per workspace (`eslint .`), `lint:root`, the rule set (boundaries and context isolation, no `../` imports, import order groups, no explicit `any`), aliases declared once in `tsconfig.base.json` with `${configDir}`, fixtures ignored from normal lint, `.astro` not linted.
+- [x] 6.2 Edit `apps/docs/src/content/docs/es/architecture/conventions.md` with the equivalent Spanish content (neutral register).
+- [x] 6.3 GREEN checks: `pnpm docs:check-i18n` and `pnpm docs:build` exit 0.
 
 ## Phase 7: Final verification (end of PR 2)
 
-- [ ] 7.1 Run `pnpm lint`, `pnpm lint:root`, `pnpm typecheck`, `pnpm test`, `pnpm test:workspace`, `pnpm docs:check-i18n`, `pnpm docs:build`; all exit 0 and `git status --porcelain` shows only intended changes.
-- [ ] 7.2 Edit `openspec/config.yaml` to add `linter` commands (`pnpm lint`, `pnpm lint:root`) at verify/archive, if the file has a matching section.
-- [ ] 7.3 Record in the apply report: selected versions and `npm view` evidence, boundaries rule id and syntax, any fallback (`${configDir}`, `regex`, resolver, turbo inputs), and RED/GREEN evidence per phase.
+- [x] 7.1 Run `pnpm lint`, `pnpm lint:root`, `pnpm typecheck`, `pnpm test`, `pnpm test:workspace`, `pnpm docs:check-i18n`, `pnpm docs:build`; all exit 0 and `git status --porcelain` shows only intended changes.
+- [x] 7.2 Edit `openspec/config.yaml` to add `linter` commands (`pnpm lint`, `pnpm lint:root`) at verify/archive, if the file has a matching section.
+- [x] 7.3 Record in the apply report: selected versions and `npm view` evidence, boundaries rule id and syntax, any fallback (`${configDir}`, `regex`, resolver, turbo inputs), and RED/GREEN evidence per phase.
 
 ## PR Slice Boundaries
 

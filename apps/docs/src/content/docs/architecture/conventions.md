@@ -303,10 +303,16 @@ Style:
 
 ## Tooling
 
-- **Turborepo** runs the workspace tasks through root scripts: `pnpm build`, `pnpm dev`, `pnpm lint`, `pnpm test` and `pnpm typecheck` all call `turbo run`. `build`, `typecheck` and `test` depend on `^build`, so dependencies build first, and results are cached locally. `dev` is persistent and never cached. `lint` is a no-op until ESLint lands. Changing `tsconfig.base.json` invalidates every cache.
+- **Turborepo** runs the workspace tasks through root scripts: `pnpm build`, `pnpm dev`, `pnpm lint`, `pnpm test` and `pnpm typecheck` all call `turbo run`. `build`, `typecheck` and `test` depend on `^build`, so dependencies build first, and results are cached locally. `dev` is persistent and never cached. Changing `tsconfig.base.json` invalidates every cache.
 - **TypeScript** is strict by default: `tsconfig.base.json` enables `strict` and `noUncheckedIndexedAccess`, and packages extend it. `apps/docs` keeps its own Astro config. `packages/building-blocks` is a placeholder package that exposes only the `./package-marker` subpath until the real building blocks arrive.
 - **Workspace tests** check the Turborepo wiring itself. `pnpm test:workspace` runs them serially, outside `turbo run test`.
-- **ESLint** (flat config) with `eslint-plugin-boundaries` for layer rules, `@typescript-eslint/no-explicit-any` enabled and strict TypeScript. ESLint also forbids `../` imports.
+- **ESLint** uses one flat config at the repository root, `eslint.config.js`, shared by every workspace. Each workspace runs `eslint .` as its `lint` script, and `pnpm lint` runs them through Turborepo. Root files (`tests/**` and `eslint.config.js`) are linted by `pnpm lint:root`, outside Turborepo, like `test:workspace`. The root `package.json` sets `"type": "module"` so the config loads as ESM. The `lint` cache keys on `eslint.config.js`, so editing a rule invalidates only lint results. The rules are:
+  - Layer and context boundaries from `eslint-plugin-boundaries` (rule id `boundaries/dependencies`), following the Layers table. Only `infrastructure/adapters` may reach into other contexts.
+  - No parent-relative `../` imports (`no-restricted-imports`). Use an alias or a same-directory import.
+  - No explicit `any` (`@typescript-eslint/no-explicit-any`) on top of the strict TypeScript setup.
+  - Import and export order (see below).
+- **Path aliases** `@contexts/*`, `@core/*` and `@shared/*` are declared once in `tsconfig.base.json`, using `${configDir}` so each extending project resolves them against its own `src/`. ESLint resolves them through `eslint-import-resolver-typescript`.
+- **Lint scope**: the lint fixtures under `tests/lint-fixtures/` are ignored by normal lint and linted only by the workspace tests. `.astro` files are not linted.
 - **Import order** with `eslint-plugin-simple-import-sort`: built-ins, external packages, `@house-radar/*`, internal aliases, same-directory relative imports.
 - **Prettier** formats only: `singleQuote` and `trailingComma: all`.
 - **husky + lint-staged** run ESLint and Prettier on staged files at pre-commit. Turborepo caching keeps CI fast.
