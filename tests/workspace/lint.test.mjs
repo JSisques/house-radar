@@ -94,12 +94,22 @@ test('alias imports resolve to their layer, so boundaries is the only rule that 
   assert.deepEqual(await ruleIds(`${LISTINGS}/application/imports-other-context-alias.ts`), [BOUNDARIES_RULE]);
 });
 
-test('allowed alias imports are clean', async () => {
-  for (const file of [
-    `${LISTINGS}/application/uses-domain-alias.ts`,
-    `${LISTINGS}/infrastructure/adapters/pricing-alias.adapter.ts`,
-  ]) {
+test('allowed alias imports are clean, and only because they resolve', async () => {
+  // A clean result alone would also hold if the alias never resolved (boundaries ignores
+  // unresolved imports). Linting the same source from a layer that forbids the target
+  // proves each specifier resolves to a classified element.
+  const cases = [
+    { file: `${LISTINGS}/application/uses-domain-alias.ts`, forbiddenFrom: 'contexts/pricing/domain/probe.ts' },
+    {
+      file: `${LISTINGS}/infrastructure/adapters/pricing-alias.adapter.ts`,
+      forbiddenFrom: `${LISTINGS}/domain/probe.ts`,
+    },
+  ];
+  for (const { file, forbiddenFrom } of cases) {
     assert.deepEqual(await ruleIds(file), [], file);
+    const source = readFileSync(fixturePath(file), 'utf8');
+    const [result] = await eslint.lintText(source, { filePath: fixturePath(forbiddenFrom) });
+    assert.deepEqual(result.messages.map((message) => message.ruleId), [BOUNDARIES_RULE], forbiddenFrom);
   }
 });
 
