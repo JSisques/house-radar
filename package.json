@@ -21,7 +21,9 @@
     "lint:root": "eslint tests eslint.config.js",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
-    "test:workspace": "node --test --test-concurrency=1 'tests/workspace/*.test.mjs'"
+    "test:workspace": "node --test --test-concurrency=1 'tests/workspace/*.test.mjs'",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
@@ -30,6 +32,7 @@
     "eslint-plugin-boundaries": "7.4.4",
     "eslint-plugin-simple-import-sort": "14.0.0",
     "globals": "17.14.0",
+    "prettier": "3.10.1",
     "turbo": "2.11.13",
     "typescript": "5.9.3",
     "typescript-eslint": "8.73.0"

@@ -32,3 +32,15 @@ export function runTurbo(args, { cacheDir }) {
   });
   return { status: result.status, output: `${result.stdout ?? ''}${result.stderr ?? ''}` };
 }
+
+export function runBin(name, args, { input, cwd = repoRoot, env = {} } = {}) {
+  const result = spawnSync(join(repoRoot, 'node_modules/.bin', name), args, {
+    cwd,
+    input,
+    encoding: 'utf8',
+    timeout: 120_000,
+    maxBuffer: 32 * 1024 * 1024,
+    env: { ...process.env, ...env },
+  });
+  return { status: result.status, stdout: result.stdout ?? '', stderr: result.stderr ?? '' };
+}

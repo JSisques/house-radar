@@ -1,0 +1,6 @@
+pnpm-lock.yaml
+openspec/
+odd/
+tests/lint-fixtures/
+*.md
+*.mdx

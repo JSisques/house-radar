@@ -186,3 +186,28 @@ test('workspaces use the root eslint config and define none of their own', () =>
   walk('packages');
   assert.deepEqual(stray, []);
 });
+
+test('root pins prettier 3.x exactly', () => {
+  const { devDependencies } = readJson('package.json');
+  assert.match(devDependencies.prettier ?? '', /^\d+\.\d+\.\d+$/);
+  assert.equal(devDependencies.prettier.split('.')[0], '3');
+});
+
+test('format scripts run prettier directly, outside turbo', () => {
+  const { scripts } = readJson('package.json');
+  assert.equal(scripts.format, 'prettier --write .');
+  assert.equal(scripts['format:check'], 'prettier --check .');
+  assert.equal(scripts.format.includes('turbo'), false);
+  assert.equal(scripts['format:check'].includes('turbo'), false);
+});
+
+test('.prettierrc freezes the three formatting options', () => {
+  assert.deepEqual(readJson('.prettierrc'), { singleQuote: true, trailingComma: 'all', printWidth: 120 });
+});
+
+test('.prettierignore lists the additions on top of .gitignore', () => {
+  const lines = readText('.prettierignore').split('\n').map((line) => line.trim());
+  for (const entry of ['pnpm-lock.yaml', 'openspec/', 'odd/', 'tests/lint-fixtures/', '*.md', '*.mdx']) {
+    assert.ok(lines.includes(entry), entry);
+  }
+});
