@@ -10,7 +10,9 @@ Defines the root task pipeline and pnpm workspace contract of the monorepo: unif
 
 ### Requirement: Root scripts delegate to Turborepo
 
-The root `package.json` MUST define the scripts `lint`, `typecheck`, `test`, `build` and `dev`, each delegating to `turbo run <task>` for the task of the same name. The root `package.json` MUST also define `test:workspace`, which runs the root workspace test suite directly and MUST NOT delegate to turbo.
+The root `package.json` MUST define the scripts `lint`, `typecheck`, `test`, `build` and `dev`, each delegating to `turbo run <task>` for the task of the same name. The root `package.json` MUST also define `test:workspace` and `lint:root`, which run directly and MUST NOT delegate to turbo.
+
+(Previously: only `test:workspace` was exempt from turbo delegation.)
 
 #### Scenario: Root script delegates to turbo
 
@@ -18,23 +20,26 @@ The root `package.json` MUST define the scripts `lint`, `typecheck`, `test`, `bu
 - WHEN the scripts `lint`, `typecheck`, `test`, `build` and `dev` are inspected
 - THEN each one invokes `turbo run` with the matching task name
 
-#### Scenario: Workspace suite is outside the turbo pipeline
+#### Scenario: Workspace suite and root lint are outside the turbo pipeline
 
 - GIVEN the root `package.json` and `turbo.json`
-- WHEN the `test:workspace` script and the turbo tasks are inspected
-- THEN `test:workspace` does not invoke turbo
+- WHEN the `test:workspace` and `lint:root` scripts and the turbo tasks are inspected
+- THEN neither `test:workspace` nor `lint:root` invokes turbo
 - AND no workspace `test` script invokes `test:workspace` (no recursion through `turbo run test`)
 
 ### Requirement: Pinned toolchain
 
-The root `package.json` MUST declare `turbo` (2.x) and `typescript` as devDependencies with exact versions (no range operators). `typescript` MUST be `5.9.3`.
+The root `package.json` MUST declare `turbo` (2.x), `typescript`, `eslint`, `@eslint/js`, `typescript-eslint`, `eslint-plugin-boundaries`, `eslint-plugin-simple-import-sort` and the TypeScript import resolver used by boundaries as devDependencies with exact versions (no range operators). `typescript` MUST be `5.9.3`.
+
+(Previously: only `turbo` and `typescript` were required.)
 
 #### Scenario: Exact pins
 
 - GIVEN the root `package.json`
-- WHEN the devDependencies `turbo` and `typescript` are read
+- WHEN the devDependencies `turbo`, `typescript` and the ESLint toolchain packages are read
 - THEN `typescript` equals `5.9.3`
 - AND `turbo` is an exact `2.x.y` version without `^` or `~`
+- AND every ESLint toolchain package is an exact version without `^` or `~`
 
 ### Requirement: Task graph and caching
 
@@ -42,10 +47,12 @@ The root `package.json` MUST declare `turbo` (2.x) and `typescript` as devDepend
 - `build` depending on `^build`, with `dist/**` in its outputs (and the docs build output);
 - `typecheck` depending on `^build`;
 - `test` depending on `^build`;
-- `lint` as a defined task that is a no-op until a workspace declares a `lint` script;
+- `lint` as a defined task whose `inputs` include `$TURBO_DEFAULT$` and the root `eslint.config.js` (via `$TURBO_ROOT$/eslint.config.js`, or `globalDependencies` as fallback), executed in each workspace that declares a `lint` script;
 - `dev` with `persistent: true` and `cache: false`.
 
 Workspaces lacking a script for a task MUST be skipped without requiring stub scripts. `.turbo` and `dist` MUST be ignored by git.
+
+(Previously: `lint` was a no-op until a workspace declared a `lint` script.)
 
 #### Scenario: Task shape in turbo.json
 
@@ -54,14 +61,14 @@ Workspaces lacking a script for a task MUST be skipped without requiring stub sc
 - THEN `build`, `typecheck` and `test` each list `^build` in `dependsOn`
 - AND `build` outputs include `dist/**`
 - AND `dev` has `persistent: true` and `cache: false`
-- AND a `lint` task is present
+- AND a `lint` task is present whose inputs include the root `eslint.config.js`
 
-#### Scenario: Lint is a no-op until defined
+#### Scenario: Lint runs ESLint in each workspace
 
-- GIVEN no workspace defines a `lint` script
+- GIVEN `@house-radar/building-blocks` and `docs` define `lint` as `eslint .`
 - WHEN `pnpm lint` is run
-- THEN the command exits with code 0
-- AND no workspace executes a lint command
+- THEN turbo executes `eslint .` in both workspaces
+- AND the command exits with code 0
 
 #### Scenario: Dev is persistent and uncached
 
@@ -120,7 +127,9 @@ On a fresh clone, `pnpm install && pnpm turbo run build typecheck` MUST run the 
 
 ### Requirement: Strict shared TypeScript baseline
 
-`tsconfig.base.json` at the repository root MUST enable `strict`, `noUncheckedIndexedAccess`, `isolatedModules`, `skipLibCheck` and `declaration`, and MUST set `target` to `ES2022`, `module` to `ESNext` and `moduleResolution` to `Bundler`. It MUST NOT set decorator flags. TypeScript workspaces under `packages/*` MUST extend it. `apps/docs` MUST keep extending Astro's strict config and MUST NOT be forced onto the base.
+`tsconfig.base.json` at the repository root MUST enable `strict`, `noUncheckedIndexedAccess`, `isolatedModules`, `skipLibCheck` and `declaration`, and MUST set `target` to `ES2022`, `module` to `ESNext` and `moduleResolution` to `Bundler`. It MUST declare `paths` for the aliases `@contexts/*`, `@core/*` and `@shared/*`, resolved relative to each extending project. It MUST NOT set decorator flags. TypeScript workspaces under `packages/*` MUST extend it. `apps/docs` MUST keep extending Astro's strict config and MUST NOT be forced onto the base.
+
+(Previously: no path aliases were declared.)
 
 #### Scenario: Base compiler options
 
@@ -129,6 +138,18 @@ On a fresh clone, `pnpm install && pnpm turbo run build typecheck` MUST run the 
 - THEN `strict`, `noUncheckedIndexedAccess`, `isolatedModules`, `skipLibCheck` and `declaration` are `true`
 - AND `target` is `ES2022`, `module` is `ESNext`, `moduleResolution` is `Bundler`
 - AND neither `experimentalDecorators` nor `emitDecoratorMetadata` is set
+
+#### Scenario: Base declares path aliases
+
+- GIVEN `tsconfig.base.json`
+- WHEN `compilerOptions.paths` is read
+- THEN `@contexts/*`, `@core/*` and `@shared/*` are declared
+
+#### Scenario: Typecheck still passes with aliases
+
+- GIVEN `packages/building-blocks` extends the base with the new `paths`
+- WHEN `pnpm typecheck` is run
+- THEN the command exits with code 0
 
 #### Scenario: Docs tsconfig unchanged
 
