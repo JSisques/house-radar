@@ -303,6 +303,9 @@ Estilo:
 
 ## Herramientas
 
+- **Turborepo** ejecuta las tareas del workspace mediante scripts raíz: `pnpm build`, `pnpm dev`, `pnpm lint`, `pnpm test` y `pnpm typecheck` llaman a `turbo run`. `build`, `typecheck` y `test` dependen de `^build`, así que las dependencias se compilan primero, y los resultados se cachean en local. `dev` es persistente y nunca se cachea. `lint` no hace nada hasta que llegue ESLint. Cambiar `tsconfig.base.json` invalida todas las cachés.
+- **TypeScript** es estricto por defecto: `tsconfig.base.json` activa `strict` y `noUncheckedIndexedAccess`, y los paquetes lo extienden. `apps/docs` conserva su propia configuración de Astro. `packages/building-blocks` es un paquete provisional que solo expone el subpath `./package-marker` hasta que lleguen los bloques base reales.
+- **Los tests del workspace** comprueban la propia configuración de Turborepo. `pnpm test:workspace` los ejecuta en serie, fuera de `turbo run test`.
 - **ESLint** (flat config) con `eslint-plugin-boundaries` para las reglas de capas, `@typescript-eslint/no-explicit-any` activado y TypeScript estricto. ESLint también prohíbe las importaciones con `../`.
 - **Orden de importaciones** con `eslint-plugin-simple-import-sort`: built-ins, paquetes externos, `@house-radar/*`, alias internos e importaciones relativas del mismo directorio.
 - **Prettier** solo formatea: `singleQuote` y `trailingComma: all`.

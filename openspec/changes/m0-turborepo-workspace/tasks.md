@@ -43,9 +43,9 @@ Commit style: Conventional Commits, no AI attribution. Each work-unit commit car
 
 ## Phase 3: Documentation and closure (WU-3)
 
-- [ ] 3.1 Update `## Tooling` in `apps/docs/src/content/docs/architecture/conventions.md`: Turborepo bullet (tasks, root scripts, `^build`, local cache), TypeScript bullet (strict base, `apps/docs` keeps Astro config), Workspace tests bullet (`pnpm test:workspace` outside turbo). Spec: Conventions documentation parity.
-- [ ] 3.2 Mirror the same bullets in `apps/docs/src/content/docs/es/architecture/conventions.md` (`## Herramientas`, neutral Spanish, `/es/adr/...` links).
-- [ ] 3.3 Run `pnpm docs:check-i18n`, `pnpm docs:check`, `pnpm docs:test`, `pnpm docs:build`, `pnpm test:workspace`, `pnpm test`, then manual full `pnpm turbo run build typecheck` twice (second run full cache hit). Commit WU-3. Record commit hashes in the feature document.
+- [x] 3.1 Update `## Tooling` in `apps/docs/src/content/docs/architecture/conventions.md`: Turborepo bullet (tasks, root scripts, `^build`, local cache), TypeScript bullet (strict base, `apps/docs` keeps Astro config), Workspace tests bullet (`pnpm test:workspace` outside turbo). Spec: Conventions documentation parity.
+- [x] 3.2 Mirror the same bullets in `apps/docs/src/content/docs/es/architecture/conventions.md` (`## Herramientas`, neutral Spanish, `/es/adr/...` links).
+- [x] 3.3 Run `pnpm docs:check-i18n`, `pnpm docs:check`, `pnpm docs:test`, `pnpm docs:build`, `pnpm test:workspace`, `pnpm test`, then manual full `pnpm turbo run build typecheck` twice (second run full cache hit). Commit WU-3. Record commit hashes in the feature document.
 
 ## Dependencies and parallelism
 
