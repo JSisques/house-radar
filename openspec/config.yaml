@@ -1,14 +1,16 @@
 schema: spec-driven
 context: |
   House Radar: real estate discovery and analysis platform (AGPL-3.0).
-  pnpm 10 + Turborepo monorepo, Node >=24. Planned: apps/api, apps/ingestion (NestJS, DDD),
-  apps/web (React + Vite), packages/building-blocks, packages/shared-kernel.
-  Exists today: apps/docs only (Astro 7 + Starlight, EN + ES mirror under content/docs/es).
+  pnpm 10 + Turborepo 2 monorepo, Node >=24. Planned: apps/api, apps/ingestion (NestJS, DDD),
+  apps/web (React + Vite), packages/shared-kernel.
+  Exists today: apps/docs (Astro 7 + Starlight, EN + ES mirror under content/docs/es) and
+  packages/building-blocks (placeholder shell, strict base tsconfig).
   Conventions: AGENTS.md; Conventional Commits; no AI attribution; artifacts in English.
 strict_tdd: true
 strict_tdd_note: >
-  Mandated by AGENTS.md. Workspace-level command is the root script `pnpm docs:test`, which covers
-  the only existing project (apps/docs). Add a workspace-wide `test` script (turbo) once more projects exist.
+  Mandated by AGENTS.md. Workspace-level test command is the root script `pnpm test` (turbo run test:
+  Vitest in packages/building-blocks and node:test in apps/docs). `pnpm test:workspace` runs the root
+  node:test suite (tests/workspace, serial) outside turbo. Keep `pnpm docs:test` for docs-only changes.
 projects:
   - path: apps/docs
     stack: Astro 7 + Starlight, TypeScript 5.9, ESM
@@ -28,12 +30,21 @@ projects:
   - path: apps/web
     status: planned (not on disk)
   - path: packages/building-blocks
-    status: planned (not on disk)
+    stack: TypeScript 5.9.3 (strict base), Vitest 5.1.1, ESM
+    test: "pnpm --filter @house-radar/building-blocks test"
+    framework: vitest
+    quality:
+      type_checker: "pnpm --filter @house-radar/building-blocks typecheck"
+      build: "pnpm --filter @house-radar/building-blocks build"
+      linter: null
+      formatter: null
+    coverage: null
   - path: packages/shared-kernel
     status: planned (not on disk)
 testing:
-  workspace_test_command: "pnpm docs:test"
-  layers: {unit: node:test (docs scripts only), integration: none, e2e: none}
+  workspace_test_command: "pnpm test"
+  workspace_suite_command: "pnpm test:workspace"
+  layers: {unit: "Vitest (packages/building-blocks) + node:test (apps/docs scripts) via turbo run test", integration: "root node:test suite tests/workspace, serial (turbo CLI cache and strict-error behaviour)", e2e: none}
   ci: .github/workflows/docs.yml, .github/workflows/codeql.yml
 rules:
   proposal: [Keep scope aligned with AGENTS.md and ADRs]
@@ -41,5 +52,5 @@ rules:
   design: [Follow DDD/CQRS conventions in architecture/conventions.md]
   tasks: [Each task starts with a failing test (RED); keep EN and ES docs in parity]
   apply: [Strict TDD RED-GREEN-REFACTOR; Conventional Commits]
-  verify: [Run pnpm docs:test, docs:check, docs:check-i18n, docs:build when docs change]
+  verify: ["Run pnpm test and pnpm test:workspace when workspace or package config changes; run pnpm docs:test, docs:check, docs:check-i18n, docs:build when docs change"]
   archive: [Sync delta specs into openspec/specs before archiving]
