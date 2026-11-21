@@ -103,9 +103,9 @@ Commit 4: `feat(lint): add base path aliases and resolve them in boundaries`
 
 Commit 5: `test(turbo): assert lint task hashes the shared eslint config`
 
-- [ ] 5.1 RED: add a case to `tests/workspace/turbo-cli.test.mjs` running `turbo run lint --dry=json` through the existing helper and asserting the `lint` tasks of `docs` and `@house-radar/building-blocks` list `eslint.config.js` among hash inputs. Verify the exact dry-run field first (`pnpm turbo run lint --dry=json`); an absent key fails (RED).
-- [ ] 5.2 GREEN: the 1.5 config should satisfy it; if root external dependencies are not part of the global hash, also add `$TURBO_ROOT$/package.json` to `lint.inputs` in `turbo.json` and extend the 1.2 assertion.
-- [ ] 5.3 Manual verification (spec "Config edit causes cache miss"): run `pnpm lint` twice (second is a hit), touch `eslint.config.js` with a comment, run again and observe a miss; revert the touch. Record evidence in the apply report.
+- [x] 5.1 RED: add a case to `tests/workspace/turbo-cli.test.mjs` running `turbo run lint --dry=json` through the existing helper and asserting the `lint` tasks of `docs` and `@house-radar/building-blocks` list `eslint.config.js` among hash inputs. Verify the exact dry-run field first (`pnpm turbo run lint --dry=json`); an absent key fails (RED).
+- [x] 5.2 GREEN: the 1.5 config should satisfy it; if root external dependencies are not part of the global hash, also add `$TURBO_ROOT$/package.json` to `lint.inputs` in `turbo.json` and extend the 1.2 assertion.
+- [x] 5.3 Manual verification (spec "Config edit causes cache miss"): run `pnpm lint` twice (second is a hit), touch `eslint.config.js` with a comment, run again and observe a miss; revert the touch. Record evidence in the apply report.
 
 ## Phase 6: Documentation (PR 2)
 
