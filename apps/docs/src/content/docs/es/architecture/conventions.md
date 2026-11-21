@@ -314,9 +314,11 @@ Estilo:
 - **Alias de rutas** `@contexts/*`, `@core/*` y `@shared/*` se declaran una sola vez en `tsconfig.base.json`, con `${configDir}` para que cada proyecto que lo extiende los resuelva contra su propio `src/`. ESLint los resuelve con `eslint-import-resolver-typescript`.
 - **Alcance del lint**: los fixtures de `tests/lint-fixtures/` los ignora el lint normal y solo los lintean los tests del workspace. Los archivos `.astro` no se lintean.
 - **Orden de importaciones** con `eslint-plugin-simple-import-sort`: built-ins, paquetes externos, `@house-radar/*`, alias internos e importaciones relativas del mismo directorio.
-- **Prettier** solo formatea: `singleQuote` y `trailingComma: all`.
-- **husky + lint-staged** ejecutan ESLint y Prettier sobre los archivos en staging en el pre-commit. La caché de Turborepo mantiene rápida la CI.
-- **commitlint** impone Conventional Commits en commit-msg ([D16](/es/adr/d16-quality-and-workflow/)).
+- **Prettier** solo formatea: `singleQuote`, `trailingComma: all` y `printWidth: 120`. `pnpm format` reescribe los archivos y `pnpm format:check` solo los reporta; ambos ejecutan Prettier directamente, fuera de Turborepo, igual que `lint:root`. Prettier omite todo lo de `.gitignore` más `.prettierignore`: `pnpm-lock.yaml`, `openspec/`, `odd/`, `tests/lint-fixtures/`, `apps/docs/design/` (maquetas de referencia de diseño, no código mantenido a mano), `*.md` y `*.mdx`. Por tanto, los documentos Markdown, MDX, OpenSpec y ODD nunca se formatean.
+- **Los hooks de git** los instala husky v9 cuando `pnpm install` ejecuta el script raíz `prepare`. Usa `HUSKY=0` o `--no-verify` para saltarlos en una emergencia.
+  - `pre-commit` ejecuta `lint-staged` sobre los archivos en staging. Los archivos de código (`js`, `mjs`, `cjs`, `ts`, `tsx`, `mts`, `cts`) ejecutan `eslint --fix` y después `prettier --write`, de modo que Prettier tiene la última palabra sobre el formato. Los archivos `json`, `jsonc`, `yaml`, `yml` y `css` ejecutan `prettier --write`. Un archivo que ESLint no puede corregir aborta el commit.
+  - `commit-msg` ejecuta `commitlint` con el preset de Conventional Commits ([D16](/es/adr/d16-quality-and-workflow/)), así que `update stuff` se rechaza y `feat(api): add x` se acepta.
+  - `pre-push` ejecuta `pnpm test:changed`, que es `turbo run build test --affected`: compila y prueba los paquetes que han cambiado desde `main`. Cambia la base con `TURBO_SCM_BASE=<ref> pnpm test:changed`. Si la referencia base no se puede resolver, por ejemplo cuando no hay `main` local, turbo falla y el push también, así que define `TURBO_SCM_BASE` o salta el hook. `pnpm test:workspace` no forma parte de los hooks; lo ejecuta la CI.
 
 ## Refinamientos sobre los proyectos de referencia
 

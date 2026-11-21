@@ -314,9 +314,11 @@ Style:
 - **Path aliases** `@contexts/*`, `@core/*` and `@shared/*` are declared once in `tsconfig.base.json`, using `${configDir}` so each extending project resolves them against its own `src/`. ESLint resolves them through `eslint-import-resolver-typescript`.
 - **Lint scope**: the lint fixtures under `tests/lint-fixtures/` are ignored by normal lint and linted only by the workspace tests. `.astro` files are not linted.
 - **Import order** with `eslint-plugin-simple-import-sort`: built-ins, external packages, `@house-radar/*`, internal aliases, same-directory relative imports.
-- **Prettier** formats only: `singleQuote` and `trailingComma: all`.
-- **husky + lint-staged** run ESLint and Prettier on staged files at pre-commit. Turborepo caching keeps CI fast.
-- **commitlint** enforces Conventional Commits on commit-msg ([D16](/adr/d16-quality-and-workflow/)).
+- **Prettier** formats only: `singleQuote`, `trailingComma: all` and `printWidth: 120`. `pnpm format` rewrites files and `pnpm format:check` only reports them; both run Prettier directly, outside Turborepo, like `lint:root`. Prettier skips everything in `.gitignore` plus `.prettierignore`: `pnpm-lock.yaml`, `openspec/`, `odd/`, `tests/lint-fixtures/`, `apps/docs/design/` (design reference mockups, not hand-maintained code), `*.md` and `*.mdx`. So Markdown, MDX, OpenSpec and ODD documents are never formatted.
+- **Git hooks** are installed by husky v9 when `pnpm install` runs the root `prepare` script. Set `HUSKY=0` or use `--no-verify` to bypass them in an emergency.
+  - `pre-commit` runs `lint-staged` on staged files. Code files (`js`, `mjs`, `cjs`, `ts`, `tsx`, `mts`, `cts`) run `eslint --fix` and then `prettier --write`, so Prettier has the final say on layout. `json`, `jsonc`, `yaml`, `yml` and `css` files run `prettier --write`. A file that ESLint cannot fix aborts the commit.
+  - `commit-msg` runs `commitlint` with the Conventional Commits preset ([D16](/adr/d16-quality-and-workflow/)), so `update stuff` is rejected and `feat(api): add x` is accepted.
+  - `pre-push` runs `pnpm test:changed`, which is `turbo run build test --affected`: it builds and tests the packages changed since `main`. Override the base with `TURBO_SCM_BASE=<ref> pnpm test:changed`. If the base ref cannot be resolved, for example when there is no local `main`, turbo fails and so does the push, so set `TURBO_SCM_BASE` or bypass the hook. `pnpm test:workspace` is not part of the hooks; CI runs it.
 
 ## Refinements over the reference projects
 

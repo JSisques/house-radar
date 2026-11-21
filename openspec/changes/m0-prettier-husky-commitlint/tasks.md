@@ -76,22 +76,24 @@ Runner: `pnpm test:workspace` (`node --test --test-concurrency=1 'tests/workspac
 - [x] 4.12 GREEN check: run `node --test tests/workspace/config.test.mjs tests/workspace/formatting-hooks.test.mjs tests/workspace/turbo-cli.test.mjs`; run `pnpm format:check`, `pnpm lint`, `pnpm lint:root`.
 - [x] 4.13 Manual probe (record in the apply report): stage a badly formatted, non-ignored `tests/workspace/probe-format.ts`, run `pnpm exec lint-staged`, observe it fixed and re-staged, then unstage and delete it; stage a lint-unfixable file and observe non-zero; confirm `git config core.hooksPath` is `.husky/_`; run `pnpm test:changed --dry=json` on this branch (local `main` exists).
 - [x] 4.14 REFACTOR: dedupe env and spawn helpers in `tests/workspace/formatting-hooks.test.mjs`.
-- [ ] 4.15 Commit C4 `build: add husky hooks with lint-staged and test:changed`. Hooks now run on this commit (lint-staged, commitlint).
+- [x] 4.15 Commit C4 `build: add husky hooks with lint-staged and test:changed`. Hooks now run on this commit (lint-staged, commitlint).
 
 ## Phase 5: Documentation (C5) - `docs: document formatting, git hooks and commit linting`
 
-- [ ] 5.1 Edit the `## Tooling` section of `apps/docs/src/content/docs/architecture/conventions.md`: Prettier options and scope (including that Markdown, MDX, OpenSpec and ODD are not formatted), `format` and `format:check`, the three hooks and what each runs, the lint-staged order (ESLint then Prettier), the Conventional Commits convention enforced by commitlint, `test:changed` with `TURBO_SCM_BASE=<ref>` override and the all-packages fallback, and emergency bypass (`--no-verify`, `HUSKY=0`).
-- [ ] 5.2 Edit `apps/docs/src/content/docs/es/architecture/conventions.md` with the equivalent Spanish content (neutral register), keeping heading and section parity.
-- [ ] 5.3 GREEN checks: `pnpm docs:check-i18n` and `pnpm docs:build` exit 0.
-- [ ] 5.4 Commit C5 `docs: document formatting, git hooks and commit linting` (first commit through all three hooks; dogfoods lint-staged and commitlint).
+- [x] 5.1 Edit the `## Tooling` section of `apps/docs/src/content/docs/architecture/conventions.md`: Prettier options and scope (including that Markdown, MDX, OpenSpec and ODD are not formatted), `format` and `format:check`, the three hooks and what each runs, the lint-staged order (ESLint then Prettier), the Conventional Commits convention enforced by commitlint, `test:changed` with `TURBO_SCM_BASE=<ref>` override and the all-packages fallback, and emergency bypass (`--no-verify`, `HUSKY=0`).
+- [x] 5.2 Edit `apps/docs/src/content/docs/es/architecture/conventions.md` with the equivalent Spanish content (neutral register), keeping heading and section parity.
+- [x] 5.3 GREEN checks: `pnpm docs:check-i18n` and `pnpm docs:build` exit 0.
+- [x] 5.4 Commit C5 `docs: document formatting, git hooks and commit linting` (first commit through all three hooks; dogfoods lint-staged and commitlint).
 
 ## Phase 6: Final verification
 
-- [ ] 6.1 Run `pnpm format:check`, `pnpm lint`, `pnpm lint:root`, `pnpm typecheck`, `pnpm test`, `pnpm test:workspace`, `pnpm docs:check-i18n`, `pnpm docs:build`; all exit 0 and `git status --porcelain` is clean (the suite writes nothing; spec "Suite leaves a clean tree").
+- [x] 6.1 Run `pnpm format:check`, `pnpm lint`, `pnpm lint:root`, `pnpm typecheck`, `pnpm test`, `pnpm test:workspace`, `pnpm docs:check-i18n`, `pnpm docs:build`; all exit 0 and `git status --porcelain` is clean (the suite writes nothing; spec "Suite leaves a clean tree").
 - [ ] 6.2 Edit `openspec/config.yaml` to add `formatter: "pnpm format:check"` for `apps/docs` and `packages/building-blocks`, if the file has a matching section (verify/archive step, same as the previous change).
 - [ ] 6.3 Record in the apply report: selected versions with `npm view` evidence, every verify-at-apply outcome and fallback taken (turbo `--affected`, Prettier `.gitignore`, jsonc, husky PATH and no-`.git`, ESLint flags), RED/GREEN evidence per commit, the measured line count per commit, and the single-PR or split decision.
 
 ## PR Slice Boundaries
+
+**Delivery (decided at apply)**: the running count exceeded 400, so delivery is auto-chain with `stacked-to-main`. PR 1 = commits up to `dcdc81f` (C1, C1b, C2) on `feat/m0-prettier-config`. PR 2 = C3, C4 and C5 on `feat/m0-prettier-husky-commitlint`, stacked on PR 1.
 
 - Default: one PR holding C1-C5 (base: main; ~300-360 authored lines excluding the lockfile).
 - Contingency (running count over 400 after C2): PR 1 = C1+C2 (Prettier and the reformat; stands alone because `format:check` is green), PR 2 = C3+C4+C5 (commit hygiene, hooks and docs) stacked on PR 1. The chain strategy (`stacked-to-main` or `feature-branch-chain`) is chosen only then; delivery strategy is auto-chain, so apply proceeds with the first slice once chosen.
