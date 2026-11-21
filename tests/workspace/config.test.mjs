@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { test } from 'node:test';
 
@@ -156,4 +156,19 @@ test('turbo lint task hashes the shared eslint config without building', () => {
   assert.ok(lint.inputs.includes('$TURBO_ROOT$/eslint.config.js'));
   assert.equal(lint.dependsOn, undefined);
   assert.deepEqual(lint.outputs, []);
+});
+
+test('workspaces use the root eslint config and define none of their own', () => {
+  assert.ok(existsSync(join(repoRoot, 'eslint.config.js')));
+  const skipped = new Set(['node_modules', 'dist', '.astro', '.turbo']);
+  const stray = [];
+  const walk = (dir) => {
+    for (const entry of readdirSync(join(repoRoot, dir), { withFileTypes: true })) {
+      if (entry.isDirectory() && !skipped.has(entry.name)) walk(`${dir}/${entry.name}`);
+      else if (entry.isFile() && /^eslint\.config\./.test(entry.name)) stray.push(`${dir}/${entry.name}`);
+    }
+  };
+  walk('apps');
+  walk('packages');
+  assert.deepEqual(stray, []);
 });
