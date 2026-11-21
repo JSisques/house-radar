@@ -11,7 +11,8 @@
     "astro": "astro",
     "test": "node --test 'scripts/*.test.mjs'",
     "typecheck": "astro check",
-    "check:i18n": "node scripts/i18n-parity.mjs"
+    "check:i18n": "node scripts/i18n-parity.mjs",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@astrojs/starlight": "0.43.1",

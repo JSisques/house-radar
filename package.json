@@ -1,6 +1,7 @@
 {
   "name": "house-radar",
   "private": true,
+  "type": "module",
   "license": "AGPL-3.0-only",
   "description": "House Radar: real estate discovery and analysis platform.",
   "packageManager": "pnpm@10.34.6",
@@ -17,12 +18,20 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
+    "lint:root": "eslint tests eslint.config.js",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
     "test:workspace": "node --test --test-concurrency=1 'tests/workspace/*.test.mjs'"
   },
   "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.15.0",
+    "eslint-import-resolver-typescript": "4.4.5",
+    "eslint-plugin-boundaries": "7.4.4",
+    "eslint-plugin-simple-import-sort": "14.0.0",
+    "globals": "17.14.0",
     "turbo": "2.11.13",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.73.0"
   }
 }

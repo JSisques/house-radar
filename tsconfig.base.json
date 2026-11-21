@@ -10,6 +10,11 @@
     "isolatedModules": true,
     "skipLibCheck": true,
     "declaration": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@contexts/*": ["${configDir}/src/contexts/*"],
+      "@core/*": ["${configDir}/src/core/*"],
+      "@shared/*": ["${configDir}/src/shared/*"]
+    }
   }
 }

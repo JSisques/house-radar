@@ -1,5 +1,6 @@
-import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { test } from 'node:test';
+
 import { comparePages } from './i18n-parity.mjs';
 
 test('reports no issues when every default page has a translation', () => {

@@ -20,7 +20,7 @@ projects:
       type_checker: "pnpm docs:check"
       i18n_parity: "pnpm docs:check-i18n"
       build: "pnpm docs:build"
-      linter: null
+      linter: "pnpm lint"
       formatter: null
     coverage: null
   - path: apps/api
@@ -36,7 +36,7 @@ projects:
     quality:
       type_checker: "pnpm --filter @house-radar/building-blocks typecheck"
       build: "pnpm --filter @house-radar/building-blocks build"
-      linter: null
+      linter: "pnpm lint"
       formatter: null
     coverage: null
   - path: packages/shared-kernel
@@ -44,6 +44,7 @@ projects:
 testing:
   workspace_test_command: "pnpm test"
   workspace_suite_command: "pnpm test:workspace"
+  lint_commands: ["pnpm lint", "pnpm lint:root"]
   layers: {unit: "Vitest (packages/building-blocks) + node:test (apps/docs scripts) via turbo run test", integration: "root node:test suite tests/workspace, serial (turbo CLI cache and strict-error behaviour)", e2e: none}
   ci: .github/workflows/docs.yml, .github/workflows/codeql.yml
 rules:
@@ -52,5 +53,5 @@ rules:
   design: [Follow DDD/CQRS conventions in architecture/conventions.md]
   tasks: [Each task starts with a failing test (RED); keep EN and ES docs in parity]
   apply: [Strict TDD RED-GREEN-REFACTOR; Conventional Commits]
-  verify: ["Run pnpm test and pnpm test:workspace when workspace or package config changes; run pnpm docs:test, docs:check, docs:check-i18n, docs:build when docs change"]
+  verify: ["Run pnpm test and pnpm test:workspace when workspace or package config changes; run pnpm lint and pnpm lint:root; run pnpm docs:test, docs:check, docs:check-i18n, docs:build when docs change"]
   archive: [Sync delta specs into openspec/specs before archiving]

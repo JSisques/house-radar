@@ -41,6 +41,18 @@ test('graph covers every workspace and orders typecheck after dependency builds'
   }
 });
 
+test('lint tasks hash the shared eslint config', TIMEOUT, () => {
+  const tasks = dryTasks(['run', 'lint']);
+  for (const id of ['docs#lint', `${BUILDING_BLOCKS}#lint`]) {
+    const task = tasks.find((candidate) => candidate.taskId === id);
+    assert.ok(task, `missing task ${id}`);
+    assert.ok(
+      Object.keys(task.inputs).some((input) => input.endsWith('eslint.config.js')),
+      `${id} does not hash eslint.config.js`,
+    );
+  }
+});
+
 test('second scoped run is served from the cache', TIMEOUT, () => {
   assert.ok(dryTasks(scoped).every((task) => task.cache.status === 'MISS'));
   const first = runTurbo(scoped, { cacheDir });
