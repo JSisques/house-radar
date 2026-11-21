@@ -1,0 +1,24 @@
+{
+  "name": "@house-radar/building-blocks",
+  "version": "0.0.0",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    "./package-marker": {
+      "types": "./dist/package-marker.d.ts",
+      "default": "./dist/package-marker.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "vitest": "5.1.1"
+  }
+}

@@ -13,6 +13,16 @@
     "docs:build": "pnpm --filter docs build",
     "docs:check": "pnpm --filter docs exec astro check",
     "docs:test": "pnpm --filter docs test",
-    "docs:check-i18n": "pnpm --filter docs check:i18n"
+    "docs:check-i18n": "pnpm --filter docs check:i18n",
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck",
+    "test:workspace": "node --test --test-concurrency=1 'tests/workspace/*.test.mjs'"
+  },
+  "devDependencies": {
+    "turbo": "2.11.13",
+    "typescript": "5.9.3"
   }
 }
