@@ -27,14 +27,14 @@ The repository MUST provide a single root `.prettierrc` with `singleQuote` set t
 
 ### Requirement: Prettier ignore list
 
-The repository MUST provide a root `.prettierignore` that mirrors the entries of `.gitignore` and additionally lists `pnpm-lock.yaml`, `openspec/`, `odd/`, `tests/lint-fixtures/`, `*.md` and `*.mdx`. Ignored paths MUST NOT be modified by `format` and MUST NOT be reported by `format:check`.
+The repository MUST provide a root `.prettierignore` that mirrors the entries of `.gitignore` and additionally lists `pnpm-lock.yaml`, `openspec/`, `odd/`, `tests/lint-fixtures/`, `apps/docs/design/` (design reference mockups, not hand-maintained code), `*.md` and `*.mdx`. Ignored paths MUST NOT be modified by `format` and MUST NOT be reported by `format:check`.
 
 #### Scenario: Required ignore entries
 
 - GIVEN `.prettierignore` and `.gitignore`
 - WHEN their entries are compared
 - THEN every `.gitignore` entry appears in `.prettierignore`
-- AND `pnpm-lock.yaml`, `openspec/`, `odd/`, `tests/lint-fixtures/`, `*.md` and `*.mdx` are listed
+- AND `pnpm-lock.yaml`, `openspec/`, `odd/`, `tests/lint-fixtures/`, `apps/docs/design/` (design reference mockups, not hand-maintained code), `*.md` and `*.mdx` are listed
 
 #### Scenario: Ignored file is left untouched
 

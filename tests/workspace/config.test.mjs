@@ -207,7 +207,7 @@ test('.prettierrc freezes the three formatting options', () => {
 
 test('.prettierignore lists the additions on top of .gitignore', () => {
   const lines = readText('.prettierignore').split('\n').map((line) => line.trim());
-  for (const entry of ['pnpm-lock.yaml', 'openspec/', 'odd/', 'tests/lint-fixtures/', '*.md', '*.mdx']) {
+  for (const entry of ['pnpm-lock.yaml', 'openspec/', 'odd/', 'tests/lint-fixtures/', 'apps/docs/design/', '*.md', '*.mdx']) {
     assert.ok(lines.includes(entry), entry);
   }
 });

@@ -12,7 +12,7 @@ Success means: committing a badly formatted staged file gets it fixed by lint-st
 
 ### In Scope
 - `.prettierrc` with `singleQuote: true`, `trailingComma: "all"`, `printWidth: 120` (user decision).
-- `.prettierignore` mirroring `.gitignore` plus `pnpm-lock.yaml`, `openspec/`, `odd/`, `tests/lint-fixtures/`, `*.md` and `*.mdx`.
+- `.prettierignore` mirroring `.gitignore` plus `pnpm-lock.yaml`, `openspec/`, `odd/`, `tests/lint-fixtures/`, `apps/docs/design/` (design reference mockups, not hand-maintained code), `*.md` and `*.mdx`.
 - Root scripts:
   - `format` = `prettier --write .`
   - `format:check` = `prettier --check .` (repo-wide, honoring `.prettierignore`)

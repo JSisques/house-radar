@@ -31,9 +31,12 @@ pnpm-lock.yaml
 openspec/
 odd/
 tests/lint-fixtures/
+apps/docs/design/
 *.md
 *.mdx
 ```
+
+`apps/docs/design/` holds design reference mockups (`.dc.html`), not hand-maintained code. Formatting them would rewrite about 2,000 lines for no benefit (scope change approved after measuring the reformat at apply).
 
 **Alternatives considered**: Copying every `.gitignore` entry into `.prettierignore`, which is what the proposal literally describes.
 **Rationale**: Copying creates two lists that can drift apart. The proposal's intent, "everything gitignored plus these", is reached with one source of truth. The file-info tests below assert that both a gitignored path (`apps/docs/dist/x.js`, `.turbo/x.json`) and each extra entry are ignored. If the pinned Prettier does not read `.gitignore` by default, those tests go RED. The fallback is to copy the `.gitignore` entries, which still fits the proposal. `node_modules/` is always ignored by Prettier.
@@ -195,7 +198,7 @@ Strict TDD (`openspec/config.yaml strict_tdd: true`). The runner is `pnpm test:w
 |-------|-------------|----------|
 | Config contract | Exact pins of the five packages; commitlint majors equal; scripts; `.prettierrc` options; `.prettierignore` contains each extra entry; hook bodies; lint-staged object; commitlint config; pre-push has no `test:workspace` | Extend `config.test.mjs`. RED: files and keys missing |
 | Prettier behaviour (AC1 fix) | `const a = "x"` → `const a = 'x';\n`; a ~100-character single-line call stays on one line (proves 120, not the default 80); a multi-line array forced past 120 characters gets a trailing comma; `prettier --check --stdin-filepath` on unformatted input exits non-zero | `runBin('prettier', …)`. RED: binary missing, then config missing |
-| Ignore classification | `prettier --file-info` reports `ignored: true` for `pnpm-lock.yaml`, `openspec/x.yaml`, `odd/x.json`, `tests/lint-fixtures/src/misc/sibling.ts`, `docs.md`, `page.mdx`, `apps/docs/dist/x.js`, `.turbo/x.json`; reports `ignored: false` and a parser for `eslint.config.js` and `package.json`; reports `inferredParser: null` for `requirements.txt` | `runBin('prettier', ['--file-info', path])`, JSON parsed |
+| Ignore classification | `prettier --file-info` reports `ignored: true` for `pnpm-lock.yaml`, `openspec/x.yaml`, `odd/x.json`, `tests/lint-fixtures/src/misc/sibling.ts`, `apps/docs/design/x.html`, `docs.md`, `page.mdx`, `apps/docs/dist/x.js`, `.turbo/x.json`; reports `ignored: false` and a parser for `eslint.config.js` and `package.json`; reports `inferredParser: null` for `requirements.txt` | `runBin('prettier', ['--file-info', path])`, JSON parsed |
 | ESLint step (AC1 block) | Unfixable input (`export type Loose = any;\n`) run through `eslint --no-warn-ignored --fix-dry-run --stdin --stdin-filename tests/workspace/__probe__.ts` exits 1 with `@typescript-eslint/no-explicit-any`, so the lint-staged task fails and the commit aborts. `eslint --no-warn-ignored tests/lint-fixtures/src/misc/explicit-any.ts` exits 0 with empty output, so ignored staged files are silent | `runBin('eslint', …)` |
 | commitlint (AC2, AC3) | stdin `update stuff` → non-zero, output names `type-empty` and `subject-empty`; stdin `feat(api): add x` → status 0 | `runBin('commitlint', [], { input })`, `cwd` = repo root so the ESM config is loaded |
 | Husky install | `husky` in an empty `mkdtemp` dir (no `.git`) exits 0; with `HUSKY=0` it exits 0; neither creates `.husky/_` in that dir | `runBin('husky', [], { cwd: tmp, env })`. The repo's own `core.hooksPath` is never touched |

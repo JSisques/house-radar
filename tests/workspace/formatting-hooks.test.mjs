@@ -43,6 +43,8 @@ test('prettier ignores lockfile, openspec, odd, fixtures, markdown and gitignore
     'openspec/x.yaml',
     'odd/x.json',
     'tests/lint-fixtures/src/misc/sibling.ts',
+    'apps/docs/design/x.html',
+    'apps/docs/design/folla-catastral/Main.dc.html',
     'docs.md',
     'page.mdx',
     'apps/docs/dist/x.js',

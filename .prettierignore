@@ -2,5 +2,6 @@ pnpm-lock.yaml
 openspec/
 odd/
 tests/lint-fixtures/
+apps/docs/design/
 *.md
 *.mdx
