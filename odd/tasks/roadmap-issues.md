@@ -718,6 +718,28 @@ Conventions: one slice = one vertical, reviewable PR of about 400 authored chang
 
 **References.** `odd/tasks/roadmap.md` R5, D8.
 
+#### S-M0-27 · [M0] Renovate for dependency updates
+
+- Milestone: M0 · Foundation
+- Parent: FOUNDATION
+- Labels: `type:foundation` `infra` `P1`
+- Depends on: S-M0-05
+
+**Goal.** Dependency updates arrive as small, reviewable PRs that CI checks, instead of manual bumps.
+
+**Scope.** `renovate.json` at the root extending `config:recommended`; `rangeStrategy: pin`, so new versions stay exact-pinned like today; Conventional Commit messages (`chore(deps): ...`) that pass commitlint; groups for packages released together (for example `typescript-eslint`, `@commitlint/*`, Astro and Starlight); updates for `packageManager`, `engines` and GitHub Actions; a weekly schedule, a dependency dashboard issue and lockfile maintenance. A workspace test validates the config with `renovate-config-validator`. The maintainer installs the Renovate GitHub App. The conventions Tooling section documents the policy in EN and ES.
+
+**Acceptance criteria**
+
+- Given an outdated devDependency, When Renovate runs, Then it opens a PR that bumps the exact pin and updates `pnpm-lock.yaml`.
+- Given a Renovate PR, When CI runs, Then its commit message passes commitlint and the usual checks run.
+- Given packages from one group, When several update together, Then Renovate opens one grouped PR.
+- Given an invalid `renovate.json`, When the workspace tests run, Then they fail.
+
+**Out of scope.** Automerge (decide once CI has run on Renovate PRs for a while); security alert triage beyond what Renovate opens.
+
+**References.** `architecture/conventions.md` (Tooling), D16.
+
 ### M1 · Walking skeleton
 
 #### S-M1-01 · [M1] Listing aggregate with the normalized model
@@ -2596,6 +2618,7 @@ Project board: https://github.com/users/JSisques/projects/16 (linked to the repo
 | `S-M0-24` | #39 |
 | `S-M0-25` | #40 |
 | `S-M0-26` | #41 |
+| `S-M0-27` | #148 |
 | `S-M1-01` | #42 |
 | `S-M1-02` | #43 |
 | `S-M1-03` | #44 |
