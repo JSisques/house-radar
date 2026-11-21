@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict';
-import { test } from 'node:test';
+import { existsSync, mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { after, test } from 'node:test';
 
-import { runBin } from './support.mjs';
+import { runBin, runTurbo } from './support.mjs';
 
 const PROBE = 'tests/workspace/__probe__.ts';
 
@@ -74,4 +77,60 @@ test('commitlint accepts a conventional message', () => {
   const { status, stdout, stderr } = runBin('commitlint', [], { input: 'feat(api): add x\n' });
   assert.equal(status, 0, `${stdout}${stderr}`);
   assert.equal(runBin('commitlint', [], { input: 'fix: handle null\n' }).status, 0);
+});
+
+test('eslint step blocks an unfixable staged file', () => {
+  const { status, stdout, stderr } = runBin(
+    'eslint',
+    ['--no-warn-ignored', '--fix-dry-run', '--stdin', '--stdin-filename', PROBE],
+    { input: 'export type Loose = any;\n' },
+  );
+  assert.equal(status, 1);
+  assert.match(`${stdout}${stderr}`, /@typescript-eslint\/no-explicit-any/);
+});
+
+test('eslint step stays silent for a globally ignored staged file', () => {
+  const { status, stdout, stderr } = runBin('eslint', [
+    '--no-warn-ignored',
+    'tests/lint-fixtures/src/misc/explicit-any.ts',
+  ]);
+  assert.equal(status, 0);
+  assert.equal(`${stdout}${stderr}`, '');
+});
+
+const scratchDirs = [];
+const scratch = () => {
+  const dir = mkdtempSync(join(tmpdir(), 'house-radar-husky-'));
+  scratchDirs.push(dir);
+  return dir;
+};
+after(() => scratchDirs.forEach((dir) => rmSync(dir, { recursive: true, force: true })));
+
+test('husky install exits 0 without .git and with HUSKY=0, creating nothing', () => {
+  for (const env of [{}, { HUSKY: '0' }]) {
+    const cwd = scratch();
+    const { status, stdout, stderr } = runBin('husky', [], { cwd, env });
+    assert.equal(status, 0, `${stdout}${stderr}`);
+    assert.equal(existsSync(join(cwd, '.husky', '_')), false);
+  }
+});
+
+test('turbo --affected schedules build and test for every workspace against a resolvable base', () => {
+  const cacheDir = scratch();
+  const { status, output } = runTurbo(['run', 'build', 'test', '--affected', '--dry=json'], {
+    cacheDir,
+    env: { TURBO_SCM_BASE: 'main' },
+  });
+  assert.equal(status, 0, output);
+  const tasks = JSON.parse(output.slice(output.indexOf('{'))).tasks;
+  const ids = tasks.map((task) => task.taskId);
+  for (const id of [
+    'docs#build',
+    'docs#test',
+    '@house-radar/building-blocks#build',
+    '@house-radar/building-blocks#test',
+  ]) {
+    assert.ok(ids.includes(id), id);
+  }
+  assert.ok(tasks.every((task) => ['build', 'test'].includes(task.task)));
 });

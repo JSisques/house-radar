@@ -13,7 +13,7 @@ export function readJson(relativePath) {
   return JSON.parse(readFileSync(join(repoRoot, relativePath), 'utf8'));
 }
 
-export function runTurbo(args, { cacheDir }) {
+export function runTurbo(args, { cacheDir, env = {} }) {
   const result = spawnSync(join(repoRoot, 'node_modules/.bin/turbo'), args, {
     cwd: repoRoot,
     encoding: 'utf8',
@@ -25,6 +25,7 @@ export function runTurbo(args, { cacheDir }) {
       TURBO_TELEMETRY_DISABLED: '1',
       TURBO_NO_UPDATE_NOTIFIER: '1',
       DO_NOT_TRACK: '1',
+      ...env,
     },
   });
   return { status: result.status, output: `${result.stdout ?? ''}${result.stderr ?? ''}` };
