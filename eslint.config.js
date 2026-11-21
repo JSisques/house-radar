@@ -1,4 +1,5 @@
 import { builtinModules } from 'node:module';
+import { join } from 'node:path';
 
 import js from '@eslint/js';
 import boundaries from 'eslint-plugin-boundaries';
@@ -6,6 +7,7 @@ import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
+const root = import.meta.dirname;
 const TS_FILES = ['**/*.{ts,tsx,mts,cts}'];
 
 // Layers follow the conventions' Layers table. `adapter` is declared before
@@ -66,7 +68,17 @@ export default [
   {
     plugins: { boundaries, 'simple-import-sort': simpleImportSort },
     settings: {
-      'import/resolver': { typescript: { alwaysTryTypes: true } },
+      'import/resolver': {
+        typescript: {
+          alwaysTryTypes: true,
+          // Absolute paths keep resolution independent of the cwd.
+          project: [
+            join(root, 'tests/lint-fixtures/tsconfig.json'), // test fixtures only
+            join(root, 'packages/*/tsconfig.json'),
+            join(root, 'apps/*/tsconfig.json'),
+          ],
+        },
+      },
       'boundaries/elements': elements,
     },
     rules: {
@@ -90,6 +102,7 @@ export default [
             ['^node:', `^(${builtinModules.join('|')})(/|$)`], // Node built-ins
             ['^@?\\w'], // external packages
             ['^@house-radar(/.*|$)'], // workspace packages
+            ['^@(contexts|core|shared)(/.*|$)'], // internal aliases
             ['^\\.'], // same-directory relative
           ],
         },

@@ -89,6 +89,40 @@ test('import sort fix is computed in memory and never written to disk', async ()
   assert.equal(readFileSync(file, 'utf8'), before);
 });
 
+test('alias imports resolve to their layer, so boundaries is the only rule that fires', async () => {
+  assert.deepEqual(await ruleIds(`${LISTINGS}/domain/imports-infrastructure-alias.ts`), [BOUNDARIES_RULE]);
+  assert.deepEqual(await ruleIds(`${LISTINGS}/application/imports-other-context-alias.ts`), [BOUNDARIES_RULE]);
+});
+
+test('allowed alias imports are clean', async () => {
+  for (const file of [
+    `${LISTINGS}/application/uses-domain-alias.ts`,
+    `${LISTINGS}/infrastructure/adapters/pricing-alias.adapter.ts`,
+  ]) {
+    assert.deepEqual(await ruleIds(file), [], file);
+  }
+});
+
+const EXPECTED_SORTED_WITH_ALIAS = `import { readFileSync } from 'node:fs';
+
+import { something } from 'some-package';
+
+import { marker } from '@house-radar/building-blocks/package-marker';
+
+import { listing } from '@contexts/listings/domain/listing';
+
+import { sibling } from './sibling';
+
+export { listing, marker, readFileSync, sibling, something };
+`;
+
+test('alias imports form their own sort group between workspace packages and relative', async () => {
+  const file = 'misc/unsorted-imports-alias.ts';
+  assert.deepEqual(await ruleIds(file), ['simple-import-sort/imports']);
+  const [result] = await sortFixer.lintFiles([fixturePath(file)]);
+  assert.equal(result.output, EXPECTED_SORTED_WITH_ALIAS);
+});
+
 test('normal lint ignores the fixtures', async () => {
   const normal = new ESLint({ cwd: repoRoot });
   assert.equal(await normal.isPathIgnored(fixturePath('misc/explicit-any.ts')), true);

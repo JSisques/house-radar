@@ -22,6 +22,20 @@ test('root pins turbo 2.x and typescript exactly', () => {
   assert.equal(devDependencies.typescript, '5.9.3');
 });
 
+test('base tsconfig declares the path aliases through configDir', () => {
+  const { compilerOptions } = readJson('tsconfig.base.json');
+  assert.deepEqual(compilerOptions.paths, {
+    '@contexts/*': ['${configDir}/src/contexts/*'],
+    '@core/*': ['${configDir}/src/core/*'],
+    '@shared/*': ['${configDir}/src/shared/*'],
+  });
+  assert.equal(compilerOptions.baseUrl, undefined);
+});
+
+test('lint fixtures tsconfig extends the base', () => {
+  assert.equal(readJson('tests/lint-fixtures/tsconfig.json').extends, '../../tsconfig.base.json');
+});
+
 // Characterization guard: green by design, protects docs.yml compatibility.
 test('docs scripts stay unchanged and docs gains typecheck', () => {
   const { scripts } = readJson('package.json');
