@@ -16,6 +16,7 @@
       "outputs": []
     },
     "lint": {
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/eslint.config.js"],
       "outputs": []
     },
     "dev": {

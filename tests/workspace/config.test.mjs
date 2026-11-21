@@ -35,6 +35,7 @@ test('docs scripts stay unchanged and docs gains typecheck', () => {
   assert.equal(docs.dev, 'astro dev');
   assert.equal(docs.build, 'astro build');
   assert.equal(docs.test, "node --test 'scripts/*.test.mjs'");
+  assert.equal(docs.lint, 'eslint .');
 });
 
 test('pnpm workspace lists apps and packages globs', () => {
@@ -53,7 +54,6 @@ test('turbo.json defines the task graph', () => {
   assert.deepEqual(turbo.tasks.build.outputs, ['dist/**']);
   assert.equal(turbo.tasks.dev.cache, false);
   assert.equal(turbo.tasks.dev.persistent, true);
-  assert.ok(turbo.tasks.lint);
   assert.ok(turbo.globalDependencies.includes('tsconfig.base.json'));
 });
 
@@ -95,6 +95,7 @@ test('building-blocks manifest is a private ESM package with exact pins', () => 
     build: 'tsc -p tsconfig.build.json',
     typecheck: 'tsc --noEmit',
     test: 'vitest run --passWithNoTests',
+    lint: 'eslint .',
   });
   assert.equal('.' in pkg.exports, false);
   for (const target of Object.values(pkg.exports['./package-marker'])) {
@@ -122,4 +123,37 @@ test('gitignore covers build output, turbo cache and test fixtures', () => {
   for (const pattern of ['dist/', '.turbo/', '__workspace_fixture_*']) {
     assert.ok(lines.includes(pattern), pattern);
   }
+});
+
+const LINT_TOOLCHAIN = [
+  'eslint',
+  '@eslint/js',
+  'typescript-eslint',
+  'eslint-plugin-boundaries',
+  'eslint-plugin-simple-import-sort',
+  'eslint-import-resolver-typescript',
+  'globals',
+];
+
+test('root pins the lint toolchain exactly and keeps @eslint/js on the eslint major', () => {
+  const { devDependencies } = readJson('package.json');
+  for (const name of LINT_TOOLCHAIN) {
+    assert.match(devDependencies[name] ?? '', /^\d+\.\d+\.\d+$/, name);
+  }
+  // @eslint/js is versioned independently since 10.x; only the major must match.
+  assert.equal(devDependencies.eslint.split('.')[0], devDependencies['@eslint/js'].split('.')[0]);
+});
+
+test('lint:root lints root files outside turbo', () => {
+  const { scripts } = readJson('package.json');
+  assert.equal(scripts['lint:root'], 'eslint tests eslint.config.js');
+  assert.equal(scripts['lint:root'].includes('turbo'), false);
+});
+
+test('turbo lint task hashes the shared eslint config without building', () => {
+  const { lint } = readJson('turbo.json').tasks;
+  assert.ok(lint.inputs.includes('$TURBO_DEFAULT$'));
+  assert.ok(lint.inputs.includes('$TURBO_ROOT$/eslint.config.js'));
+  assert.equal(lint.dependsOn, undefined);
+  assert.deepEqual(lint.outputs, []);
 });
