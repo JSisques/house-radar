@@ -7,10 +7,7 @@ export const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..', '..'
 
 export const BUILDING_BLOCKS = '@house-radar/building-blocks';
 
-export const strictErrorFixture = join(
-  repoRoot,
-  'packages/building-blocks/src/__workspace_fixture_strict_error__.ts',
-);
+export const strictErrorFixture = join(repoRoot, 'packages/building-blocks/src/__workspace_fixture_strict_error__.ts');
 
 export function readJson(relativePath) {
   return JSON.parse(readFileSync(join(repoRoot, relativePath), 'utf8'));

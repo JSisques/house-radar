@@ -27,9 +27,7 @@ import { ProjectListingPriceChangeCommand } from './project-listing-price-change
 const CONSUMER = 'property-view.listing-price-changed';
 
 @CommandHandler(ProjectListingPriceChangeCommand)
-export class ProjectListingPriceChangeHandler
-  implements ICommandHandler<ProjectListingPriceChangeCommand, void>
-{
+export class ProjectListingPriceChangeHandler implements ICommandHandler<ProjectListingPriceChangeCommand, void> {
   constructor(
     @Inject(TRANSACTION_MANAGER_TOKEN)
     private readonly transactionManager: ITransactionManager,

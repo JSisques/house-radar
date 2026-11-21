@@ -54,7 +54,11 @@ test('inward and adapter cross-context imports pass boundaries', async () => {
   ]) {
     const ids = await ruleIds(file);
     assert.deepEqual(ids, [NO_RELATIVE_PARENT], file);
-    assert.equal(ids.some((id) => id.startsWith('boundaries/')), false, file);
+    assert.equal(
+      ids.some((id) => id.startsWith('boundaries/')),
+      false,
+      file,
+    );
   }
 });
 
@@ -109,7 +113,11 @@ test('allowed alias imports are clean, and only because they resolve', async () 
     assert.deepEqual(await ruleIds(file), [], file);
     const source = readFileSync(fixturePath(file), 'utf8');
     const [result] = await eslint.lintText(source, { filePath: fixturePath(forbiddenFrom) });
-    assert.deepEqual(result.messages.map((message) => message.ruleId), [BOUNDARIES_RULE], forbiddenFrom);
+    assert.deepEqual(
+      result.messages.map((message) => message.ruleId),
+      [BOUNDARIES_RULE],
+      forbiddenFrom,
+    );
   }
 });
 

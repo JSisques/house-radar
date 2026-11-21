@@ -29,12 +29,7 @@ after(() => {
 
 test('graph covers every workspace and orders typecheck after dependency builds', TIMEOUT, () => {
   const tasks = dryTasks(['run', 'build', 'typecheck']);
-  for (const id of [
-    'docs#build',
-    'docs#typecheck',
-    `${BUILDING_BLOCKS}#build`,
-    `${BUILDING_BLOCKS}#typecheck`,
-  ]) {
+  for (const id of ['docs#build', 'docs#typecheck', `${BUILDING_BLOCKS}#build`, `${BUILDING_BLOCKS}#typecheck`]) {
     const task = tasks.find((candidate) => candidate.taskId === id);
     assert.ok(task, `missing task ${id}`);
     assert.ok(task.resolvedTaskDefinition.dependsOn.includes('^build'), id);
@@ -79,10 +74,9 @@ for (const [name, { source, code }] of Object.entries(strictFailure)) {
     const isolatedCache = freshCache();
     try {
       writeFileSync(strictErrorFixture, source);
-      const { status, output } = runTurbo(
-        ['run', 'typecheck', `--filter=${BUILDING_BLOCKS}`, '--force'],
-        { cacheDir: isolatedCache },
-      );
+      const { status, output } = runTurbo(['run', 'typecheck', `--filter=${BUILDING_BLOCKS}`, '--force'], {
+        cacheDir: isolatedCache,
+      });
       assert.notEqual(status, 0, output);
       assert.match(output, /@house-radar\/building-blocks[#:]typecheck/);
       assert.match(output, code);

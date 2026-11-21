@@ -46,9 +46,7 @@ export class ListingAggregate extends AggregateRoot<ListingId> {
   }
 
   create(): void {
-    this.record(
-      new ListingImportedEvent(this.generateEventMetadata(ListingImportedEvent), this.toPrimitives()),
-    );
+    this.record(new ListingImportedEvent(this.generateEventMetadata(ListingImportedEvent), this.toPrimitives()));
     this.touch();
   }
 

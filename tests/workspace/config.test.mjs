@@ -53,9 +53,11 @@ test('docs scripts stay unchanged and docs gains typecheck', () => {
 });
 
 test('pnpm workspace lists apps and packages globs', () => {
-  const lines = readText('pnpm-workspace.yaml').split('\n').map((line) => line.trim());
-  assert.ok(lines.includes('- "apps/*"'));
-  assert.ok(lines.includes('- "packages/*"'));
+  const lines = readText('pnpm-workspace.yaml')
+    .split('\n')
+    .map((line) => line.trim().replaceAll('"', "'"));
+  assert.ok(lines.includes("- 'apps/*'"));
+  assert.ok(lines.includes("- 'packages/*'"));
 });
 
 test('turbo.json defines the task graph', () => {
@@ -206,8 +208,18 @@ test('.prettierrc freezes the three formatting options', () => {
 });
 
 test('.prettierignore lists the additions on top of .gitignore', () => {
-  const lines = readText('.prettierignore').split('\n').map((line) => line.trim());
-  for (const entry of ['pnpm-lock.yaml', 'openspec/', 'odd/', 'tests/lint-fixtures/', 'apps/docs/design/', '*.md', '*.mdx']) {
+  const lines = readText('.prettierignore')
+    .split('\n')
+    .map((line) => line.trim());
+  for (const entry of [
+    'pnpm-lock.yaml',
+    'openspec/',
+    'odd/',
+    'tests/lint-fixtures/',
+    'apps/docs/design/',
+    '*.md',
+    '*.mdx',
+  ]) {
     assert.ok(lines.includes(entry), entry);
   }
 });
