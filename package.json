@@ -21,17 +21,33 @@
     "lint:root": "eslint tests eslint.config.js",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
-    "test:workspace": "node --test --test-concurrency=1 'tests/workspace/*.test.mjs'"
+    "test:workspace": "node --test --test-concurrency=1 'tests/workspace/*.test.mjs'",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test:changed": "turbo run build test --affected",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "@commitlint/cli": "21.2.4",
+    "@commitlint/config-conventional": "21.2.4",
     "@eslint/js": "10.0.1",
     "eslint": "10.15.0",
     "eslint-import-resolver-typescript": "4.4.5",
     "eslint-plugin-boundaries": "7.4.4",
     "eslint-plugin-simple-import-sort": "14.0.0",
     "globals": "17.14.0",
+    "husky": "9.1.7",
+    "lint-staged": "17.6.1",
+    "prettier": "3.10.1",
     "turbo": "2.11.13",
     "typescript": "5.9.3",
     "typescript-eslint": "8.73.0"
+  },
+  "lint-staged": {
+    "*.{js,mjs,cjs,ts,tsx,mts,cts}": [
+      "eslint --fix --no-warn-ignored",
+      "prettier --write"
+    ],
+    "*.{json,jsonc,yaml,yml,css}": "prettier --write --ignore-unknown"
   }
 }

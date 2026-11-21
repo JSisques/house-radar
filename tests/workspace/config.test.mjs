@@ -53,9 +53,11 @@ test('docs scripts stay unchanged and docs gains typecheck', () => {
 });
 
 test('pnpm workspace lists apps and packages globs', () => {
-  const lines = readText('pnpm-workspace.yaml').split('\n').map((line) => line.trim());
-  assert.ok(lines.includes('- "apps/*"'));
-  assert.ok(lines.includes('- "packages/*"'));
+  const lines = readText('pnpm-workspace.yaml')
+    .split('\n')
+    .map((line) => line.trim().replaceAll('"', "'"));
+  assert.ok(lines.includes("- 'apps/*'"));
+  assert.ok(lines.includes("- 'packages/*'"));
 });
 
 test('turbo.json defines the task graph', () => {
@@ -185,4 +187,92 @@ test('workspaces use the root eslint config and define none of their own', () =>
   walk('apps');
   walk('packages');
   assert.deepEqual(stray, []);
+});
+
+test('root pins prettier 3.x exactly', () => {
+  const { devDependencies } = readJson('package.json');
+  assert.match(devDependencies.prettier ?? '', /^\d+\.\d+\.\d+$/);
+  assert.equal(devDependencies.prettier.split('.')[0], '3');
+});
+
+test('format scripts run prettier directly, outside turbo', () => {
+  const { scripts } = readJson('package.json');
+  assert.equal(scripts.format, 'prettier --write .');
+  assert.equal(scripts['format:check'], 'prettier --check .');
+  assert.equal(scripts.format.includes('turbo'), false);
+  assert.equal(scripts['format:check'].includes('turbo'), false);
+});
+
+test('.prettierrc freezes the three formatting options', () => {
+  assert.deepEqual(readJson('.prettierrc'), { singleQuote: true, trailingComma: 'all', printWidth: 120 });
+});
+
+test('.prettierignore lists the additions on top of .gitignore', () => {
+  const lines = readText('.prettierignore')
+    .split('\n')
+    .map((line) => line.trim());
+  for (const entry of [
+    'pnpm-lock.yaml',
+    'openspec/',
+    'odd/',
+    'tests/lint-fixtures/',
+    'apps/docs/design/',
+    '*.md',
+    '*.mdx',
+  ]) {
+    assert.ok(lines.includes(entry), entry);
+  }
+});
+
+test('commitlint packages are exact-pinned on the same major', () => {
+  const { devDependencies } = readJson('package.json');
+  const cli = devDependencies['@commitlint/cli'] ?? '';
+  const preset = devDependencies['@commitlint/config-conventional'] ?? '';
+  assert.match(cli, /^\d+\.\d+\.\d+$/);
+  assert.match(preset, /^\d+\.\d+\.\d+$/);
+  assert.equal(cli.split('.')[0], preset.split('.')[0]);
+});
+
+test('commitlint config extends the conventional preset only', async () => {
+  const { default: config } = await import(join(repoRoot, 'commitlint.config.js'));
+  assert.deepEqual(config, { extends: ['@commitlint/config-conventional'] });
+});
+
+test('husky and lint-staged are exact-pinned, husky on major 9', () => {
+  const { devDependencies } = readJson('package.json');
+  assert.match(devDependencies.husky ?? '', /^\d+\.\d+\.\d+$/);
+  assert.equal(devDependencies.husky.split('.')[0], '9');
+  assert.match(devDependencies['lint-staged'] ?? '', /^\d+\.\d+\.\d+$/);
+});
+
+test('prepare installs husky and test:changed runs affected build and test', () => {
+  const { scripts } = readJson('package.json');
+  assert.equal(scripts.prepare, 'husky');
+  assert.equal(scripts.prepare.includes('turbo'), false);
+  assert.equal(scripts['test:changed'], 'turbo run build test --affected');
+});
+
+test('lint-staged runs eslint before prettier on disjoint globs without git commands', () => {
+  const config = readJson('package.json')['lint-staged'];
+  assert.deepEqual(config, {
+    '*.{js,mjs,cjs,ts,tsx,mts,cts}': ['eslint --fix --no-warn-ignored', 'prettier --write'],
+    '*.{json,jsonc,yaml,yml,css}': 'prettier --write --ignore-unknown',
+  });
+  const serialized = JSON.stringify(config);
+  assert.equal(serialized.includes('git '), false);
+  for (const ext of ['md', 'mdx', 'sh']) {
+    assert.equal(
+      Object.keys(config).some((glob) => glob.includes(ext)),
+      false,
+      ext,
+    );
+  }
+});
+
+test('husky hooks have the frozen bodies', () => {
+  assert.equal(readText('.husky/pre-commit').trim(), 'lint-staged');
+  assert.equal(readText('.husky/commit-msg').trim(), 'commitlint --edit "$1"');
+  const prePush = readText('.husky/pre-push');
+  assert.equal(prePush.trim(), 'pnpm test:changed');
+  assert.equal(prePush.includes('test:workspace'), false);
 });

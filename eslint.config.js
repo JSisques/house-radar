@@ -42,11 +42,7 @@ const dependencyPolicies = [
     { types: ['application', 'domain'] },
     { types: ['core', 'shared'] },
   ),
-  allow(
-    'transport',
-    { types: ['transport', 'application', 'domain'], ...sameContext },
-    { types: ['core', 'shared'] },
-  ),
+  allow('transport', { types: ['transport', 'application', 'domain'], ...sameContext }, { types: ['core', 'shared'] }),
   allow('core', { types: ['core', 'shared'] }),
   allow('shared', { types: ['shared', 'core'] }),
 ];

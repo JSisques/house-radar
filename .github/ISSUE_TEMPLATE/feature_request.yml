@@ -1,7 +1,7 @@
 name: Feature request
 description: Propose a vertical slice of work.
-title: "feat: "
-labels: ["type:feature"]
+title: 'feat: '
+labels: ['type:feature']
 body:
   - type: textarea
     id: problem

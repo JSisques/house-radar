@@ -22,9 +22,7 @@ import {
 import { ImportManualListingCommand } from './import-manual-listing.command';
 
 @CommandHandler(ImportManualListingCommand)
-export class ImportManualListingHandler
-  implements ICommandHandler<ImportManualListingCommand, { id: string }>
-{
+export class ImportManualListingHandler implements ICommandHandler<ImportManualListingCommand, { id: string }> {
   constructor(
     @Inject(LISTING_WRITE_REPOSITORY_TOKEN)
     private readonly listingWriteRepository: IListingWriteRepository,
