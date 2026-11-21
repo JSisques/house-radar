@@ -62,3 +62,16 @@ test('prettier handles source and config files and skips unknown types', () => {
   }
   assert.equal(fileInfo('requirements.txt').inferredParser, null);
 });
+
+test('commitlint rejects a non-conventional message', () => {
+  const { status, stdout, stderr } = runBin('commitlint', [], { input: 'update stuff\n' });
+  assert.notEqual(status, 0);
+  assert.match(`${stdout}${stderr}`, /type-empty/);
+  assert.match(`${stdout}${stderr}`, /subject-empty/);
+});
+
+test('commitlint accepts a conventional message', () => {
+  const { status, stdout, stderr } = runBin('commitlint', [], { input: 'feat(api): add x\n' });
+  assert.equal(status, 0, `${stdout}${stderr}`);
+  assert.equal(runBin('commitlint', [], { input: 'fix: handle null\n' }).status, 0);
+});

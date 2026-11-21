@@ -223,3 +223,17 @@ test('.prettierignore lists the additions on top of .gitignore', () => {
     assert.ok(lines.includes(entry), entry);
   }
 });
+
+test('commitlint packages are exact-pinned on the same major', () => {
+  const { devDependencies } = readJson('package.json');
+  const cli = devDependencies['@commitlint/cli'] ?? '';
+  const preset = devDependencies['@commitlint/config-conventional'] ?? '';
+  assert.match(cli, /^\d+\.\d+\.\d+$/);
+  assert.match(preset, /^\d+\.\d+\.\d+$/);
+  assert.equal(cli.split('.')[0], preset.split('.')[0]);
+});
+
+test('commitlint config extends the conventional preset only', async () => {
+  const { default: config } = await import(join(repoRoot, 'commitlint.config.js'));
+  assert.deepEqual(config, { extends: ['@commitlint/config-conventional'] });
+});

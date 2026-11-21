@@ -51,14 +51,14 @@ Runner: `pnpm test:workspace` (`node --test --test-concurrency=1 'tests/workspac
 
 ## Phase 3: commitlint (C3) - `build: add commitlint with conventional preset`
 
-- [ ] 3.1 Select versions: run `npm view @commitlint/cli version engines peerDependencies --json` and the same for `@commitlint/config-conventional`; require the same major for both and `engines.node` accepting Node >= 24. Record evidence. (No file edit.)
-- [ ] 3.2 RED: extend `tests/workspace/config.test.mjs`: `@commitlint/cli` and `@commitlint/config-conventional` are exact `^\d+\.\d+\.\d+$` with equal major; `commitlint.config.js` default export, loaded by dynamic `import`, `deepEqual`s `{ extends: ['@commitlint/config-conventional'] }`. Observe failures. (spec: "Config extends the conventional preset", "Exact pins")
-- [ ] 3.3 RED: add commitlint behaviour cases to `tests/workspace/formatting-hooks.test.mjs` using `runBin('commitlint', [], { input })` with `cwd` = repo root: `update stuff` exits non-zero and the output names `type-empty` and `subject-empty` (AC2); `feat(api): add x` exits 0 (AC3). Observe failures (binary missing). (spec: "Non-conventional message is rejected", "Conventional message is accepted")
-- [ ] 3.4 GREEN: edit `package.json` adding the two exact-pinned devDependencies; run `pnpm install`.
-- [ ] 3.5 GREEN: create `commitlint.config.js` with `export default { extends: ['@commitlint/config-conventional'] };` (ESM; the root has `"type": "module"`). No custom rules.
-- [ ] 3.6 GREEN check: run `node --test tests/workspace/config.test.mjs tests/workspace/formatting-hooks.test.mjs`; run `pnpm format:check` and `pnpm lint:root` (new files must be formatted and lint-clean).
-- [ ] 3.7 REFACTOR: tidy shared config-test helpers.
-- [ ] 3.8 Commit C3 `build: add commitlint with conventional preset`.
+- [x] 3.1 Select versions: run `npm view @commitlint/cli version engines peerDependencies --json` and the same for `@commitlint/config-conventional`; require the same major for both and `engines.node` accepting Node >= 24. Record evidence. (No file edit.)
+- [x] 3.2 RED: extend `tests/workspace/config.test.mjs`: `@commitlint/cli` and `@commitlint/config-conventional` are exact `^\d+\.\d+\.\d+$` with equal major; `commitlint.config.js` default export, loaded by dynamic `import`, `deepEqual`s `{ extends: ['@commitlint/config-conventional'] }`. Observe failures. (spec: "Config extends the conventional preset", "Exact pins")
+- [x] 3.3 RED: add commitlint behaviour cases to `tests/workspace/formatting-hooks.test.mjs` using `runBin('commitlint', [], { input })` with `cwd` = repo root: `update stuff` exits non-zero and the output names `type-empty` and `subject-empty` (AC2); `feat(api): add x` exits 0 (AC3). Observe failures (binary missing). (spec: "Non-conventional message is rejected", "Conventional message is accepted")
+- [x] 3.4 GREEN: edit `package.json` adding the two exact-pinned devDependencies; run `pnpm install`.
+- [x] 3.5 GREEN: create `commitlint.config.js` with `export default { extends: ['@commitlint/config-conventional'] };` (ESM; the root has `"type": "module"`). No custom rules.
+- [x] 3.6 GREEN check: run `node --test tests/workspace/config.test.mjs tests/workspace/formatting-hooks.test.mjs`; run `pnpm format:check` and `pnpm lint:root` (new files must be formatted and lint-clean).
+- [x] 3.7 REFACTOR: tidy shared config-test helpers.
+- [x] 3.8 Commit C3 `build: add commitlint with conventional preset`.
 
 ## Phase 4: husky, lint-staged and test:changed (C4) - `build: add husky hooks with lint-staged and test:changed`
 
