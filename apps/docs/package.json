@@ -10,6 +10,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "test": "node --test 'scripts/*.test.mjs'",
+    "typecheck": "astro check",
     "check:i18n": "node scripts/i18n-parity.mjs"
   },
   "dependencies": {

@@ -1,0 +1,45 @@
+schema: spec-driven
+context: |
+  House Radar: real estate discovery and analysis platform (AGPL-3.0).
+  pnpm 10 + Turborepo monorepo, Node >=24. Planned: apps/api, apps/ingestion (NestJS, DDD),
+  apps/web (React + Vite), packages/building-blocks, packages/shared-kernel.
+  Exists today: apps/docs only (Astro 7 + Starlight, EN + ES mirror under content/docs/es).
+  Conventions: AGENTS.md; Conventional Commits; no AI attribution; artifacts in English.
+strict_tdd: true
+strict_tdd_note: >
+  Mandated by AGENTS.md. Workspace-level command is the root script `pnpm docs:test`, which covers
+  the only existing project (apps/docs). Add a workspace-wide `test` script (turbo) once more projects exist.
+projects:
+  - path: apps/docs
+    stack: Astro 7 + Starlight, TypeScript 5.9, ESM
+    test: "pnpm docs:test"
+    framework: node:test
+    quality:
+      type_checker: "pnpm docs:check"
+      i18n_parity: "pnpm docs:check-i18n"
+      build: "pnpm docs:build"
+      linter: null
+      formatter: null
+    coverage: null
+  - path: apps/api
+    status: planned (not on disk)
+  - path: apps/ingestion
+    status: planned (not on disk)
+  - path: apps/web
+    status: planned (not on disk)
+  - path: packages/building-blocks
+    status: planned (not on disk)
+  - path: packages/shared-kernel
+    status: planned (not on disk)
+testing:
+  workspace_test_command: "pnpm docs:test"
+  layers: {unit: node:test (docs scripts only), integration: none, e2e: none}
+  ci: .github/workflows/docs.yml, .github/workflows/codeql.yml
+rules:
+  proposal: [Keep scope aligned with AGENTS.md and ADRs]
+  specs: [Use Given/When/Then, RFC 2119 keywords]
+  design: [Follow DDD/CQRS conventions in architecture/conventions.md]
+  tasks: [Each task starts with a failing test (RED); keep EN and ES docs in parity]
+  apply: [Strict TDD RED-GREEN-REFACTOR; Conventional Commits]
+  verify: [Run pnpm docs:test, docs:check, docs:check-i18n, docs:build when docs change]
+  archive: [Sync delta specs into openspec/specs before archiving]
