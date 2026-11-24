@@ -106,4 +106,9 @@ export default [
       'simple-import-sort/exports': 'error',
     },
   },
+  {
+    // Per-package vitest configs extend the shared base at the repo root; that is their only parent import.
+    files: ['packages/*/vitest*.config.ts', 'apps/*/vitest*.config.ts'],
+    rules: { 'no-restricted-imports': 'off' },
+  },
 ];

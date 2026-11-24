@@ -294,6 +294,16 @@ TDD estricto: rojo, verde, refactor ([D14](/es/adr/d14-testing/)). El test va pr
 | End to end de API | Vitest | `*.e2e-spec.ts` |
 | End to end de navegador | Playwright | Solo flujos críticos |
 
+Ejecución de los specs:
+
+- `pnpm test` ejecuta los specs unitarios y de componente (`*.spec.ts`, `*.spec.tsx`). Nunca recoge los specs de integración ni los e2e.
+- `pnpm test:integration` ejecuta solo `*.integration-spec.ts`. Turbo nunca lo cachea, porque el estado de los servicios externos no forma parte del hash de la tarea.
+- `*.e2e-spec.ts` es un sufijo reservado. La tarea `test:e2e` llegará con `apps/api`.
+- Cada paquete con tests tiene un `vitest.config.ts` (unitarios) y un `vitest.integration.config.ts`. Ambos llaman a `defineKindConfig` del `vitest.shared.ts` de la raíz, que es el único lugar con los globs de los specs y la configuración de cobertura V8.
+- El `vitest.config.ts` de la raíz lista los paquetes como `test.projects` para el IDE y las ejecuciones desde la raíz. Las configuraciones de proyecto no deben importarlo.
+- Ejecuta `pnpm --filter <paquete> exec vitest run --coverage` para obtener un informe de cobertura (`coverage/`, ignorado por git).
+- `packages/vitest-scratch` solo existe para demostrar el descubrimiento de cada tipo de spec. Los paquetes reales no deben depender de él.
+
 Estilo:
 
 - Un `describe` por clase, un `describe` anidado por método y un `it('should …')` por caso o caso límite.
