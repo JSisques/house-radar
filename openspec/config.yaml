@@ -38,11 +38,12 @@ projects:
       build: "pnpm --filter @house-radar/building-blocks build"
       linter: "pnpm lint"
       formatter: "pnpm format:check"
-    coverage: null
+    coverage: "pnpm --filter @house-radar/building-blocks exec vitest run --coverage"
   - path: packages/shared-kernel
     status: planned (not on disk)
 testing:
   workspace_test_command: "pnpm test"
+  workspace_integration_command: "pnpm test:integration"
   workspace_suite_command: "pnpm test:workspace"
   lint_commands: ["pnpm lint", "pnpm lint:root"]
   format_commands: ["pnpm format:check"]
