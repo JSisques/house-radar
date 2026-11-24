@@ -51,7 +51,25 @@ Antes de `1.0.0` (M0–M6), los cambios breaking aumentan la versión **minor**,
 
 ## Requisitos
 
-Se necesita un token de GitHub con permisos `contents: write` y `pull-requests: write`. Guárdalo como el secreto del repositorio `RELEASE_PLEASE_TOKEN`.
+El workflow se autentica con un **token de acceso personal (PAT) fine-grained** guardado como el secreto de repositorio `RELEASE_PLEASE_TOKEN`. El `GITHUB_TOKEN` por defecto no basta: los pull requests y releases creados con él no disparan otros workflows, así que la CI nunca se ejecutaría en el PR de Release.
+
+### Crear el token
+
+1. Ve a **Settings** → **Developer settings** → **Personal access tokens** → **Fine-grained tokens** → **Generate new token**.
+2. Define el **nombre del token** (por ejemplo `release-please`) y una **fecha de expiración**. Prevé rotarlo antes de que caduque.
+3. En **Repository access**, selecciona **Only select repositories** y elige `house-radar`.
+4. Concede estos **permisos de repositorio**:
+   - **Contents**: Read and write — crear etiquetas y releases.
+   - **Pull requests**: Read and write — abrir y actualizar el PR de Release.
+   - **Issues**: Read and write — release-please añade etiquetas `autorelease:` al PR de Release.
+   - **Metadata**: Read-only — se concede automáticamente.
+5. Genera el token y cópialo; GitHub solo lo muestra una vez.
+
+### Guardar el secreto
+
+En el repositorio, ve a **Settings** → **Secrets and variables** → **Actions** → **New repository secret**. Ponle el nombre `RELEASE_PLEASE_TOKEN` y pega el token como valor. El workflow lo lee de `secrets.RELEASE_PLEASE_TOKEN`.
+
+Si tu cuenta u organización bloquea los tokens de acceso personal, usa una GitHub App y genera el token con [`actions/create-github-app-token`](https://github.com/actions/create-github-app-token).
 
 ## FAQ
 
