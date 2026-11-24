@@ -39,6 +39,10 @@ Umbrales y canales de notificación: **por definir.**
 
 **Por definir.**
 
+## Lanzamientos
+
+House Radar utiliza una única versión SemVer para todo el producto, gestionada por [release-please](https://github.com/googleapis/release-please). El proceso de lanzamiento se describe en [Lanzamientos](/es/operations/releases/) ([ADR D33](/es/adr/d33-versioning-and-releases/)).
+
 ## Copias de seguridad y recuperación
 
 Requisito de producción, que se define junto con la producción. Los datos de staging son desechables y no tienen copias de seguridad ([D35](/es/adr/d35-environments-and-staging-deployment/)).

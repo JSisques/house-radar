@@ -39,6 +39,10 @@ Thresholds and notification channels: **To be defined.**
 
 **To be defined.**
 
+## Releases
+
+House Radar uses a single SemVer product version managed by [release-please](https://github.com/googleapis/release-please). The release process is described in [Releases](/operations/releases/) ([ADR D33](/adr/d33-versioning-and-releases/)).
+
 ## Backups and recovery
 
 A production requirement, defined together with production. Staging data is disposable and is not backed up ([D35](/adr/d35-environments-and-staging-deployment/)).
