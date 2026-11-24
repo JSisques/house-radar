@@ -9,15 +9,11 @@ import { repoRoot, runBin, runTurbo } from './support.mjs';
 
 const git = (...args) => spawnSync('git', args, { cwd: repoRoot, encoding: 'utf8' });
 
-// First of origin/main, main that resolves to a commit other than HEAD; CI checks out
-// origin/main only, and on a push to main both equal HEAD (no diff to compare).
+// The root commit is always resolvable and always differs from HEAD, so the diff is
+// non-empty on any branch, including pushes to main where origin/main equals HEAD.
 const diffBase = () => {
-  const head = git('rev-parse', 'HEAD').stdout.trim();
-  for (const ref of ['origin/main', 'main']) {
-    const rev = git('rev-parse', '--verify', '--quiet', `${ref}^{commit}`);
-    if (rev.status === 0 && rev.stdout.trim() !== head) return ref;
-  }
-  return null;
+  const roots = git('rev-list', '--max-parents=0', 'HEAD').stdout.trim();
+  return roots.split('\n')[0];
 };
 
 const PROBE = 'tests/workspace/__probe__.ts';
@@ -131,7 +127,7 @@ test('husky install exits 0 without .git and with HUSKY=0, creating nothing', ()
 
 test('turbo --affected schedules build and test for every workspace against a resolvable base', (t) => {
   const base = diffBase();
-  if (!base) return t.skip('no main ref that differs from HEAD');
+  if (!base) return t.skip('no root commit available');
   const cacheDir = scratch();
   const { status, output } = runTurbo(['run', 'build', 'test', '--affected', '--dry=json'], {
     cacheDir,
