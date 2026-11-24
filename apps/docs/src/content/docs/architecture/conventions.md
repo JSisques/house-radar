@@ -329,6 +329,11 @@ Style:
   - `pre-commit` runs `lint-staged` on staged files. Code files (`js`, `mjs`, `cjs`, `ts`, `tsx`, `mts`, `cts`) run `eslint --fix` and then `prettier --write`, so Prettier has the final say on layout. `json`, `jsonc`, `yaml`, `yml` and `css` files run `prettier --write`. A file that ESLint cannot fix aborts the commit.
   - `commit-msg` runs `commitlint` with the Conventional Commits preset ([D16](/adr/d16-quality-and-workflow/)), so `update stuff` is rejected and `feat(api): add x` is accepted.
   - `pre-push` runs `pnpm test:changed`, which is `turbo run build test --affected`: it builds and tests the packages changed since `main`. Override the base with `TURBO_SCM_BASE=<ref> pnpm test:changed`. If the base ref cannot be resolved, for example when there is no local `main`, turbo fails and so does the push, so set `TURBO_SCM_BASE` or bypass the hook. `pnpm test:workspace` is not part of the hooks; CI runs it.
+- **CI** is `.github/workflows/ci.yml`. It runs on every pull request and on every push to `main`, with no path filter, so its checks always report. Both jobs install with the pnpm cache and `--frozen-lockfile`, and check out the full history because turbo and commitlint compare against a base.
+  - `code` runs `pnpm format:check`, `pnpm lint:root`, `pnpm test:workspace` and then `turbo run lint typecheck test build --filter="...[<base>]"`. The base is `origin/<target branch>` on a pull request and the previous tip of `main` on a push, so only the affected workspaces and their dependents run. A pull request that touches only `apps/docs` runs the docs tasks and nothing else.
+  - `commits` runs only on pull requests. It runs `commitlint` over the commits of the pull request (base to head), so a commit such as `update stuff` fails the check. Merge commits are skipped by commitlint's default ignore rules.
+  - The **required checks** for `main` are `code` and `commits`. Do not require the `verify` job of `docs.yml`: that workflow has a path filter, so it does not run on every pull request and a required check that never reports blocks the merge.
+- **Line endings** are normalized to LF: `.gitattributes` with `text=auto eol=lf` and an `.editorconfig` with `end_of_line = lf`. Windows-only scripts (`.bat`, `.cmd`) keep CRLF. Markdown files disable trailing-whitespace trimming.
 
 ## Refinements over the reference projects
 
