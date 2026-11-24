@@ -1,10 +1,24 @@
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import { existsSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { after, test } from 'node:test';
 
-import { runBin, runTurbo } from './support.mjs';
+import { repoRoot, runBin, runTurbo } from './support.mjs';
+
+const git = (...args) => spawnSync('git', args, { cwd: repoRoot, encoding: 'utf8' });
+
+// First of origin/main, main that resolves to a commit other than HEAD; CI checks out
+// origin/main only, and on a push to main both equal HEAD (no diff to compare).
+const diffBase = () => {
+  const head = git('rev-parse', 'HEAD').stdout.trim();
+  for (const ref of ['origin/main', 'main']) {
+    const rev = git('rev-parse', '--verify', '--quiet', `${ref}^{commit}`);
+    if (rev.status === 0 && rev.stdout.trim() !== head) return ref;
+  }
+  return null;
+};
 
 const PROBE = 'tests/workspace/__probe__.ts';
 
@@ -115,11 +129,13 @@ test('husky install exits 0 without .git and with HUSKY=0, creating nothing', ()
   }
 });
 
-test('turbo --affected schedules build and test for every workspace against a resolvable base', () => {
+test('turbo --affected schedules build and test for every workspace against a resolvable base', (t) => {
+  const base = diffBase();
+  if (!base) return t.skip('no main ref that differs from HEAD');
   const cacheDir = scratch();
   const { status, output } = runTurbo(['run', 'build', 'test', '--affected', '--dry=json'], {
     cacheDir,
-    env: { TURBO_SCM_BASE: 'main' },
+    env: { TURBO_SCM_BASE: base },
   });
   assert.equal(status, 0, output);
   const tasks = JSON.parse(output.slice(output.indexOf('{'))).tasks;
