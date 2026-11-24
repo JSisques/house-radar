@@ -110,7 +110,8 @@ test('building-blocks manifest is a private ESM package with exact pins', () => 
   assert.deepEqual(pkg.scripts, {
     build: 'tsc -p tsconfig.build.json',
     typecheck: 'tsc --noEmit',
-    test: 'vitest run --passWithNoTests',
+    test: 'vitest run',
+    'test:integration': 'vitest run --config vitest.integration.config.ts',
     lint: 'eslint .',
   });
   assert.equal('.' in pkg.exports, false);
@@ -127,6 +128,59 @@ test('building-blocks tsconfigs extend the strict base', () => {
   const build = readJson(`${BB}/tsconfig.build.json`);
   assert.equal(build.extends, './tsconfig.json');
   assert.equal(build.compilerOptions.outDir, 'dist');
+  // tsc has no brace expansion, so every spec kind gets its own glob.
+  assert.deepEqual(build.exclude, [
+    'src/**/*.spec.ts',
+    'src/**/*.spec.tsx',
+    'src/**/*.integration-spec.ts',
+    'src/**/*.e2e-spec.ts',
+  ]);
+});
+
+test('root pins vitest and its v8 coverage provider on the same exact version', () => {
+  const { devDependencies, scripts } = readJson('package.json');
+  assert.match(devDependencies.vitest ?? '', /^\d+\.\d+\.\d+$/);
+  assert.match(devDependencies['@vitest/coverage-v8'] ?? '', /^\d+\.\d+\.\d+$/);
+  assert.equal(devDependencies.vitest, devDependencies['@vitest/coverage-v8']);
+  assert.equal(scripts['test:integration'], 'turbo run test:integration');
+});
+
+test('turbo test tasks hash the shared vitest config; integration is never cached', () => {
+  const { tasks } = readJson('turbo.json');
+  for (const task of ['test', 'test:integration']) {
+    assert.deepEqual(tasks[task].dependsOn, ['^build'], task);
+    assert.ok(tasks[task].inputs.includes('$TURBO_DEFAULT$'), task);
+    assert.ok(tasks[task].inputs.includes('$TURBO_ROOT$/vitest.shared.ts'), task);
+    assert.deepEqual(tasks[task].outputs, [], task);
+  }
+  // Integration specs depend on external services whose state turbo cannot hash.
+  assert.equal(tasks['test:integration'].cache, false);
+  assert.equal(tasks.test.cache, undefined);
+});
+
+test('root vitest config lists package projects and shares coverage', () => {
+  const text = readText('vitest.config.ts');
+  assert.ok(text.includes("'packages/*/vitest.config.ts'"));
+  assert.ok(text.includes("'apps/*/vitest.config.ts'"));
+  assert.ok(existsSync(join(repoRoot, 'vitest.shared.ts')));
+});
+
+test('vitest scratch package wires one unit and one integration config', () => {
+  const pkg = readJson('packages/vitest-scratch/package.json');
+  assert.equal(pkg.name, '@house-radar/vitest-scratch');
+  assert.equal(pkg.private, true);
+  assert.equal(pkg.type, 'module');
+  assert.deepEqual(pkg.scripts, {
+    typecheck: 'tsc --noEmit',
+    test: 'vitest run',
+    'test:integration': 'vitest run --config vitest.integration.config.ts',
+    lint: 'eslint .',
+  });
+  assert.equal(readJson('packages/vitest-scratch/tsconfig.json').extends, '../../tsconfig.base.json');
+  for (const file of ['vitest.config.ts', 'vitest.integration.config.ts']) {
+    assert.ok(existsSync(join(repoRoot, 'packages/vitest-scratch', file)), file);
+    assert.ok(existsSync(join(repoRoot, BB, file)), `${BB}/${file}`);
+  }
 });
 
 test('building-blocks has no barrel file', () => {

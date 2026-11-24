@@ -13,8 +13,20 @@ export function readJson(relativePath) {
   return JSON.parse(readFileSync(join(repoRoot, relativePath), 'utf8'));
 }
 
+export const SCRATCH = '@house-radar/vitest-scratch';
+
+export const scratchDir = join(repoRoot, 'packages/vitest-scratch');
+
+// Windows only ships `.cmd` shims for node_modules/.bin entries and needs a shell to run them.
+const isWindows = process.platform === 'win32';
+
+function binPath(root, name) {
+  return join(root, 'node_modules/.bin', isWindows ? `${name}.cmd` : name);
+}
+
 export function runTurbo(args, { cacheDir, env = {} }) {
-  const result = spawnSync(join(repoRoot, 'node_modules/.bin/turbo'), args, {
+  const result = spawnSync(binPath(repoRoot, 'turbo'), args, {
+    shell: isWindows,
     cwd: repoRoot,
     encoding: 'utf8',
     timeout: 120_000,
@@ -31,8 +43,10 @@ export function runTurbo(args, { cacheDir, env = {} }) {
   return { status: result.status, output: `${result.stdout ?? ''}${result.stderr ?? ''}` };
 }
 
-export function runBin(name, args, { input, cwd = repoRoot, env = {} } = {}) {
-  const result = spawnSync(join(repoRoot, 'node_modules/.bin', name), args, {
+// `root` selects which node_modules/.bin to use; vitest is only linked inside the packages that depend on it.
+export function runBin(name, args, { input, cwd = repoRoot, env = {}, root = repoRoot } = {}) {
+  const result = spawnSync(binPath(root, name), args, {
+    shell: isWindows,
     cwd,
     input,
     encoding: 'utf8',
