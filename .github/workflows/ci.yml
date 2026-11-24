@@ -1,0 +1,70 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  code:
+    runs-on: ubuntu-latest
+    env:
+      HUSKY: '0'
+      # Pull requests compare against their base branch; pushes to main against the previous tip of main.
+      BASE_REF: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || github.event.before }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Format check
+        run: pnpm format:check
+
+      - name: Lint root files
+        run: pnpm lint:root
+
+      - name: Workspace tests
+        run: pnpm test:workspace
+
+      - name: Lint, typecheck, test and build affected workspaces
+        run: pnpm exec turbo run lint typecheck test build --filter="...[${BASE_REF}]"
+
+  commits:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    env:
+      HUSKY: '0'
+      BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Commitlint over the pull request commits
+        run: pnpm exec commitlint --from "${BASE_SHA}" --to "${HEAD_SHA}" --verbose
