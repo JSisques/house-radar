@@ -44,7 +44,8 @@ Before `1.0.0` (M0–M6), breaking changes bump the **minor** version, not the m
 | File | Purpose |
 |---|---|
 | [`release-please-config.json`](https://github.com/JSisques/house-radar/blob/main/release-please-config.json) | Release-please configuration: single root package, `bump-minor-pre-major`, changelog path. |
-| [`.release-please-manifest.json`](https://github.com/JSisques/house-radar/blob/main/.release-please-manifest.json) | Current product version (initially `0.0.0`). |
+| [`.release-please-manifest.json`](https://github.com/JSisques/house-radar/blob/main/.release-please-manifest.json) | State file with the last released version per package path. The root package is `.` (initially `0.0.0`). |
+| [`version.txt`](https://github.com/JSisques/house-radar/blob/main/version.txt) | Product version file updated by release-please on every release (initially `0.0.0`). |
 | [`.github/workflows/release-please.yml`](https://github.com/JSisques/house-radar/blob/main/.github/workflows/release-please.yml) | GitHub Actions workflow that triggers on pushes to `main`. |
 | [`CHANGELOG.md`](https://github.com/JSisques/house-radar/blob/main/CHANGELOG.md) | Human-readable changelog, maintained automatically by release-please. |
 

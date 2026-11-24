@@ -44,7 +44,8 @@ Antes de `1.0.0` (M0–M6), los cambios breaking aumentan la versión **minor**,
 | Archivo | Propósito |
 |---|---|
 | [`release-please-config.json`](https://github.com/JSisques/house-radar/blob/main/release-please-config.json) | Configuración de release-please: paquete raíz único, `bump-minor-pre-major`, ruta del changelog. |
-| [`.release-please-manifest.json`](https://github.com/JSisques/house-radar/blob/main/.release-please-manifest.json) | Versión actual del producto (inicialmente `0.0.0`). |
+| [`.release-please-manifest.json`](https://github.com/JSisques/house-radar/blob/main/.release-please-manifest.json) | Fichero de estado con la última versión publicada por ruta de paquete. El paquete raíz es `.` (inicialmente `0.0.0`). |
+| [`version.txt`](https://github.com/JSisques/house-radar/blob/main/version.txt) | Fichero de versión del producto que release-please actualiza en cada lanzamiento (inicialmente `0.0.0`). |
 | [`.github/workflows/release-please.yml`](https://github.com/JSisques/house-radar/blob/main/.github/workflows/release-please.yml) | Workflow de GitHub Actions que se activa en pushes a `main`. |
 | [`CHANGELOG.md`](https://github.com/JSisques/house-radar/blob/main/CHANGELOG.md) | Changelog legible por humanos, mantenido automáticamente por release-please. |
 
