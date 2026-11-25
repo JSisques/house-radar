@@ -166,7 +166,7 @@ Solo REST ([D22](/es/adr/d22-api-style/)): sin GraphQL ni MCP. Los controladores
 
 ### Errores
 
-El código de dominio y de aplicación lanza excepciones tipadas. No hay tipos `Result`. Un filtro global mapea las excepciones a respuestas HTTP, y cada contexto registra su propio mapeo de excepción a estado. Añadir un contexto nunca edita `core`.
+El código de dominio y de aplicación lanza excepciones tipadas. No hay tipos `Result`. Un filtro global mapea las excepciones a respuestas HTTP, y cada contexto registra su propio mapeo de excepción a estado. Añadir un contexto nunca edita `core`. En `apps/api`, un contexto registra mapeos `{ exception, status, code }` en `ExceptionMappingRegistry` desde el `onModuleInit` de su módulo; las respuestas tienen la forma `{ statusCode, code, message }` y los errores sin mapear responden `500 INTERNAL_ERROR`.
 
 ### Nomenclatura
 
