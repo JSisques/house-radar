@@ -11,7 +11,7 @@ export const SourceSchema = defineEntity({
   tableName: 'source',
   schema: 'ingestion',
   properties: {
-    id: p.text().primary(),
+    id: p.uuid().primary(),
     kind: p.text(),
     enabled: p.boolean(),
     createdAt: p

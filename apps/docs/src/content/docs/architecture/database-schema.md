@@ -29,7 +29,7 @@ Mutable.
 
 | Column | Type | Notes |
 | --- | --- | --- |
-| `id` | `text` | Primary key, a UUIDv7 stored as text. |
+| `id` | `uuid` | Primary key, a UUIDv7. |
 | `kind` | `text not null` | `api`, `feed` or `manual` (check). |
 | `enabled` | `boolean not null` | Whether the source is ingested. |
 | `created_at` | `timestamptz not null` | Row creation time. |

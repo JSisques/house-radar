@@ -7,7 +7,7 @@ export class Migration20261125000107 extends Migration {
   override up(): void {
     this.addSql(`
       create table "ingestion"."source" (
-        "id" text not null,
+        "id" uuid not null,
         "kind" text not null,
         "enabled" boolean not null,
         "created_at" timestamptz not null,
