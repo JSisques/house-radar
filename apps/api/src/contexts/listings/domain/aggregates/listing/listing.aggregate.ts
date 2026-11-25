@@ -13,6 +13,7 @@ import {
 } from '@house-radar/shared-kernel';
 
 import { ListingImportedEvent } from '@contexts/listings/domain/events/listing-imported/listing-imported.event';
+import type { IListingProps } from '@contexts/listings/domain/interfaces/listing-props.interface';
 import type { IListingPrimitives } from '@contexts/listings/domain/primitives/listing.primitives';
 import { maybeToPrimitives } from '@contexts/listings/domain/primitives/maybe.primitives';
 import { AdditionalFeatures } from '@contexts/listings/domain/value-objects/additional-features/additional-features';
@@ -22,28 +23,6 @@ import type { ListingDescription } from '@contexts/listings/domain/value-objects
 import type { ListingStatus } from '@contexts/listings/domain/value-objects/listing-status/listing-status.value-object';
 import type { ListingTitle } from '@contexts/listings/domain/value-objects/listing-title/listing-title.value-object';
 import type { YearBuilt } from '@contexts/listings/domain/value-objects/year-built/year-built.value-object';
-
-export interface IListingProps {
-  id: ListingId;
-  source: SourceId;
-  externalId?: ExternalId;
-  originalUrl: ListingUrl;
-  addedAt: DateValueObject;
-  lastCheckedAt: DateValueObject;
-  status: ListingStatus;
-  title?: Maybe<ListingTitle>;
-  description?: Maybe<ListingDescription>;
-  price?: Maybe<Money>;
-  builtArea?: Maybe<Area>;
-  usableArea?: Maybe<Area>;
-  plotArea?: Maybe<Area>;
-  bedrooms?: Maybe<Bedrooms>;
-  bathrooms?: Maybe<Bathrooms>;
-  yearBuilt?: Maybe<YearBuilt>;
-  propertyType?: Maybe<PropertyType>;
-  condition?: Maybe<PropertyCondition>;
-  features?: AdditionalFeatures;
-}
 
 /**
  * The normalized, source-independent advertisement. Its identity is a UUIDv7; the pair
