@@ -1,4 +1,4 @@
-import type { Env } from './env.schema.js';
+import type { Env } from '@core/config/env/env.schema.js';
 
 /** Validated, immutable application configuration. Provided by `CoreModule`. */
 export class AppConfig {

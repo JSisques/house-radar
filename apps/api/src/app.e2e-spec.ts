@@ -5,9 +5,10 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import { DomainException } from '@house-radar/building-blocks';
 
+import { ExceptionMappingRegistry } from '@core/exceptions/exception-mapping/exception-mapping.registry.js';
+
 import { AppModule } from './app.module.js';
 import { configureApp } from './bootstrap.js';
-import { ExceptionMappingRegistry } from './core/exceptions/exception-mapping.registry.js';
 
 class WidgetNotFoundException extends DomainException {
   constructor() {

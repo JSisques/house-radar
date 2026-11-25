@@ -1,7 +1,7 @@
 import { type ArgumentsHost, Catch, type ExceptionFilter, HttpException, Logger } from '@nestjs/common';
 import type { Response } from 'express';
 
-import { ExceptionMappingRegistry } from './exception-mapping.registry.js';
+import { ExceptionMappingRegistry } from '@core/exceptions/exception-mapping/exception-mapping.registry.js';
 
 const INTERNAL_ERROR = { statusCode: 500, code: 'INTERNAL_ERROR', message: 'Internal server error' } as const;
 

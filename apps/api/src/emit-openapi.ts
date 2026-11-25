@@ -4,9 +4,10 @@ import { writeFile } from 'node:fs/promises';
 
 import { NestFactory } from '@nestjs/core';
 
+import { buildOpenApiDocument } from '@core/openapi/openapi/openapi.js';
+
 import { AppModule } from './app.module.js';
 import { configureApp } from './bootstrap.js';
-import { buildOpenApiDocument } from './core/openapi/openapi.js';
 
 /** Writes the OpenAPI document to `openapi.json` (or the path in argv[2]) without listening on a port. */
 async function emit(): Promise<void> {
