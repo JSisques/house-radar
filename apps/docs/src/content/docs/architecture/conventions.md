@@ -139,6 +139,7 @@ CQRS with `@nestjs/cqrs` ([D25](/adr/d25-cqrs-and-context-structure/)).
 ### Domain model
 
 - Aggregates are composed of value objects, never raw primitives.
+- `AggregateRoot` carries no `createdAt` or `updatedAt`. The technical `created_at` and `updated_at` columns are filled by the infrastructure (the MikroORM schema, `onCreate` and `onUpdate`) and never appear in the aggregate or its primitives. A date that is business data (for example a listing's `addedAt` or `lastCheckedAt`) is modelled by the aggregate as its own value object.
 - Aggregates are created through builders and raise events in named methods (`create()`, `changePrice()`). `toPrimitives()` serializes them.
 - Builders build aggregates only. View models are built by mappers and projections.
 

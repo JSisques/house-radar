@@ -15,6 +15,7 @@ Load when creating or editing code in `apps/api`, `apps/ingestion`, `packages/bu
 
 - Dependencies point inward: `transport`/`infrastructure` -> `application` -> `domain`. Domain imports no NestJS, MikroORM or `@nestjs/cqrs`.
 - Aggregates use value objects, never raw primitives; they `record()` events in named methods and never publish.
+- Aggregates have no `createdAt`/`updatedAt`: the infrastructure schema fills `created_at`/`updated_at`. Business dates are their own value objects.
 - Events: aggregates `record()`; the write repository saves the aggregate and `peekDomainEvents()` into `outbox_event` in one `em.transactional`, then `markPersisted(version)` and `clearDomainEvents()` after commit. Never publish from handlers (no `EventBus`).
 - Write repositories update the managed entity (`LockMode.OPTIMISTIC` + `lockVersion`, then `assign`); insert only when `isNew()`.
 - IDs are UUIDv7 (`uuid` package, `v7()`), never `crypto.randomUUID()`.

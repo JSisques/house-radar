@@ -139,6 +139,7 @@ CQRS con `@nestjs/cqrs` ([D25](/es/adr/d25-cqrs-and-context-structure/)).
 ### Modelo de dominio
 
 - Los agregados se componen de value objects, nunca de primitivos.
+- `AggregateRoot` no lleva `createdAt` ni `updatedAt`. Las columnas técnicas `created_at` y `updated_at` las rellena la infraestructura (el schema de MikroORM, con `onCreate` y `onUpdate`) y nunca aparecen en el agregado ni en sus primitivos. Una fecha que es dato de negocio (por ejemplo `addedAt` o `lastCheckedAt` de un listing) la modela el agregado como su propio value object.
 - Los agregados se crean mediante builders y lanzan eventos en métodos con nombre (`create()`, `changePrice()`). `toPrimitives()` los serializa.
 - Los builders solo construyen agregados. Los view models los construyen mappers y proyecciones.
 
