@@ -15,9 +15,14 @@ import { ListingMikroOrmWriteRepository } from '@contexts/listings/infrastructur
 import { runMigrations } from '@core/persistence/migrations/run-migrations.js';
 import { createOrmOptions } from '@core/persistence/orm-config/orm-config.js';
 
+const IDEALISTA = '01900000-0000-7000-8000-000000000001';
+const FOTOCASA = '01900000-0000-7000-8000-000000000002';
+const MANUAL = '01900000-0000-7000-8000-000000000003';
+const SOURCE_IDS: Record<string, string> = { idealista: IDEALISTA, fotocasa: FOTOCASA, manual: MANUAL };
+
 function listing(source: string, externalId: string, day: number): ListingAggregate {
   return new ListingBuilder()
-    .withSource(new SourceId(source))
+    .withSource(new SourceId(SOURCE_IDS[source] as string))
     .withExternalId(new ExternalId(externalId))
     .withOriginalUrl(new ListingUrl(`https://${source}.example.com/${externalId}`))
     .withAddedAt(new DateValueObject(new Date(`2026-11-${day}T10:00:00.000Z`)))
@@ -63,11 +68,22 @@ describe('ListingMikroOrmReadRepository', () => {
     await write.save(listing('fotocasa', '2', 11));
 
     const result = await read.findByCriteria(
-      new Criteria().addFilter({ field: 'source', operator: 'eq', value: 'fotocasa' }),
+      new Criteria().addFilter({ field: 'source', operator: 'eq', value: FOTOCASA }),
     );
 
     expect(result.total).toBe(1);
-    expect(result.items.map((item) => item.source)).toEqual(['fotocasa']);
+    expect(result.items.map((item) => item.source)).toEqual([FOTOCASA]);
+  });
+
+  it('should filter by original url', async () => {
+    await write.save(listing('idealista', '1', 10));
+    await write.save(listing('fotocasa', '2', 11));
+
+    const result = await read.findByCriteria(
+      new Criteria().addFilter({ field: 'originalUrl', operator: 'eq', value: 'https://fotocasa.example.com/2' }),
+    );
+
+    expect(result.items.map((item) => item.externalId)).toEqual(['2']);
   });
 
   it('should sort and paginate', async () => {

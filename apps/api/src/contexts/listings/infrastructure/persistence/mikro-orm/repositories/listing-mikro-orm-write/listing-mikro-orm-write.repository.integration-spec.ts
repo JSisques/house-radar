@@ -34,11 +34,14 @@ import { runMigrations } from '@core/persistence/migrations/run-migrations.js';
 import { OptimisticLockException } from '@core/persistence/optimistic-lock/optimistic-lock.exception.js';
 import { createOrmOptions } from '@core/persistence/orm-config/orm-config.js';
 
+const IDEALISTA = '01900000-0000-7000-8000-000000000001';
+const MANUAL = '01900000-0000-7000-8000-000000000003';
+
 const addedAt = new DateValueObject(new Date('2026-11-25T10:00:00.000Z'));
 
 function fullListing(overrides: { externalId?: string; price?: number; title?: string } = {}): ListingAggregate {
   const builder = new ListingBuilder()
-    .withSource(new SourceId('idealista'))
+    .withSource(new SourceId(IDEALISTA))
     .withOriginalUrl(new ListingUrl('https://www.idealista.com/inmueble/123/?utm=x'))
     .withAddedAt(addedAt)
     .withLastCheckedAt(new DateValueObject(new Date('2026-11-26T08:30:00.000Z')))
@@ -109,7 +112,7 @@ describe('ListingMikroOrmWriteRepository', () => {
 
   it('should keep a minimal listing without external id and with every optional field unknown', async () => {
     const listing = new ListingBuilder()
-      .withSource(new SourceId('manual'))
+      .withSource(new SourceId(MANUAL))
       .withOriginalUrl(new ListingUrl('https://example.com/piso'))
       .withAddedAt(addedAt)
       .build();
@@ -179,7 +182,7 @@ describe('ListingMikroOrmWriteRepository', () => {
   it('should reject a second listing without external id and the same url', async () => {
     const build = () =>
       new ListingBuilder()
-        .withSource(new SourceId('manual'))
+        .withSource(new SourceId(MANUAL))
         .withOriginalUrl(new ListingUrl('https://example.com/piso'))
         .withAddedAt(addedAt)
         .build();

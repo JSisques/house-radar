@@ -20,6 +20,7 @@ const DEFAULT_PAGE_SIZE = 20;
 const COLUMNS: Readonly<Record<string, Extract<keyof ListingRow, string>>> = {
   source: 'sourceId',
   externalId: 'externalId',
+  originalUrl: 'normalizedUrl',
   status: 'status',
   addedAt: 'firstSeenAt',
   lastCheckedAt: 'lastCheckedAt',
@@ -28,6 +29,7 @@ const COLUMNS: Readonly<Record<string, Extract<keyof ListingRow, string>>> = {
 const FIELDS = new FilterFieldRegistry({
   source: ['eq', 'neq', 'in'],
   externalId: ['eq', 'in'],
+  originalUrl: ['eq'],
   status: ['eq', 'neq', 'in'],
   addedAt: ['eq', 'gt', 'gte', 'lt', 'lte'],
   lastCheckedAt: ['eq', 'gt', 'gte', 'lt', 'lte'],

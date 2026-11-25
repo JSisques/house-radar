@@ -18,6 +18,10 @@ export const UNKNOWN: Unknown = Object.freeze({ kind: 'unknown' as const });
 
 export const known = <T>(value: T, origin: DataOrigin): Known<T> => ({ kind: 'known', value, origin });
 
+/** A datum a person stated: known and `declared` when present, unknown when absent. */
+export const declaredOrUnknown = <TIn, TOut>(value: TIn | undefined, build: (value: TIn) => TOut): Maybe<TOut> =>
+  value === undefined ? UNKNOWN : known(build(value), 'declared');
+
 export const isKnown = <T>(datum: Maybe<T>): datum is Known<T> => datum.kind === 'known';
 
 export const isUnknown = <T>(datum: Maybe<T>): datum is Unknown => datum.kind === 'unknown';

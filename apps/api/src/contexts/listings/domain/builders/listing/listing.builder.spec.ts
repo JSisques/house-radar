@@ -6,9 +6,11 @@ import { ListingUrl, SourceId } from '@house-radar/shared-kernel';
 import { ListingBuilder } from '@contexts/listings/domain/builders/listing/listing.builder';
 import { ListingBuilderFactory } from '@contexts/listings/domain/builders/listing/listing-builder.factory';
 
+const IDEALISTA = '01900000-0000-7000-8000-000000000001';
+
 describe('ListingBuilder', () => {
   it('requires source, original URL and date added', () => {
-    const source = new SourceId('idealista');
+    const source = new SourceId(IDEALISTA);
     const url = new ListingUrl('https://example.com/a');
 
     expect(() => new ListingBuilder().withOriginalUrl(url).build()).toThrow(FieldIsRequiredException);

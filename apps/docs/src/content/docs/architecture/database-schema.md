@@ -29,7 +29,8 @@ Mutable.
 
 | Column | Type | Notes |
 | --- | --- | --- |
-| `id` | `text` | Primary key, for example `idealista`, `manual`. |
+| `id` | `uuid` | Primary key, a UUIDv7. |
+| `name` | `text not null` | Source name (`idealista`, `fotocasa`, `manual`), unique. |
 | `kind` | `text not null` | `api`, `feed` or `manual` (check). |
 | `enabled` | `boolean not null` | Whether the source is ingested. |
 | `created_at` | `timestamptz not null` | Row creation time. |
@@ -42,7 +43,7 @@ One execution of a source.
 | Column | Type | Notes |
 | --- | --- | --- |
 | `id` | `uuid` | Primary key (UUIDv7). |
-| `source_id` | `text not null` | Source reference (same schema). |
+| `source_id` | `uuid not null` | Source reference (same schema). |
 | `started_at` | `timestamptz not null` | Start time. |
 | `finished_at` | `timestamptz null` | End time. |
 | `status` | `text not null` | `running`, `succeeded`, `partial` or `failed` (check). |
@@ -86,7 +87,7 @@ Current state of the advertisement. Unknown values are `NULL`; `<attr>_origin` (
 | Column | Type | Notes |
 | --- | --- | --- |
 | `id` | `uuid` | Primary key (UUIDv7). |
-| `source_id` | `text not null` | Provenance: source (reference by ID, no foreign key across schemas). |
+| `source_id` | `uuid not null` | Provenance: source (reference by ID, no foreign key across schemas). |
 | `external_id` | `text null` | Provenance: ID in the source. |
 | `url` | `text not null` | Provenance: original URL. |
 | `normalized_url` | `text not null` | Normalized URL. |

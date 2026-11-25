@@ -24,5 +24,5 @@ export * from './property-condition/property-condition';
 export * from './property-id/property-id';
 export * from './property-type/invalid-property-type.exception';
 export * from './property-type/property-type';
-export * from './source-id/invalid-source-id.exception';
 export * from './source-id/source-id';
+export * from './text/is-blank';

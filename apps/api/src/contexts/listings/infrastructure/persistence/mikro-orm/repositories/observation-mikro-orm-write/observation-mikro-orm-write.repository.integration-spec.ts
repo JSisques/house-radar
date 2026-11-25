@@ -20,6 +20,8 @@ import { ObservationMikroOrmWriteRepository } from '@contexts/listings/infrastru
 import { runMigrations } from '@core/persistence/migrations/run-migrations.js';
 import { createOrmOptions } from '@core/persistence/orm-config/orm-config.js';
 
+const MANUAL = '01900000-0000-7000-8000-000000000003';
+
 function observation(listingId: ListingId, runId?: RunId, priceEuros?: number): ObservationAggregate {
   const builder = new ObservationBuilder()
     .withListingId(listingId)
@@ -52,7 +54,7 @@ describe('ObservationMikroOrmWriteRepository', () => {
   });
   beforeEach(async () => {
     const listing = new ListingBuilder()
-      .withSource(new SourceId('manual'))
+      .withSource(new SourceId(MANUAL))
       .withOriginalUrl(new ListingUrl('https://example.com/piso'))
       .withAddedAt(new DateValueObject(new Date('2026-11-25T09:00:00.000Z')))
       .build();

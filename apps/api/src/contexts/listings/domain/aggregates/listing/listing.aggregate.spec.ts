@@ -18,11 +18,15 @@ import { ListingImportedEvent } from '@contexts/listings/domain/events/listing-i
 import { ListingTitle } from '@contexts/listings/domain/value-objects/listing-title/listing-title.value-object';
 import { YearBuilt } from '@contexts/listings/domain/value-objects/year-built/year-built.value-object';
 
+const IDEALISTA = '01900000-0000-7000-8000-000000000001';
+const FOTOCASA = '01900000-0000-7000-8000-000000000002';
+const MANUAL = '01900000-0000-7000-8000-000000000003';
+
 const addedAt = new DateValueObject(new Date('2026-11-25T10:00:00.000Z'));
 
 const baseBuilder = (): ListingBuilder =>
   new ListingBuilder()
-    .withSource(new SourceId('idealista'))
+    .withSource(new SourceId(IDEALISTA))
     .withOriginalUrl(new ListingUrl('https://www.idealista.com/inmueble/123/'))
     .withAddedAt(addedAt);
 
@@ -30,7 +34,7 @@ describe('Listing', () => {
   it('has the same field set whatever the source (HR-F002-AC1)', () => {
     const fromPortal = baseBuilder().withExternalId(new ExternalId('123')).build();
     const fromFeed = new ListingBuilder()
-      .withSource(new SourceId('fotocasa'))
+      .withSource(new SourceId(FOTOCASA))
       .withOriginalUrl(new ListingUrl('https://www.fotocasa.es/x/456'))
       .withAddedAt(addedAt)
       .withExternalId(new ExternalId('456'))
@@ -69,7 +73,7 @@ describe('Listing', () => {
     const listing = baseBuilder().build();
     const primitives = listing.toPrimitives();
 
-    expect(primitives.source).toBe('idealista');
+    expect(primitives.source).toBe(IDEALISTA);
     expect(primitives.originalUrl).toBe('https://www.idealista.com/inmueble/123/');
     expect(primitives.addedAt).toEqual(addedAt.value);
     expect(primitives.lastCheckedAt).toEqual(addedAt.value);
@@ -78,7 +82,7 @@ describe('Listing', () => {
 
   it('gets an internal UUIDv7 identity when it has no external id (HR-F001-AC11)', () => {
     const manual = new ListingBuilder()
-      .withSource(new SourceId('manual'))
+      .withSource(new SourceId(MANUAL))
       .withOriginalUrl(new ListingUrl('https://example.com/casa'))
       .withAddedAt(addedAt)
       .build();

@@ -11,7 +11,7 @@ Decision [D29](/adr/d29-aggregate-boundaries/): aggregates are small and protect
 
 ### `Source`
 
-- **Identity:** `SourceId`, a stable text key such as `idealista` or `manual`.
+- **Identity:** `SourceId`, a UUIDv7 generated when the source is created. The `manual` source is the one of kind `manual`, found by kind, never by a fixed id.
 - **State:** kind (`api`, `feed`, `manual`) and an enabled flag. Cadence and rate limit come from deployment configuration, not from the aggregate.
 - **Events:** none.
 

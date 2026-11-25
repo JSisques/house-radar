@@ -29,7 +29,8 @@ Mutable.
 
 | Columna | Tipo | Notas |
 | --- | --- | --- |
-| `id` | `text` | Clave primaria, por ejemplo `idealista`, `manual`. |
+| `id` | `uuid` | Clave primaria, un UUIDv7. |
+| `name` | `text not null` | Nombre de la fuente (`idealista`, `fotocasa`, `manual`), único. |
 | `kind` | `text not null` | `api`, `feed` o `manual` (check). |
 | `enabled` | `boolean not null` | Si la fuente se ingiere. |
 | `created_at` | `timestamptz not null` | Momento de creación de la fila. |
@@ -42,7 +43,7 @@ Una ejecución de una fuente.
 | Columna | Tipo | Notas |
 | --- | --- | --- |
 | `id` | `uuid` | Clave primaria (UUIDv7). |
-| `source_id` | `text not null` | Referencia a la fuente (mismo esquema). |
+| `source_id` | `uuid not null` | Referencia a la fuente (mismo esquema). |
 | `started_at` | `timestamptz not null` | Inicio. |
 | `finished_at` | `timestamptz null` | Fin. |
 | `status` | `text not null` | `running`, `succeeded`, `partial` o `failed` (check). |
@@ -86,7 +87,7 @@ Estado actual del anuncio. Los valores desconocidos son `NULL`; se añade `<attr
 | Columna | Tipo | Notas |
 | --- | --- | --- |
 | `id` | `uuid` | Clave primaria (UUIDv7). |
-| `source_id` | `text not null` | Procedencia: fuente (referencia por ID, sin clave foránea entre esquemas). |
+| `source_id` | `uuid not null` | Procedencia: fuente (referencia por ID, sin clave foránea entre esquemas). |
 | `external_id` | `text null` | Procedencia: ID en la fuente. |
 | `url` | `text not null` | Procedencia: URL original. |
 | `normalized_url` | `text not null` | URL normalizada. |
