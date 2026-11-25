@@ -365,7 +365,7 @@ Además tiene: `processed_event` (véase más abajo).
 
 ## Outbox
 
-Cada esquema que emite eventos (`ingestion`, `listings`, `properties`, `identity`) tiene una tabla `outbox_event` ([D31](/es/adr/d31-transactional-outbox/)). El repositorio de escritura inserta los eventos extraídos del agregado en la misma transacción; un relay publica las filas sin publicar mediante BullMQ y rellena `published_at`. La tabla es además un registro de eventos auditable que puede reproducirse para reconstruir proyecciones.
+Cada esquema que emite eventos (`ingestion`, `listings`, `properties`, `identity`) tiene una tabla `outbox_event` ([D31](/es/adr/d31-transactional-outbox/)). El repositorio de escritura inserta los eventos extraídos del agregado en la misma transacción; un relay lee las filas sin publicar (`FOR UPDATE SKIP LOCKED`, de modo que relays concurrentes nunca toman la misma fila), las entrega en orden de ocurrencia a handlers en proceso y rellena `published_at`; una entrega fallida queda sin publicar y se reintenta en la siguiente ejecución. La tabla es además un registro de eventos auditable que puede reproducirse para reconstruir proyecciones.
 
 | Columna | Tipo | Notas |
 | --- | --- | --- |

@@ -44,6 +44,25 @@ describe('persistence migrations', () => {
     expect(extensions).toHaveLength(1);
   });
 
+  it('should create processed_event with its composite key only in the event-consuming contexts', async () => {
+    await postgres.reset();
+    await rows(postgres.connectionUri, 'DROP EXTENSION postgis CASCADE');
+
+    await runMigrations(postgres.connectionUri);
+
+    const tables = await rows<{ table_schema: string }>(
+      postgres.connectionUri,
+      "SELECT table_schema FROM information_schema.tables WHERE table_name = 'processed_event'",
+    );
+    expect(tables.map((t) => t.table_schema).sort()).toEqual(['properties', 'users']);
+    const keys = await rows<{ column_name: string }>(
+      postgres.connectionUri,
+      `SELECT a.attname AS column_name FROM pg_index i JOIN pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey)
+       WHERE i.indrelid = 'users.processed_event'::regclass AND i.indisprimary`,
+    );
+    expect(keys.map((k) => k.column_name).sort()).toEqual(['consumer', 'event_id']);
+  });
+
   it('should create the outbox table with its unpublished index only in the event-emitting contexts', async () => {
     await postgres.reset();
     await rows(postgres.connectionUri, 'DROP EXTENSION postgis CASCADE');
