@@ -49,6 +49,18 @@ describe('ImportManualListingHandler', () => {
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 
+  it('forwards the optional details so unknown fields stay unknown', async () => {
+    const { handler, registry } = setup();
+    const details = { title: 'Sunny flat', builtArea: 90, bedrooms: 3, features: { garage: true } };
+
+    await handler.execute(new ImportManualListingCommand(URL_WITH_NOISE, 25_000_000, details));
+    await handler.execute(new ImportManualListingCommand('https://example.com/home/2', 1));
+
+    const calls = vi.mocked(registry.registerManual).mock.calls;
+    expect(calls[0]![0].details).toEqual(details);
+    expect(calls[1]![0].details).toEqual({});
+  });
+
   it('creates nothing and reports every missing field (HR-F001-AC2)', async () => {
     const { handler, registry } = setup();
 

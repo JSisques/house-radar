@@ -48,6 +48,7 @@ export class ImportManualListingHandler implements ICommandHandler<ImportManualL
       url,
       price: new Money(command.priceCents as number),
       observedAt: this.now(),
+      details: command.details,
     });
     return { status: 'created', listingId: listingId.value };
   }
