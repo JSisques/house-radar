@@ -6,6 +6,9 @@ export const envSchema = z.object({
   // Defaults match the local docker-compose ports (.env.example).
   DATABASE_URL: z.string().min(1).default('postgres://house_radar:house_radar@localhost:55432/house_radar'),
   REDIS_URL: z.string().min(1).default('redis://localhost:56379'),
+  LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).default('info'),
+  // Unset = traces/metrics are not exported (local dev without a collector).
+  OTEL_EXPORTER_OTLP_ENDPOINT: z.url().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;

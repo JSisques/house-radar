@@ -8,6 +8,7 @@ describe('validateEnv', () => {
       NODE_ENV: 'development',
       INGESTION_PORT: 3001,
       REDIS_URL: 'redis://localhost:56379',
+      LOG_LEVEL: 'info',
     });
   });
 
@@ -16,6 +17,7 @@ describe('validateEnv', () => {
       NODE_ENV: 'production',
       INGESTION_PORT: 4100,
       REDIS_URL: 'redis://redis:6379',
+      LOG_LEVEL: 'info',
     });
   });
 

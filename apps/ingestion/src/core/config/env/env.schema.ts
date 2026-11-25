@@ -6,6 +6,9 @@ export const envSchema = z.object({
   INGESTION_PORT: z.coerce.number().int().min(1).max(65535).default(3001),
   // Defaults match the local docker-compose ports (.env.example).
   REDIS_URL: z.string().min(1).default('redis://localhost:56379'),
+  LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).default('info'),
+  // Unset = traces/metrics are not exported (local dev without a collector).
+  OTEL_EXPORTER_OTLP_ENDPOINT: z.url().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;
