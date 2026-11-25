@@ -1,5 +1,2 @@
-﻿export type ImportManualListingResult =
-  | { status: 'created'; listingId: string }
-  /** The normalized URL is already stored: warn the user and offer to check that listing. */
-  | { status: 'duplicate'; listingId: string; action: 'check_listing' }
-  | { status: 'invalid'; missingFields: string[] };
+﻿/** Reference of the newly registered listing. Failures are thrown as typed exceptions. */
+export type ImportManualListingResult = { id: string };

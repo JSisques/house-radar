@@ -4,4 +4,6 @@ export interface ExceptionMapping {
   exception: abstract new (...args: any[]) => Error;
   status: number;
   code: string;
+  /** Optional structured payload exposed as `details` in the response body. */
+  details?: (error: Error) => unknown;
 }

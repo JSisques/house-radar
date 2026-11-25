@@ -18,10 +18,11 @@ export class AllExceptionsFilter implements ExceptionFilter {
     response.status(body.statusCode).json(body);
   }
 
-  private toBody(error: unknown): { statusCode: number; code: string; message: string } {
+  private toBody(error: unknown): { statusCode: number; code: string; message: string; details?: unknown } {
     const mapping = error instanceof Error ? this.registry.find(error) : undefined;
     if (mapping && error instanceof Error) {
-      return { statusCode: mapping.status, code: mapping.code, message: error.message };
+      const body = { statusCode: mapping.status, code: mapping.code, message: error.message };
+      return mapping.details ? { ...body, details: mapping.details(error) } : body;
     }
     if (error instanceof HttpException) {
       const statusCode = error.getStatus();
