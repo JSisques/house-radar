@@ -18,6 +18,14 @@ const elements = [
   { type: 'application', pattern: 'contexts/*/application', capture: ['context'] },
   { type: 'infrastructure', pattern: 'contexts/*/infrastructure', capture: ['context'] },
   { type: 'transport', pattern: 'contexts/*/transport', capture: ['context'] },
+  { type: 'container', pattern: 'contexts/*/presentation/containers', capture: ['context'] },
+  { type: 'presentational', pattern: 'contexts/*/presentation/components', capture: ['context'] },
+  { type: 'presentation', pattern: 'contexts/*/presentation', capture: ['context'] },
+  // Atomic design levels live inside shared, so they are declared before it.
+  { type: 'atom', pattern: 'shared/presentation/components/atoms' },
+  { type: 'molecule', pattern: 'shared/presentation/components/molecules' },
+  { type: 'organism', pattern: 'shared/presentation/components/organisms' },
+  { type: 'template', pattern: 'shared/presentation/components/templates' },
   { type: 'core', pattern: 'core' },
   { type: 'shared', pattern: 'shared' },
 ];
@@ -43,13 +51,41 @@ const dependencyPolicies = [
     { types: ['core', 'shared'] },
   ),
   allow('transport', { types: ['transport', 'application', 'domain'], ...sameContext }, { types: ['core', 'shared'] }),
+  allow(
+    'container',
+    { types: ['container', 'presentational', 'presentation', 'application', 'domain'], ...sameContext },
+    { types: ['core', 'shared', 'atom', 'molecule', 'organism', 'template'] },
+  ),
+  // Presentational components only render props: no containers, no application layer.
+  allow(
+    'presentational',
+    { types: ['presentational', 'domain'], ...sameContext },
+    { types: ['core', 'shared', 'atom', 'molecule', 'organism', 'template'] },
+  ),
+  allow(
+    'presentation',
+    { types: ['presentation', 'application', 'domain'], ...sameContext },
+    { types: ['core', 'shared'] },
+  ),
+  allow('atom', { types: ['atom', 'core', 'shared'] }),
+  allow('molecule', { types: ['molecule', 'atom', 'core', 'shared'] }),
+  allow('organism', { types: ['organism', 'molecule', 'atom', 'core', 'shared'] }),
+  allow('template', { types: ['template', 'organism', 'molecule', 'atom', 'core', 'shared'] }),
   allow('core', { types: ['core', 'shared'] }),
   allow('shared', { types: ['shared', 'core'] }),
 ];
 
 export default [
   {
-    ignores: ['**/dist/**', '**/.astro/**', '**/.turbo/**', '**/coverage/**', 'tests/lint-fixtures/**'],
+    ignores: [
+      '**/dist/**',
+      '**/.astro/**',
+      '**/.turbo/**',
+      '**/coverage/**',
+      '**/storybook-static/**',
+      'apps/web/public/mockServiceWorker.js',
+      'tests/lint-fixtures/**',
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended.map((config) => ({ ...config, files: TS_FILES })),

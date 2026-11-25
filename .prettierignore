@@ -5,3 +5,5 @@ tests/lint-fixtures/
 apps/docs/design/
 *.md
 *.mdx
+storybook-static
+apps/web/public/mockServiceWorker.js

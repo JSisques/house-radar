@@ -145,3 +145,11 @@ test('normal lint ignores the fixtures', async () => {
   const normal = new ESLint({ cwd: repoRoot });
   assert.equal(await normal.isPathIgnored(fixturePath('misc/explicit-any.ts')), true);
 });
+
+test('presentational component importing a container is rejected by boundaries (frontend AC3)', async () => {
+  assert.deepEqual(await ruleIds(`${LISTINGS}/presentation/components/imports-container-alias.ts`), [BOUNDARIES_RULE]);
+});
+
+test('container importing a presentational component passes boundaries', async () => {
+  assert.deepEqual(await ruleIds(`${LISTINGS}/presentation/containers/uses-presentational-alias.ts`), []);
+});

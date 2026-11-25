@@ -282,6 +282,8 @@ An error boundary handles unexpected failures. Domain errors are mapped to trans
 
 - Formal atomic design in `shared/presentation/components/{atoms,molecules,organisms,templates}`.
 - Inside contexts, an explicit split: a container gets data and handlers from hooks, a presentational component only renders props.
+- Containers live in `contexts/<context>/presentation/containers`, presentational components in `contexts/<context>/presentation/components`. ESLint boundaries reject a presentational component importing a container, and each atomic level may only import levels below it.
+- MSW handlers live in `shared/infrastructure/testing/msw`: the node server runs in every Vitest spec and fails on unhandled requests; the same handlers feed Storybook through `msw-storybook-addon`.
 - One folder per component with a colocated `.spec.tsx` and `.stories.tsx`. Named exports only.
 - Files are kebab-case with role suffixes (`.use-case.ts`, `.repository.port.ts`, `.screen.tsx`, `.hook.ts`, `.store.ts`, `.schema.ts`).
 - Stack: Tailwind, shadcn/ui, react-hook-form with zod, Storybook. Search inputs are debounced.
