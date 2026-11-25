@@ -19,8 +19,8 @@ Objective: deployable images for api, web, ingestion pushed to GHCR. Branch: `fe
 - [x] T2 (S1, S3) ingestion Dockerfile + healthcheck — inline
 - [x] T3 (S1, S2, S3, S4) web Dockerfile (static server) + `/version.json` + healthcheck — inline
 - [x] T4 (S5, S6) GHCR publish workflow with tag rules — inline
-- [ ] T5 (S1) outbox relay process image — blocked on A1
-- [ ] T6 docs (EN + ES) for images/tags
+- [ ] T5 (S1) outbox relay process image: moved to #187 (user decision)
+- [x] T6 docs (EN + ES) for images/tags
 
 ## Log
 
