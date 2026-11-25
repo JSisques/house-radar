@@ -27,3 +27,4 @@ Objective: deployable images for api, web, ingestion pushed to GHCR. Branch: `fe
 - L1 (2026-11-25): "TEnemos que hacer esta issue en su propio worktree desde main (haz fetch primero) https://github.com/JSisques/house-radar/issues/41"
 - L2: Explored. API health `GET /api/health` port 3000; ingestion `GET /health` port 3001; both SWC -> `dist/main.js`, ESM, Node 24, pnpm 10.34.6. Web: Vite -> `dist/`, `public/` exists. Tags have no component prefix (`v0.3.0`). No existing Dockerfile or deploy workflow.
 - L3: T1-T4 verified: 9 workspace tests green; api/ingestion/web images built and reported (healthy) with minimal env; GET /version.json returned the build SHA. Full workspace suite not runnable here (worktree has no node_modules; 26 unrelated tooling failures).
+- L4: User decided the relay image goes in its own M0 issue: #187. Docs added EN+ES under operations/environments (Container images).
