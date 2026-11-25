@@ -49,7 +49,7 @@ House Radar concepts used by two or more contexts. Depends on `building-blocks`.
 - Closed catalogs: `PropertyType`, `PropertyCondition`, `EnergyCertificate`.
 - Provenance: `SourceId`, `ExternalId`, `ListingUrl` (normalization from [D17](/adr/d17-manual-import-assisted-form/)).
 - Cross-context identities: `PropertyId`, `ListingId`. Aggregates reference each other by identity only.
-- `Known<T> | Unknown`, with the data origin (declared, calculated or inferred).
+- `Known<T> | Unknown` (`Maybe<T>`), with the data origin (declared, calculated or inferred). An aggregate field that the source may not state is typed `Maybe<T>` and defaults to `UNKNOWN`, never to `0`, an empty string or `null`, because a missing datum does not mean the feature is absent (HR-F002-BR4). In `toPrimitives()` it is serialized as `MaybePrimitives<T>` (`{ kind: 'known', value, origin }` or `{ kind: 'unknown' }`) with `maybeToPrimitives()`, so events and persistence keep the origin.
 
 A value object starts inside its context and moves to `shared-kernel` only when a second context needs it. Concrete aggregates, commands, queries, DTOs and ORM mappings never go in either package.
 

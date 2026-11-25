@@ -49,7 +49,7 @@ Conceptos de House Radar usados por dos o más contextos. Depende de `building-b
 - Catálogos cerrados: `PropertyType`, `PropertyCondition`, `EnergyCertificate`.
 - Procedencia: `SourceId`, `ExternalId`, `ListingUrl` (normalización de [D17](/es/adr/d17-manual-import-assisted-form/)).
 - Identidades entre contextos: `PropertyId`, `ListingId`. Los agregados se referencian entre sí solo por identidad.
-- `Known<T> | Unknown`, con el origen del dato (declarado, calculado o inferido).
+- `Known<T> | Unknown` (`Maybe<T>`), con el origen del dato (declarado, calculado o inferido). Un campo del agregado que la fuente puede no informar se tipa `Maybe<T>` y vale `UNKNOWN` por defecto, nunca `0`, una cadena vacía ni `null`, porque un dato ausente no significa que la característica no exista (HR-F002-BR4). En `toPrimitives()` se serializa como `MaybePrimitives<T>` (`{ kind: 'known', value, origin }` o `{ kind: 'unknown' }`) con `maybeToPrimitives()`, de modo que los eventos y la persistencia conservan el origen.
 
 Un value object nace dentro de su contexto y pasa a `shared-kernel` solo cuando un segundo contexto lo necesita. Los agregados concretos, comandos, consultas, DTO y mapeos del ORM nunca van en ninguno de los dos paquetes.
 
