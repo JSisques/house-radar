@@ -74,6 +74,7 @@ src/
 │       │   ├── events/listing-imported/listing-imported.event.ts
 │       │   ├── exceptions/listing-not-found/listing-not-found.exception.ts
 │       │   ├── primitives/listing.primitives.ts
+│       │   ├── interfaces/listing-props.interface.ts
 │       │   └── repositories/
 │       │       ├── listing-write.repository.ts
 │       │       └── listing-read.repository.ts
@@ -140,6 +141,7 @@ CQRS con `@nestjs/cqrs` ([D25](/es/adr/d25-cqrs-and-context-structure/)).
 
 - Los agregados se componen de value objects, nunca de primitivos.
 - `AggregateRoot` no lleva `createdAt` ni `updatedAt`. Las columnas técnicas `created_at` y `updated_at` las rellena la infraestructura (el schema de MikroORM, con `onCreate` y `onUpdate`) y nunca aparecen en el agregado ni en sus primitivos. Una fecha que es dato de negocio (por ejemplo `addedAt` o `lastCheckedAt` de un listing) la modela el agregado como su propio value object.
+- Las interfaces del dominio (como `IListingProps`, que recibe el constructor de un agregado) viven en `domain/interfaces/`, una por archivo, nunca dentro del archivo del agregado o del value object. Las formas primitivas se quedan en `domain/primitives/`.
 - Los agregados se crean mediante builders y lanzan eventos en métodos con nombre (`create()`, `changePrice()`). `toPrimitives()` los serializa.
 - Los builders solo construyen agregados. Los view models los construyen mappers y proyecciones.
 
@@ -184,6 +186,7 @@ Los archivos van en kebab-case con un sufijo de rol. Las clases van en PascalCas
 | `.event` | Evento de dominio |
 | `.exception` | Excepción tipada |
 | `.primitives` | Forma primitiva de un agregado |
+| `.interface` | Contrato del dominio que no es la forma de un agregado (por ejemplo las props que recibe el constructor de un agregado) |
 | `.command` / `.query` | Mensaje hacia la capa de aplicación |
 | `.handler` | Handler de comando, consulta o evento |
 | `.service` | Servicio de aplicación |

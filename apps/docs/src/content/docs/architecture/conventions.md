@@ -74,6 +74,7 @@ src/
 │       │   ├── events/listing-imported/listing-imported.event.ts
 │       │   ├── exceptions/listing-not-found/listing-not-found.exception.ts
 │       │   ├── primitives/listing.primitives.ts
+│       │   ├── interfaces/listing-props.interface.ts
 │       │   └── repositories/
 │       │       ├── listing-write.repository.ts
 │       │       └── listing-read.repository.ts
@@ -140,6 +141,7 @@ CQRS with `@nestjs/cqrs` ([D25](/adr/d25-cqrs-and-context-structure/)).
 
 - Aggregates are composed of value objects, never raw primitives.
 - `AggregateRoot` carries no `createdAt` or `updatedAt`. The technical `created_at` and `updated_at` columns are filled by the infrastructure (the MikroORM schema, `onCreate` and `onUpdate`) and never appear in the aggregate or its primitives. A date that is business data (for example a listing's `addedAt` or `lastCheckedAt`) is modelled by the aggregate as its own value object.
+- Interfaces of the domain (such as the `IListingProps` an aggregate constructor takes) live in `domain/interfaces/`, one per file, never inside the aggregate or value object file. Primitive shapes stay in `domain/primitives/`.
 - Aggregates are created through builders and raise events in named methods (`create()`, `changePrice()`). `toPrimitives()` serializes them.
 - Builders build aggregates only. View models are built by mappers and projections.
 
@@ -184,6 +186,7 @@ Files are kebab-case with a role suffix. Classes are PascalCase with the same su
 | `.event` | Domain event |
 | `.exception` | Typed exception |
 | `.primitives` | Primitive shape of an aggregate |
+| `.interface` | Contract of the domain that is not an aggregate shape (for example the props an aggregate constructor takes) |
 | `.command` / `.query` | Message to the application layer |
 | `.handler` | Command, query or event handler |
 | `.service` | Application service |
