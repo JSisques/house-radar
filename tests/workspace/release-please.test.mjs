@@ -31,13 +31,14 @@ test('release-please manages the whole monorepo as one component with one change
 
 test('release-please bumps the version of every workspace package.json through globs', () => {
   const extraFiles = config.packages['.']['extra-files'] ?? [];
-  for (const path of ['package.json', 'apps/*/package.json', 'packages/*/package.json']) {
+  // The root package.json is bumped natively by the node release type.
+  assert.equal(config['release-type'], 'node');
+  for (const path of ['apps/*/package.json', 'packages/*/package.json']) {
     const entry = extraFiles.find((file) => file.path === path);
     assert.ok(entry, `extra-files has no entry for ${path}`);
     assert.equal(entry.type, 'json');
     assert.equal(entry.jsonpath, '$.version');
-    // The root entry is a literal path; glob mode is only valid for the wildcard ones.
-    assert.equal(entry.glob ?? false, path.includes('*'));
+    assert.equal(entry.glob, true);
   }
 });
 
