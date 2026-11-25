@@ -28,6 +28,8 @@ pnpm infra:up          # starts PostgreSQL + PostGIS and Redis, waits until heal
 pnpm infra:down        # stops the containers; data volumes persist
 ```
 
+Host ports are high and uncommon to avoid clashing with other local containers: PostgreSQL `55432` and Redis `56379`. Override them with `POSTGRES_PORT` and `REDIS_PORT` in `.env`.
+
 Data lives in the named volumes `postgres-data` and `redis-data`. To wipe it, run `docker compose down -v`.
 
 ## Staging deployment

@@ -28,6 +28,8 @@ pnpm infra:up          # arranca PostgreSQL + PostGIS y Redis, y espera a que es
 pnpm infra:down        # detiene los contenedores; los volúmenes de datos persisten
 ```
 
+Los puertos del host son altos y poco comunes para evitar choques con otros contenedores locales: PostgreSQL `55432` y Redis `56379`. Se pueden cambiar con `POSTGRES_PORT` y `REDIS_PORT` en `.env`.
+
 Los datos viven en los volúmenes con nombre `postgres-data` y `redis-data`. Para borrarlos, ejecuta `docker compose down -v`.
 
 ## Despliegue en staging
