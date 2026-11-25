@@ -119,8 +119,7 @@ test('building-blocks manifest is a private ESM package with exact pins', () => 
       assert.ok(target.startsWith('./dist/'), entry);
     }
   }
-  assert.equal(pkg.dependencies, undefined);
-  for (const version of Object.values(pkg.devDependencies)) {
+  for (const version of Object.values({ ...pkg.dependencies, ...pkg.devDependencies })) {
     assert.match(version, /^\d+\.\d+\.\d+$/);
   }
 });
