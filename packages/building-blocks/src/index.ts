@@ -1,3 +1,5 @@
+export * from './domain/aggregate-root/aggregate-root';
+export * from './domain/events/domain-event';
 export * from './domain/value-objects/boolean/boolean.value-object';
 export * from './domain/value-objects/boolean/invalid-boolean.exception';
 export * from './domain/value-objects/date/date.value-object';
@@ -5,6 +7,7 @@ export * from './domain/value-objects/date/invalid-date.exception';
 export * from './domain/value-objects/domain.exception';
 export * from './domain/value-objects/enum/enum.value-object';
 export * from './domain/value-objects/enum/invalid-enum.exception';
+export * from './domain/value-objects/field-is-required.exception';
 export * from './domain/value-objects/number/invalid-number.exception';
 export * from './domain/value-objects/number/number.value-object';
 export * from './domain/value-objects/string/invalid-string.exception';
