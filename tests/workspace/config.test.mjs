@@ -107,7 +107,8 @@ test('building-blocks manifest is a private ESM package with exact pins', () => 
   assert.equal(pkg.name, '@house-radar/building-blocks');
   assert.equal(pkg.private, true);
   assert.equal(pkg.type, 'module');
-  assert.equal(pkg.version, '0.0.0');
+  // Versions move in lockstep with the root package (see release-please.test.mjs).
+  assert.equal(pkg.version, readJson('package.json').version);
   assert.deepEqual(pkg.scripts, {
     build: 'tsc -p tsconfig.build.json',
     typecheck: 'tsc --noEmit',
