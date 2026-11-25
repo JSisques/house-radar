@@ -129,6 +129,7 @@ CQRS with `@nestjs/cqrs` ([D25](/adr/d25-cqrs-and-context-structure/)).
 - Every command and query has its own folder named after it, holding the message, its handler and its spec.
 - A command changes state and returns at most `{ id }`. A query reads and never changes state.
 - Handlers go through repositories and services. Transport goes only through `CommandBus` and `QueryBus`.
+- Commands carry primitives, not value objects, and every field the user must supply is typed as optional. The handler calls an injected assert service (for example `AssertManualListingInputService`) that checks presence, collects every missing field and throws one typed exception, so a request missing several fields reports all of them. The handler then builds value objects from the asserted primitives; their domain exceptions are mapped to 400 at the transport layer. DTOs only check shape and types.
 - Services are split into `services/write/` and `services/read/`.
 - Write repositories expose only `save`, `findById` and `delete`. Read repositories are read-only (`findById`, `findByCriteria`).
 - Domain events are consumed by event handlers and projections, for example the representative price read model ([D19](/adr/d19-search-read-model/)). The aggregate records events with `record()`; handlers never publish them ([D31](/adr/d31-transactional-outbox/)):
