@@ -2,7 +2,7 @@ import { join } from 'node:path';
 
 import { type Options, UnderscoreNamingStrategy } from '@mikro-orm/core';
 import { Migrator } from '@mikro-orm/migrations';
-import { defineConfig } from '@mikro-orm/postgresql';
+import { defineConfig, type PostgreSqlDriver } from '@mikro-orm/postgresql';
 
 import { CONTEXT_SCHEMAS, type ContextSchema } from '@core/persistence/context-schema/context-schema.js';
 
@@ -27,7 +27,11 @@ function streamPaths(stream: MigrationStream): { path: string; schema?: string }
  * schemas; each context stream tracks itself inside its own schema and only discovers its own entity schemas,
  * so a generated migration can only touch that schema.
  */
-export function createOrmOptions(stream: MigrationStream, clientUrl: string, overrides: Partial<Options> = {}) {
+export function createOrmOptions(
+  stream: MigrationStream,
+  clientUrl: string,
+  overrides: Partial<Options<PostgreSqlDriver>> = {},
+) {
   const { path, schema } = streamPaths(stream);
   return defineConfig({
     clientUrl,
