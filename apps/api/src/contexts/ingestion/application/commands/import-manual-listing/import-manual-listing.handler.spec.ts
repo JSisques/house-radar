@@ -1,4 +1,4 @@
-﻿import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { DateValueObject } from '@house-radar/building-blocks';
 import { ListingId, ListingUrl, Money, SourceId } from '@house-radar/shared-kernel';
@@ -38,7 +38,9 @@ describe('ImportManualListingHandler', () => {
   it('creates the listing with its first observation and makes no request to the URL (HR-F001-AC1)', async () => {
     const { handler, registry, fetchSpy } = setup();
 
-    const result = await handler.execute(new ImportManualListingCommand(URL_WITH_NOISE, 25_000_000));
+    const result = await handler.execute(
+      new ImportManualListingCommand({ url: URL_WITH_NOISE, priceCents: 25_000_000 }),
+    );
 
     expect(result).toEqual({ status: 'created', listingId: NEW_ID.value });
     expect(registry.registerManual).toHaveBeenCalledTimes(1);
@@ -53,8 +55,8 @@ describe('ImportManualListingHandler', () => {
     const { handler, registry } = setup();
     const details = { title: 'Sunny flat', builtArea: 90, bedrooms: 3, features: { garage: true } };
 
-    await handler.execute(new ImportManualListingCommand(URL_WITH_NOISE, 25_000_000, details));
-    await handler.execute(new ImportManualListingCommand('https://example.com/home/2', 1));
+    await handler.execute(new ImportManualListingCommand({ url: URL_WITH_NOISE, priceCents: 25_000_000, details }));
+    await handler.execute(new ImportManualListingCommand({ url: 'https://example.com/home/2', priceCents: 1 }));
 
     const calls = vi.mocked(registry.registerManual).mock.calls;
     expect(calls[0]![0].details).toEqual(details);
@@ -64,7 +66,7 @@ describe('ImportManualListingHandler', () => {
   it('creates nothing and reports every missing field (HR-F001-AC2)', async () => {
     const { handler, registry } = setup();
 
-    const result = await handler.execute(new ImportManualListingCommand('', undefined));
+    const result = await handler.execute(new ImportManualListingCommand({ url: '' }));
 
     expect(result).toEqual({ status: 'invalid', missingFields: ['url', 'price'] });
     expect(registry.registerManual).not.toHaveBeenCalled();
@@ -74,7 +76,7 @@ describe('ImportManualListingHandler', () => {
   it('reports only the missing field', async () => {
     const { handler } = setup();
 
-    expect(await handler.execute(new ImportManualListingCommand(URL_WITH_NOISE, undefined))).toEqual({
+    expect(await handler.execute(new ImportManualListingCommand({ url: URL_WITH_NOISE }))).toEqual({
       status: 'invalid',
       missingFields: ['price'],
     });
@@ -83,7 +85,9 @@ describe('ImportManualListingHandler', () => {
   it('warns and offers checking the listing when the normalized URL already exists (HR-F001-AC12)', async () => {
     const { handler, registry } = setup({ existing: EXISTING_ID });
 
-    const result = await handler.execute(new ImportManualListingCommand(URL_WITH_NOISE, 25_000_000));
+    const result = await handler.execute(
+      new ImportManualListingCommand({ url: URL_WITH_NOISE, priceCents: 25_000_000 }),
+    );
 
     expect(result).toEqual({ status: 'duplicate', listingId: EXISTING_ID.value, action: 'check_listing' });
     expect(registry.findManualByNormalizedUrl).toHaveBeenCalledWith(new ListingUrl(NORMALIZED));
@@ -93,9 +97,9 @@ describe('ImportManualListingHandler', () => {
   it.each([null, manualSource(false)])('fails when the manual source is missing or disabled (%#)', async (source) => {
     const { handler, registry } = setup({ source });
 
-    await expect(handler.execute(new ImportManualListingCommand(URL_WITH_NOISE, 1))).rejects.toBeInstanceOf(
-      SourceNotAvailableException,
-    );
+    await expect(
+      handler.execute(new ImportManualListingCommand({ url: URL_WITH_NOISE, priceCents: 1 })),
+    ).rejects.toBeInstanceOf(SourceNotAvailableException);
     expect(registry.registerManual).not.toHaveBeenCalled();
   });
 });
