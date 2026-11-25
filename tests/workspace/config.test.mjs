@@ -114,10 +114,12 @@ test('building-blocks manifest is a private ESM package with exact pins', () => 
     'test:integration': 'vitest run --config vitest.integration.config.ts',
     lint: 'eslint .',
   });
-  assert.equal('.' in pkg.exports, false);
-  for (const target of Object.values(pkg.exports['./package-marker'])) {
-    assert.ok(target.startsWith('./dist/'));
+  for (const entry of ['.', './package-marker']) {
+    for (const target of Object.values(pkg.exports[entry])) {
+      assert.ok(target.startsWith('./dist/'), entry);
+    }
   }
+  assert.equal(pkg.dependencies, undefined);
   for (const version of Object.values(pkg.devDependencies)) {
     assert.match(version, /^\d+\.\d+\.\d+$/);
   }
@@ -183,8 +185,8 @@ test('vitest scratch package wires one unit and one integration config', () => {
   }
 });
 
-test('building-blocks has no barrel file', () => {
-  assert.equal(existsSync(join(repoRoot, BB, 'src/index.ts')), false);
+test('building-blocks exposes a barrel file and keeps the package marker', () => {
+  assert.ok(existsSync(join(repoRoot, BB, 'src/index.ts')));
   assert.ok(existsSync(join(repoRoot, BB, 'src/package-marker.ts')));
 });
 

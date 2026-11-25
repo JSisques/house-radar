@@ -37,6 +37,8 @@ Bloques DDD genéricos, sin conceptos de House Radar.
 
 Los IDs son UUIDv7, generados con el paquete `uuid` (`v7()`), de modo que el paquete también funciona en el navegador (`apps/web`) ([D32](/es/adr/d32-uuid-v7/)). Aquí nunca se añaden value objects específicos del proyecto.
 
+Los consumidores importan todo desde la raíz del paquete (`@house-radar/building-blocks`); no hay subpaths profundos. Internamente, cada concepto vive en su propia carpeta con su spec y sus excepciones (por ejemplo `domain/value-objects/string/`), y las clases base compartidas quedan en la carpeta padre. Por eso la prohibición de importar con `../` se desactiva dentro de `packages/building-blocks/src`.
+
 ### `packages/shared-kernel` (`@house-radar/shared-kernel`)
 
 Conceptos de House Radar usados por dos o más contextos. Depende de `building-blocks`.
@@ -314,11 +316,11 @@ Estilo:
 ## Herramientas
 
 - **Turborepo** ejecuta las tareas del workspace mediante scripts raíz: `pnpm build`, `pnpm dev`, `pnpm lint`, `pnpm test` y `pnpm typecheck` llaman a `turbo run`. `build`, `typecheck` y `test` dependen de `^build`, así que las dependencias se compilan primero, y los resultados se cachean en local. `dev` es persistente y nunca se cachea. Cambiar `tsconfig.base.json` invalida todas las cachés.
-- **TypeScript** es estricto por defecto: `tsconfig.base.json` activa `strict` y `noUncheckedIndexedAccess`, y los paquetes lo extienden. `apps/docs` conserva su propia configuración de Astro. `packages/building-blocks` es un paquete provisional que solo expone el subpath `./package-marker` hasta que lleguen los bloques base reales.
+- **TypeScript** es estricto por defecto: `tsconfig.base.json` activa `strict` y `noUncheckedIndexedAccess`, y los paquetes lo extienden. `apps/docs` conserva su propia configuración de Astro. `packages/building-blocks` expone sus bloques base desde la raíz del paquete y mantiene el subpath `./package-marker` hasta que lleguen los bloques restantes.
 - **Los tests del workspace** comprueban la propia configuración de Turborepo. `pnpm test:workspace` los ejecuta en serie, fuera de `turbo run test`.
 - **ESLint** usa una única flat config en la raíz del repositorio, `eslint.config.js`, compartida por todos los workspaces. Cada workspace ejecuta `eslint .` como su script `lint`, y `pnpm lint` los lanza mediante Turborepo. Los archivos de la raíz (`tests/**` y `eslint.config.js`) se lintean con `pnpm lint:root`, fuera de Turborepo, igual que `test:workspace`. El `package.json` raíz declara `"type": "module"` para que la configuración se cargue como ESM. La caché de `lint` depende de `eslint.config.js`, así que editar una regla invalida solo los resultados de lint. Las reglas son:
   - Límites de capas y de contextos con `eslint-plugin-boundaries` (id de regla `boundaries/dependencies`), según la tabla de capas. Solo `infrastructure/adapters` puede llegar a otros contextos.
-  - Sin importaciones relativas al directorio padre con `../` (`no-restricted-imports`). Usa un alias o una importación del mismo directorio.
+  - Sin importaciones relativas al directorio padre con `../` (`no-restricted-imports`). Usa un alias o una importación del mismo directorio. La única excepción es `packages/building-blocks/src`, donde las carpetas por concepto importan sus clases base desde la carpeta padre.
   - Sin `any` explícito (`@typescript-eslint/no-explicit-any`), además de TypeScript estricto.
   - Orden de importaciones y exportaciones (ver más abajo).
 - **Alias de rutas** `@contexts/*`, `@core/*` y `@shared/*` se declaran una sola vez en `tsconfig.base.json`, con `${configDir}` para que cada proyecto que lo extiende los resuelva contra su propio `src/`. ESLint los resuelve con `eslint-import-resolver-typescript`.
