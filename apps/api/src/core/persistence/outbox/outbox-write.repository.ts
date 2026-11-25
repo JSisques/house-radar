@@ -26,6 +26,8 @@ export interface OutboxWriteRepositoryOptions<TRow> {
 /**
  * Write repository base (D31): the aggregate row and its recorded events are stored in one transaction.
  * The buffer is cleared and the version synced only after the commit, so a failed save can be retried.
+ * `save()` is the transaction boundary: inside an outer `ITransactionManager.run` it joins that transaction and clears
+ * the buffer before the outer commit, so after an outer rollback discard and reload the aggregate instead of retrying.
  */
 export abstract class OutboxWriteRepository<
   TId extends ValueObject<unknown, unknown> & { value: string },
