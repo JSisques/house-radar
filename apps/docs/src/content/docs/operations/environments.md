@@ -47,14 +47,14 @@ Consecutive merges deploy one after another: an Actions `concurrency` group per 
 
 ## Container images
 
-The `publish-images` workflow builds one image per service (`api`, `ingestion`, `web`) from `apps/<service>/Dockerfile` with the repository root as context, and pushes it to `ghcr.io/<owner>/house-radar-<service>`. The outbox relay (`node dist/relay.js`, healthcheck `GET :3002/health`, polling interval `OUTBOX_RELAY_INTERVAL_MS`) ships as a fourth image, `house-radar-relay`, built from `apps/api/relay.Dockerfile`.
+The `publish-images` workflow builds one image per service (`api`, `ingestion`, `relay`, `web`) from `apps/<service>/Dockerfile` with the repository root as context, and pushes it to `ghcr.io/<owner>/house-radar-<service>`. `relay` is the outbox relay (`apps/relay`, `node dist/relay.js`, healthcheck `GET :3002/health`, polling interval `OUTBOX_RELAY_INTERVAL_MS`); it shares the outbox code with the api through `packages/outbox`.
 
 | Trigger | Tags |
 | --- | --- |
 | Push to `main` | `sha-<commit>` |
 | Release tag `v0.3.0` | `0.3.0` and `sha-<commit>` |
 
-Build one locally with `docker build -f apps/web/Dockerfile --build-arg GIT_SHA=$(git rev-parse HEAD) .`. The `web` image serves `/version.json` with the commit it was built from. The outbox relay image is tracked in [#187](https://github.com/JSisques/house-radar/issues/187).
+Build one locally with `docker build -f apps/web/Dockerfile --build-arg GIT_SHA=$(git rev-parse HEAD) .`. The `web` image serves `/version.json` with the commit it was built from.
 
 ## Health checks
 

@@ -1,14 +1,34 @@
+import { randomUUID } from 'node:crypto';
+
 import { Queue } from 'bullmq';
 import pg from 'pg';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 
-import { generateUuidV7 } from '@house-radar/building-blocks';
+import { outboxQueueName, type OutboxRelayProcess, startOutboxRelayProcess } from '@house-radar/outbox';
 import { type StartedPostgres, type StartedRedis, startPostgres, startRedis } from '@house-radar/testing';
 
-import { runMigrations } from '@core/persistence/migrations/run-migrations.js';
-import { outboxQueueName } from '@core/persistence/outbox/bullmq-outbox-dispatcher.js';
-import { type OutboxRelayProcess, startOutboxRelayProcess } from '@core/persistence/outbox/outbox-relay-process.js';
-
+// Only the shape the relay reads; the real table is created by the api migrations.
+const OUTBOX_DDL = `
+  create schema if not exists listings;
+  create table if not exists listings.outbox_event (
+    id uuid primary key,
+    aggregate_type text not null,
+    aggregate_id uuid not null,
+    aggregate_version integer not null,
+    event_type text not null,
+    schema_version integer not null,
+    payload jsonb not null,
+    metadata jsonb not null,
+    occurred_at timestamptz not null,
+    published_at timestamptz
+  );
+  create schema if not exists ingestion;
+  create schema if not exists properties;
+  create schema if not exists identity;
+  create table if not exists ingestion.outbox_event (like listings.outbox_event including all);
+  create table if not exists properties.outbox_event (like listings.outbox_event including all);
+  create table if not exists identity.outbox_event (like listings.outbox_event including all);
+`;
 describe('startOutboxRelayProcess', () => {
   let postgres: StartedPostgres;
   let redis: StartedRedis;
@@ -18,8 +38,8 @@ describe('startOutboxRelayProcess', () => {
 
   beforeAll(async () => {
     [postgres, redis] = await Promise.all([startPostgres(), startRedis()]);
-    await runMigrations(postgres.connectionUri);
     pool = new pg.Pool({ connectionString: postgres.connectionUri });
+    await pool.query(OUTBOX_DDL);
     queue = new Queue(outboxQueueName('listings'), { connection: { url: redis.url } });
   });
   afterEach(async () => {
@@ -52,11 +72,11 @@ describe('startOutboxRelayProcess', () => {
   });
 
   it('publishes unpublished outbox rows to the context queue and marks them published', async () => {
-    const id = generateUuidV7();
+    const id = randomUUID();
     await pool.query(
       `insert into listings.outbox_event (id, aggregate_type, aggregate_id, aggregate_version, event_type, schema_version, payload, metadata, occurred_at)
        values ($1, 'Listing', $2, 1, 'ListingCreated', 1, '{}', '{"correlationId":"c","causationId":null}', now())`,
-      [id, generateUuidV7()],
+      [id, randomUUID()],
     );
 
     await start();

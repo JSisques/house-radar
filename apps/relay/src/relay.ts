@@ -1,9 +1,8 @@
-import 'reflect-metadata';
+import { startOutboxRelayProcess } from '@house-radar/outbox';
 
-import { validateEnv } from '@core/config/env/env.schema.js';
-import { startOutboxRelayProcess } from '@core/persistence/outbox/outbox-relay-process.js';
+import { validateEnv } from './env.schema';
 
-/** Production entrypoint of the outbox relay: `node dist/relay.js`. Runs apart from the HTTP api (D33). */
+/** Production entrypoint of the outbox relay: `node dist/relay.js`. Runs apart from the HTTP api. */
 async function main(): Promise<void> {
   const env = validateEnv(process.env);
   const relay = await startOutboxRelayProcess({

@@ -1,7 +1,7 @@
 import type { Queue } from 'bullmq';
 
-import type { OutboxContext } from '@core/persistence/outbox/outbox-event.schema.js';
-import type { OutboxDispatcher } from '@core/persistence/outbox/outbox-relay.js';
+import type { OutboxContext } from './outbox-event.schema';
+import type { OutboxDispatcher } from './outbox-relay';
 
 /** One queue per emitting context, for example `listings.events`. Workers (`@Processor`) subscribe to it. */
 export function outboxQueueName(context: OutboxContext): string {

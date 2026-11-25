@@ -4,13 +4,13 @@ import pg from 'pg';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 
 import { generateUuidV7 } from '@house-radar/building-blocks';
+import { bullmqOutboxDispatcher, outboxQueueName } from '@house-radar/outbox';
+import { createOutboxEventSchema } from '@house-radar/outbox';
+import { OutboxRelay } from '@house-radar/outbox';
 import { type StartedPostgres, type StartedRedis, startPostgres, startRedis } from '@house-radar/testing';
 
 import { runMigrations } from '@core/persistence/migrations/run-migrations.js';
 import { createOrmOptions } from '@core/persistence/orm-config/orm-config.js';
-import { bullmqOutboxDispatcher, outboxQueueName } from '@core/persistence/outbox/bullmq-outbox-dispatcher.js';
-import { createOutboxEventSchema } from '@core/persistence/outbox/outbox-event.schema.js';
-import { OutboxRelay } from '@core/persistence/outbox/outbox-relay.js';
 
 describe('bullmqOutboxDispatcher', () => {
   let postgres: StartedPostgres;

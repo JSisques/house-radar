@@ -1,5 +1,4 @@
-# Outbox relay: same build as the api, different entrypoint (dist/relay.js).
-# Build context is the repository root: docker build -f apps/api/relay.Dockerfile .
+# Build context is the repository root: docker build -f apps/relay/Dockerfile .
 FROM node:24-alpine AS build
 ENV PNPM_HOME=/pnpm
 ENV PATH=$PNPM_HOME:$PATH
@@ -7,8 +6,8 @@ RUN corepack enable
 WORKDIR /repo
 COPY . .
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
-RUN pnpm turbo run build --filter=@house-radar/api...
-RUN pnpm --filter @house-radar/api deploy --legacy --prod /out
+RUN pnpm turbo run build --filter=@house-radar/relay...
+RUN pnpm --filter @house-radar/relay deploy --legacy --prod /out
 
 FROM node:24-alpine AS runtime
 ENV NODE_ENV=production

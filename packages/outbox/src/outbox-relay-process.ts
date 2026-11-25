@@ -1,14 +1,14 @@
 import { createServer } from 'node:http';
 import type { AddressInfo } from 'node:net';
 
+import { UnderscoreNamingStrategy } from '@mikro-orm/core';
 import { defineConfig, MikroORM } from '@mikro-orm/postgresql';
 import { Queue } from 'bullmq';
 import { Redis } from 'ioredis';
 
-import { SnakeCaseNamingStrategy } from '@core/persistence/orm-config/orm-config.js';
-import { bullmqOutboxDispatcher, outboxQueueName } from '@core/persistence/outbox/bullmq-outbox-dispatcher.js';
-import { OUTBOX_CONTEXTS } from '@core/persistence/outbox/outbox-event.schema.js';
-import { OutboxRelay } from '@core/persistence/outbox/outbox-relay.js';
+import { bullmqOutboxDispatcher, outboxQueueName } from './bullmq-outbox-dispatcher';
+import { OUTBOX_CONTEXTS } from './outbox-event.schema';
+import { OutboxRelay } from './outbox-relay';
 
 export interface OutboxRelayProcessOptions {
   databaseUrl: string;
@@ -34,7 +34,7 @@ export async function startOutboxRelayProcess(options: OutboxRelayProcessOptions
     defineConfig({
       clientUrl: options.databaseUrl,
       entities: [],
-      namingStrategy: SnakeCaseNamingStrategy,
+      namingStrategy: UnderscoreNamingStrategy,
       discovery: { warnWhenNoEntities: false },
     }),
   );

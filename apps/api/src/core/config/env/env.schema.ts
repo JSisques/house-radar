@@ -7,9 +7,6 @@ export const envSchema = z.object({
   DATABASE_URL: z.string().min(1).default('postgres://house_radar:house_radar@localhost:55432/house_radar'),
   REDIS_URL: z.string().min(1).default('redis://localhost:56379'),
   LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).default('info'),
-  // Outbox relay process (relay.ts): how often it polls each context's outbox, and where its healthcheck listens.
-  OUTBOX_RELAY_INTERVAL_MS: z.coerce.number().int().min(1).default(1000),
-  RELAY_PORT: z.coerce.number().int().min(1).max(65535).default(3002),
   // Unset = traces/metrics are not exported (local dev without a collector).
   OTEL_EXPORTER_OTLP_ENDPOINT: z.url().optional(),
 });

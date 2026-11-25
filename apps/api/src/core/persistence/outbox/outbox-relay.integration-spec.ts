@@ -3,12 +3,12 @@ import pg from 'pg';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 
 import { generateUuidV7 } from '@house-radar/building-blocks';
+import { createOutboxEventSchema } from '@house-radar/outbox';
+import { type OutboxMessage, OutboxRelay } from '@house-radar/outbox';
 import { type StartedPostgres, startPostgres } from '@house-radar/testing';
 
 import { runMigrations } from '@core/persistence/migrations/run-migrations.js';
 import { createOrmOptions } from '@core/persistence/orm-config/orm-config.js';
-import { createOutboxEventSchema } from '@core/persistence/outbox/outbox-event.schema.js';
-import { type OutboxMessage, OutboxRelay } from '@core/persistence/outbox/outbox-relay.js';
 import { IdempotentConsumer } from '@core/persistence/processed-event/idempotent-consumer.js';
 import { createProcessedEventSchema } from '@core/persistence/processed-event/processed-event.schema.js';
 

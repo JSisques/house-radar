@@ -24,14 +24,6 @@ export class AppConfig {
     return this.env.LOG_LEVEL;
   }
 
-  get outboxRelayIntervalMs(): number {
-    return this.env.OUTBOX_RELAY_INTERVAL_MS;
-  }
-
-  get relayPort(): number {
-    return this.env.RELAY_PORT;
-  }
-
   get otlpEndpoint(): string | undefined {
     return this.env.OTEL_EXPORTER_OTLP_ENDPOINT;
   }

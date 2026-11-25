@@ -1,7 +1,7 @@
 import { EntitySchema } from '@mikro-orm/core';
 
 // Self-contained on purpose: MikroORM discovery loads this file natively, where aliased or extensionless imports do not resolve.
-// Keep it identical to createOutboxEventSchema() in core/persistence/outbox/outbox-event.schema.ts.
+// Keep it identical to createOutboxEventSchema() in packages/outbox/src/outbox-event.schema.ts.
 export const OutboxEventSchema = new EntitySchema({
   name: 'PropertiesOutboxEvent',
   schema: 'properties',
