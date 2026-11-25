@@ -7,6 +7,7 @@ export * from './external-id/invalid-external-id.exception';
 export * from './geo-point/geo-point';
 export * from './geo-point/invalid-geo-point.exception';
 export * from './known/known';
+export * from './known/maybe-primitives';
 export * from './listing-id/listing-id';
 export * from './listing-url/invalid-listing-url.exception';
 export * from './listing-url/listing-url';

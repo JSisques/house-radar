@@ -49,7 +49,7 @@ Conceptos de House Radar usados por dos o más contextos. Depende de `building-b
 - Catálogos cerrados: `PropertyType`, `PropertyCondition`, `EnergyCertificate`.
 - Procedencia: `SourceId`, `ExternalId`, `ListingUrl` (normalización de [D17](/es/adr/d17-manual-import-assisted-form/)).
 - Identidades entre contextos: `PropertyId`, `ListingId`. Los agregados se referencian entre sí solo por identidad.
-- `Known<T> | Unknown`, con el origen del dato (declarado, calculado o inferido).
+- `Known<T> | Unknown` (`Maybe<T>`), con el origen del dato (declarado, calculado o inferido). Un campo del agregado que la fuente puede no informar se tipa `Maybe<T>` y vale `UNKNOWN` por defecto, nunca `0`, una cadena vacía ni `null`, porque un dato ausente no significa que la característica no exista (HR-F002-BR4). En `toPrimitives()` se serializa como `MaybePrimitives<T>` (`{ kind: 'known', value, origin }` o `{ kind: 'unknown' }`) con `maybeToPrimitives()`, de modo que los eventos y la persistencia conservan el origen.
 
 Un value object nace dentro de su contexto y pasa a `shared-kernel` solo cuando un segundo contexto lo necesita. Los agregados concretos, comandos, consultas, DTO y mapeos del ORM nunca van en ninguno de los dos paquetes.
 
@@ -74,6 +74,7 @@ src/
 │       │   ├── events/listing-imported/listing-imported.event.ts
 │       │   ├── exceptions/listing-not-found/listing-not-found.exception.ts
 │       │   ├── primitives/listing.primitives.ts
+│       │   ├── interfaces/listing-props.interface.ts
 │       │   └── repositories/
 │       │       ├── listing-write.repository.ts
 │       │       └── listing-read.repository.ts
@@ -139,6 +140,8 @@ CQRS con `@nestjs/cqrs` ([D25](/es/adr/d25-cqrs-and-context-structure/)).
 ### Modelo de dominio
 
 - Los agregados se componen de value objects, nunca de primitivos.
+- `AggregateRoot` no lleva `createdAt` ni `updatedAt`. Las columnas técnicas `created_at` y `updated_at` las rellena la infraestructura (el schema de MikroORM, con `onCreate` y `onUpdate`) y nunca aparecen en el agregado ni en sus primitivos. Una fecha que es dato de negocio (por ejemplo `addedAt` o `lastCheckedAt` de un listing) la modela el agregado como su propio value object.
+- Las interfaces del dominio (como `IListingProps`, que recibe el constructor de un agregado) viven en `domain/interfaces/`, una por archivo, nunca dentro del archivo del agregado o del value object. Las formas primitivas se quedan en `domain/primitives/`.
 - Los agregados se crean mediante builders y lanzan eventos en métodos con nombre (`create()`, `changePrice()`). `toPrimitives()` los serializa.
 - Los builders solo construyen agregados. Los view models los construyen mappers y proyecciones.
 
@@ -183,6 +186,7 @@ Los archivos van en kebab-case con un sufijo de rol. Las clases van en PascalCas
 | `.event` | Evento de dominio |
 | `.exception` | Excepción tipada |
 | `.primitives` | Forma primitiva de un agregado |
+| `.interface` | Contrato del dominio que no es la forma de un agregado (por ejemplo las props que recibe el constructor de un agregado) |
 | `.command` / `.query` | Mensaje hacia la capa de aplicación |
 | `.handler` | Handler de comando, consulta o evento |
 | `.service` | Servicio de aplicación |

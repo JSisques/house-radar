@@ -49,7 +49,7 @@ House Radar concepts used by two or more contexts. Depends on `building-blocks`.
 - Closed catalogs: `PropertyType`, `PropertyCondition`, `EnergyCertificate`.
 - Provenance: `SourceId`, `ExternalId`, `ListingUrl` (normalization from [D17](/adr/d17-manual-import-assisted-form/)).
 - Cross-context identities: `PropertyId`, `ListingId`. Aggregates reference each other by identity only.
-- `Known<T> | Unknown`, with the data origin (declared, calculated or inferred).
+- `Known<T> | Unknown` (`Maybe<T>`), with the data origin (declared, calculated or inferred). An aggregate field that the source may not state is typed `Maybe<T>` and defaults to `UNKNOWN`, never to `0`, an empty string or `null`, because a missing datum does not mean the feature is absent (HR-F002-BR4). In `toPrimitives()` it is serialized as `MaybePrimitives<T>` (`{ kind: 'known', value, origin }` or `{ kind: 'unknown' }`) with `maybeToPrimitives()`, so events and persistence keep the origin.
 
 A value object starts inside its context and moves to `shared-kernel` only when a second context needs it. Concrete aggregates, commands, queries, DTOs and ORM mappings never go in either package.
 
@@ -74,6 +74,7 @@ src/
 │       │   ├── events/listing-imported/listing-imported.event.ts
 │       │   ├── exceptions/listing-not-found/listing-not-found.exception.ts
 │       │   ├── primitives/listing.primitives.ts
+│       │   ├── interfaces/listing-props.interface.ts
 │       │   └── repositories/
 │       │       ├── listing-write.repository.ts
 │       │       └── listing-read.repository.ts
@@ -139,6 +140,8 @@ CQRS with `@nestjs/cqrs` ([D25](/adr/d25-cqrs-and-context-structure/)).
 ### Domain model
 
 - Aggregates are composed of value objects, never raw primitives.
+- `AggregateRoot` carries no `createdAt` or `updatedAt`. The technical `created_at` and `updated_at` columns are filled by the infrastructure (the MikroORM schema, `onCreate` and `onUpdate`) and never appear in the aggregate or its primitives. A date that is business data (for example a listing's `addedAt` or `lastCheckedAt`) is modelled by the aggregate as its own value object.
+- Interfaces of the domain (such as the `IListingProps` an aggregate constructor takes) live in `domain/interfaces/`, one per file, never inside the aggregate or value object file. Primitive shapes stay in `domain/primitives/`.
 - Aggregates are created through builders and raise events in named methods (`create()`, `changePrice()`). `toPrimitives()` serializes them.
 - Builders build aggregates only. View models are built by mappers and projections.
 
@@ -183,6 +186,7 @@ Files are kebab-case with a role suffix. Classes are PascalCase with the same su
 | `.event` | Domain event |
 | `.exception` | Typed exception |
 | `.primitives` | Primitive shape of an aggregate |
+| `.interface` | Contract of the domain that is not an aggregate shape (for example the props an aggregate constructor takes) |
 | `.command` / `.query` | Message to the application layer |
 | `.handler` | Command, query or event handler |
 | `.service` | Application service |

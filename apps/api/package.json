@@ -7,6 +7,7 @@
   "dependencies": {
     "@house-radar/building-blocks": "workspace:*",
     "@house-radar/outbox": "workspace:*",
+    "@house-radar/shared-kernel": "workspace:*",
     "@mikro-orm/core": "7.2.11",
     "@mikro-orm/migrations": "7.2.11",
     "@mikro-orm/nestjs": "7.1.0",
