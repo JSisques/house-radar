@@ -1,9 +1,8 @@
 // Path: src/contexts/<context>/domain/primitives/<name>.primitives.ts
+// Plain serializable shape of an aggregate. Money is in cents; unknown-aware fields use MaybePrimitives.
 export interface IListingPrimitives {
   id: string;
-  createdAt: Date;
-  updatedAt: Date;
   sourceUrl: string;
   title: string;
-  price: { amountCents: number; currency: 'EUR' };
+  priceCents: number;
 }
