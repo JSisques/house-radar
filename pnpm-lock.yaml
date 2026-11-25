@@ -95,6 +95,9 @@ importers:
       '@nestjs/terminus':
         specifier: 12.2.0
         version: 12.2.0(@grpc/grpc-js@1.14.7)(@grpc/proto-loader@0.8.1)(@mikro-orm/core@7.2.11)(@mikro-orm/nestjs@7.1.0(@mikro-orm/core@7.2.11)(@nestjs/common@12.6.1(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@12.6.1)(reflect-metadata@0.2.2))(@nestjs/common@12.6.1(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@12.6.1)(@nestjs/swagger@12.1.2(@nestjs/common@12.6.1(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@12.6.1)(reflect-metadata@0.2.2)(typescript@5.9.3))(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      bullmq:
+        specifier: 6.7.10
+        version: 6.7.10(ioredis@6.1.0)(pg@8.23.1)
       ioredis:
         specifier: 6.1.0
         version: 6.1.0
@@ -1169,6 +1172,36 @@ packages:
     engines: {node: '>= 22.17.0'}
     peerDependencies:
       '@mikro-orm/core': 7.2.11
+
+  '@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.7':
+    resolution: {integrity: sha512-2zPHLn+MuGJ6GP/5jDrwa9Jy0CI+D3Ibpvopf5SFfmc1G9gdofR4uB7YrJAAp4vodn/7iDOciyv8bgkRPLw7cA==}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@msgpackr-extract/msgpackr-extract-darwin-x64@3.0.7':
+    resolution: {integrity: sha512-of1miwFfEdgs5nythewsEoocfpbjzUf8PC996YDe3kAyv0ZJiMJs5NXlYhE6IdjxfNEPqUXj/BYBnpD8kRdfeQ==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@msgpackr-extract/msgpackr-extract-linux-arm64@3.0.7':
+    resolution: {integrity: sha512-jcRydYARTW0gX5idJhxV7m3KkRUD7KtZLYFF1ZY18HrPqpGY0TCqPUTJCwka2kVfVOwfKs3ZmlPSmQb4S6xj7w==}
+    cpu: [arm64]
+    os: [linux]
+
+  '@msgpackr-extract/msgpackr-extract-linux-arm@3.0.7':
+    resolution: {integrity: sha512-aDPbiEkFHs3H68705JKxJ15IT41wFdvDhba1pL8ygfdoshboL5dsXtiu76/CqhLWYneE+9hwBE+0abqNOiQ4Bw==}
+    cpu: [arm]
+    os: [linux]
+
+  '@msgpackr-extract/msgpackr-extract-linux-x64@3.0.7':
+    resolution: {integrity: sha512-A9xOmARctmUvHrBj5GGzGAigsZFnqE4kld5oprX3PyPbkVALV4jwBc17gPZrhSOvnXQc81hE9K7S2hDUCgialA==}
+    cpu: [x64]
+    os: [linux]
+
+  '@msgpackr-extract/msgpackr-extract-win32-x64@3.0.7':
+    resolution: {integrity: sha512-PRBiOqK4mcR0rvm6nybO7pSOYRR2Zza0+43UK2IvbVGelzMqZViiZJmOWGuWOX678QKESO6YrHx36z43nSS6iQ==}
+    cpu: [x64]
+    os: [win32]
 
   '@napi-rs/nice-android-arm-eabi@1.1.1':
     resolution: {integrity: sha512-kjirL3N6TnRPv5iuHw36wnucNqXAO46dzK9oPb0wj076R5Xm8PfUVA9nAFB5ZNMmfJQJVKACAPd/Z2KYMppthw==}
@@ -3035,6 +3068,24 @@ packages:
   builtins@5.1.0:
     resolution: {integrity: sha512-SW9lzGTLvWTP1AY8xeAMZimqDrIaSdLQUcVr9DMef51niJ022Ri87SwRRKYm4A6iHfkPaiVUu/Duw2Wc4J7kKg==}
 
+  bullmq@6.7.10:
+    resolution: {integrity: sha512-Gd+z7bqpO2WeTtol8q01OpIf2kWLrVJcpvJGYsB8c/GeLZgeW6ezyeg4DIs7u8+LTJt1y8XMI2BPmIXlgFe7xg==}
+    engines: {node: '>=14.18.0'}
+    peerDependencies:
+      bullmq-otel: '>=2.0.0'
+      ioredis: '>=5.0.0'
+      pg: '>=8.0.0'
+      redis: '>=5.0.0'
+    peerDependenciesMeta:
+      bullmq-otel:
+        optional: true
+      ioredis:
+        optional: true
+      pg:
+        optional: true
+      redis:
+        optional: true
+
   bunyan@1.8.15:
     resolution: {integrity: sha512-0tECWShh6wUysgucJcBAoYegf3JJoZWibxdqhTm7OHPeT42qdjkZ29QCMcKwbgU1kiH+auSIasNRXMLWXafXig==}
     engines: {'0': node >=0.10.0}
@@ -3292,6 +3343,10 @@ packages:
   crc32-stream@6.0.0:
     resolution: {integrity: sha512-piICUB6ei4IlTv1+653yq5+KoqfBYmj9bw6LqXoOneTMDXk5nM1qt12mFW1caG3LlJXEKW1Bp0WggEmIfQB34g==}
     engines: {node: '>= 14'}
+
+  cron-parser@5.10.6:
+    resolution: {integrity: sha512-kpoxgQyveO1l29nw+FWdvmotyV7eOSzGHQpxiXOEZIDOjqO1iR6kfgJ0PVHTuV26uBemKq3ppzma7dHFAG7viw==}
+    engines: {node: '>=18'}
 
   croner@10.0.1:
     resolution: {integrity: sha512-ixNtAJndqh173VQ4KodSdJEI6nuioBWI0V1ITNKhZZsO0pEMoDxz539T4FTTbSZ/xIOSuDnzxLVRqBVSvPNE2g==}
@@ -4910,6 +4965,13 @@ packages:
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
+  msgpackr-extract@3.0.7:
+    resolution: {integrity: sha512-/dOQboWnkR1cjm88XyH/cGSivECGgyQu3814+bNUAq5wACQC8Ya/CViB9WApvWJ5Hya/JJQQmUeBFOZj8MLjGA==}
+    hasBin: true
+
+  msgpackr@2.1.4:
+    resolution: {integrity: sha512-TvP18sX5U3MXoHHSUZen/FagaNTEJObyb8OlnJcNbqN6Ux/oCwYJrHhCOzi31bItyW/Efz1IDnRDKQ23j4ZuvA==}
+
   muggle-string@0.4.1:
     resolution: {integrity: sha512-VNTrAak/KhO2i8dqqnqnAHOa3cYBwXEZe9h+D5h/1ZqFSTEFHdM65lR7RoIqq3tBBYavsOXV84NoHXZ0AkPyqQ==}
 
@@ -4955,6 +5017,10 @@ packages:
   nlcst-to-string@4.0.0:
     resolution: {integrity: sha512-YKLBCcUYKAg0FNlOBT6aI91qFmSiFKiluk655WzPF+DDMA02qIyy8uiRqI8QXtcFpEvll12LpL5MXqEmAZ+dcA==}
 
+  node-abort-controller@3.1.1:
+    resolution: {integrity: sha512-AGK2yQKIjRuqnc6VkX2Xj5d+QW8xZ87pa1UK6yA6ouUyuxfHuMP6umE5QK7UmTeOAymo+Zx1Fxiuw9rVx8taHQ==}
+    deprecated: This package is no longer needed on supported Node.js versions. Node.js 16+ includes AbortController and AbortSignal as built-in globals. All Node.js versions requiring this polyfill are end-of-life. Use the built-in globals instead.
+
   node-domexception@1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
     engines: {node: '>=10.5.0'}
@@ -4966,6 +5032,10 @@ packages:
   node-fetch@3.3.2:
     resolution: {integrity: sha512-dRB78srN/l6gqWulah9SrxeYnxeddIG30+GOqK/9OlLVyLg3HPnr6SqOWTWOXKRwC2eGYCkZ59NNuSgvSrpgOA==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+
+  node-gyp-build-optional-packages@5.2.2:
+    resolution: {integrity: sha512-s+w+rBWnpTMwSFbaE0UXsRlg7hU4FjekKU4eyAih5T8nJuNZT1nNsskXpxmeqSK9UzkBl6UgRlnKc8hz8IEqOw==}
+    hasBin: true
 
   node-gyp@13.1.0:
     resolution: {integrity: sha512-FpNzOLFACKG0oRBYbZ5WOeWD1EqRTIWX90MaRIWTO18lVYPx8fqIjrdS3pihjnCkSmgop6zVGkSqg1vXZLksuw==}
@@ -7712,6 +7782,24 @@ snapshots:
       '@mikro-orm/core': 7.2.11
       kysely: 0.29.9
 
+  '@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.7':
+    optional: true
+
+  '@msgpackr-extract/msgpackr-extract-darwin-x64@3.0.7':
+    optional: true
+
+  '@msgpackr-extract/msgpackr-extract-linux-arm64@3.0.7':
+    optional: true
+
+  '@msgpackr-extract/msgpackr-extract-linux-arm@3.0.7':
+    optional: true
+
+  '@msgpackr-extract/msgpackr-extract-linux-x64@3.0.7':
+    optional: true
+
+  '@msgpackr-extract/msgpackr-extract-win32-x64@3.0.7':
+    optional: true
+
   '@napi-rs/nice-android-arm-eabi@1.1.1':
     optional: true
 
@@ -9552,6 +9640,17 @@ snapshots:
     dependencies:
       semver: 7.8.6
 
+  bullmq@6.7.10(ioredis@6.1.0)(pg@8.23.1):
+    dependencies:
+      cron-parser: 5.10.6
+      msgpackr: 2.1.4
+      node-abort-controller: 3.1.1
+      semver: 7.8.6
+      tslib: 2.9.1
+    optionalDependencies:
+      ioredis: 6.1.0
+      pg: 8.23.1
+
   bunyan@1.8.15:
     optionalDependencies:
       dtrace-provider: 0.8.8
@@ -9783,6 +9882,10 @@ snapshots:
     dependencies:
       crc-32: 1.2.2
       readable-stream: 4.8.0
+
+  cron-parser@5.10.6:
+    dependencies:
+      luxon: 3.7.2
 
   croner@10.0.1: {}
 
@@ -11683,6 +11786,22 @@ snapshots:
 
   ms@2.1.3: {}
 
+  msgpackr-extract@3.0.7:
+    dependencies:
+      node-gyp-build-optional-packages: 5.2.2
+    optionalDependencies:
+      '@msgpackr-extract/msgpackr-extract-darwin-arm64': 3.0.7
+      '@msgpackr-extract/msgpackr-extract-darwin-x64': 3.0.7
+      '@msgpackr-extract/msgpackr-extract-linux-arm': 3.0.7
+      '@msgpackr-extract/msgpackr-extract-linux-arm64': 3.0.7
+      '@msgpackr-extract/msgpackr-extract-linux-x64': 3.0.7
+      '@msgpackr-extract/msgpackr-extract-win32-x64': 3.0.7
+    optional: true
+
+  msgpackr@2.1.4:
+    optionalDependencies:
+      msgpackr-extract: 3.0.7
+
   muggle-string@0.4.1: {}
 
   multer@2.5.0:
@@ -11722,6 +11841,8 @@ snapshots:
     dependencies:
       '@types/nlcst': 2.0.3
 
+  node-abort-controller@3.1.1: {}
+
   node-domexception@1.0.0: {}
 
   node-fetch-native@1.6.7: {}
@@ -11731,6 +11852,11 @@ snapshots:
       data-uri-to-buffer: 4.0.1
       fetch-blob: 3.2.0
       formdata-polyfill: 4.0.10
+
+  node-gyp-build-optional-packages@5.2.2:
+    dependencies:
+      detect-libc: 2.1.2
+    optional: true
 
   node-gyp@13.1.0:
     dependencies:
