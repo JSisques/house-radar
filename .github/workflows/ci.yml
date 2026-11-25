@@ -33,6 +33,11 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      - name: Generated API client is up to date
+        run: |
+          pnpm --filter web api:generate
+          git diff --exit-code -- apps/web/src/shared/domain/http-client/api-schema
+
       - name: Format check
         run: pnpm format:check
 
