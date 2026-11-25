@@ -27,7 +27,7 @@ export class ObservationMikroOrmWriteRepository
     super(em, { entity: OBSERVATION_ENTITY, outboxSchema: 'listings', aggregateType: 'Observation' });
   }
 
-  protected toRow(aggregate: ObservationAggregate): Omit<ObservationRow, 'version'> {
+  protected toRow(aggregate: ObservationAggregate): Omit<ObservationRow, 'version' | 'createdAt'> {
     return this.mapper.toRow(aggregate);
   }
 

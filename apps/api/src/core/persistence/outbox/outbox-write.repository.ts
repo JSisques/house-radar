@@ -36,7 +36,7 @@ export abstract class OutboxWriteRepository<
   ) {}
 
   /** The aggregate state to store, without the version: the database owns it. */
-  protected abstract toRow(aggregate: TAggregate): Omit<TRow, 'version'>;
+  protected abstract toRow(aggregate: TAggregate): Omit<TRow, 'version' | 'createdAt' | 'updatedAt'>;
 
   protected abstract toAggregate(row: TRow): TAggregate;
 

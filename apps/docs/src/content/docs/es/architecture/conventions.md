@@ -161,7 +161,7 @@ export const INFRASTRUCTURE_REPOSITORIES = [
 
 ### Persistencia
 
-MikroORM mapeado con `EntitySchema` ([D6](/es/adr/d06-persistence/)), de modo que las clases de dominio no llevan decoradores del ORM. Los schemas, mappers y repositorios viven en `infrastructure/persistence/mikro-orm/`. Los mappers traducen entre entidades del schema y agregados.
+MikroORM mapeado con schemas `defineEntity` ([D6](/es/adr/d06-persistence/), [D38](/es/adr/d38-persistence-row-definition/)), de modo que las clases de dominio no llevan decoradores del ORM. El tipo de la fila es `InferEntity<typeof Schema>`; no hay interfaz de fila escrita a mano. Los schemas, mappers y repositorios viven en `infrastructure/persistence/mikro-orm/`. Los mappers traducen entre entidades del schema y agregados. Las columnas decimales necesitan `.columnType('numeric')` (por defecto es `numeric(10,0)`), las columnas nullable usan `.strictNullable()` para que el tipo siga siendo `T | null`, y `toRow` omite `version`, `createdAt` y `updatedAt`.
 
 Los repositorios de escritura actualizan a través de la entidad gestionada: la cargan con `LockMode.OPTIMISTIC` y `lockVersion` (la `version` del agregado) y después hacen `assign` del nuevo estado. Insertan una entidad nueva solo cuando `isNew()` es verdadero; persistir un objeto nuevo para una fila existente sería un `INSERT`.
 
@@ -194,7 +194,7 @@ Los archivos van en kebab-case con un sufijo de rol. Las clases van en PascalCas
 | `.adapter` | Implementación de un puerto |
 | `.repository` | Interfaz o implementación de repositorio |
 | `.mapper` | Mapeo entre representaciones |
-| `.schema` | `EntitySchema` de MikroORM |
+| `.schema` | Schema `defineEntity` de MikroORM |
 | `.controller` | Controlador REST |
 | `.dto` | Objeto de datos de transporte |
 | `.view-model` | Forma de un modelo de lectura |

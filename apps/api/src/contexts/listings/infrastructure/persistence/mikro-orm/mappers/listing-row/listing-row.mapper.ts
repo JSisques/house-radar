@@ -41,7 +41,7 @@ const toDecimal = (value: number | null): string | null => (value === null ? nul
 export class ListingRowMapper {
   constructor(@Inject(LISTING_BUILDER_FACTORY_TOKEN) private readonly builders: IListingBuilderFactory) {}
 
-  toRow(aggregate: ListingAggregate): Omit<ListingRow, 'version'> {
+  toRow(aggregate: ListingAggregate): Omit<ListingRow, 'version' | 'createdAt' | 'updatedAt'> {
     const p = aggregate.toPrimitives();
     const origins: Record<string, DataOrigin> = {};
     return {
