@@ -1,5 +1,5 @@
+import { ValueObject } from '../value-object';
 import { InvalidEnumException } from './invalid-enum.exception';
-import { ValueObject } from './value-object';
 
 export interface EnumValueObjectOptions<T extends string | number> {
   values: readonly T[];

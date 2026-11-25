@@ -1,5 +1,5 @@
+import { ValueObject } from '../value-object';
 import { InvalidDateException } from './invalid-date.exception';
-import { ValueObject } from './value-object';
 
 export interface DateValueObjectOptions {
   min?: Date;

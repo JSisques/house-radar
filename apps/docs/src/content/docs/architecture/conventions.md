@@ -37,6 +37,8 @@ Generic DDD building blocks with no House Radar concepts.
 
 IDs are UUIDv7, generated with the `uuid` package (`v7()`), so the package also works in the browser (`apps/web`) ([D32](/adr/d32-uuid-v7/)). Project-specific value objects are never added here.
 
+Consumers import everything from the package root (`@house-radar/building-blocks`); there are no deep subpaths. Internally, each concept lives in its own folder with its spec and exceptions (for example `domain/value-objects/string/`), and shared base classes stay in the parent folder. For that reason the `../` import ban is turned off inside `packages/building-blocks/src`.
+
 ### `packages/shared-kernel` (`@house-radar/shared-kernel`)
 
 House Radar concepts used by two or more contexts. Depends on `building-blocks`.
@@ -318,7 +320,7 @@ Style:
 - **Workspace tests** check the Turborepo wiring itself. `pnpm test:workspace` runs them serially, outside `turbo run test`.
 - **ESLint** uses one flat config at the repository root, `eslint.config.js`, shared by every workspace. Each workspace runs `eslint .` as its `lint` script, and `pnpm lint` runs them through Turborepo. Root files (`tests/**` and `eslint.config.js`) are linted by `pnpm lint:root`, outside Turborepo, like `test:workspace`. The root `package.json` sets `"type": "module"` so the config loads as ESM. The `lint` cache keys on `eslint.config.js`, so editing a rule invalidates only lint results. The rules are:
   - Layer and context boundaries from `eslint-plugin-boundaries` (rule id `boundaries/dependencies`), following the Layers table. Only `infrastructure/adapters` may reach into other contexts.
-  - No parent-relative `../` imports (`no-restricted-imports`). Use an alias or a same-directory import.
+  - No parent-relative `../` imports (`no-restricted-imports`). Use an alias or a same-directory import. The only exception is `packages/building-blocks/src`, where per-concept folders import their base classes from the parent folder.
   - No explicit `any` (`@typescript-eslint/no-explicit-any`) on top of the strict TypeScript setup.
   - Import and export order (see below).
 - **Path aliases** `@contexts/*`, `@core/*` and `@shared/*` are declared once in `tsconfig.base.json`, using `${configDir}` so each extending project resolves them against its own `src/`. ESLint resolves them through `eslint-import-resolver-typescript`.

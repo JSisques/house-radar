@@ -1,5 +1,5 @@
+import { ValueObject } from '../value-object';
 import { InvalidUuidException } from './invalid-uuid.exception';
-import { ValueObject } from './value-object';
 
 export interface UuidValueObjectOptions {
   /** Required RFC 9562 version, 1 to 8. */

@@ -1,5 +1,5 @@
+import { ValueObject } from '../value-object';
 import { InvalidBooleanException } from './invalid-boolean.exception';
-import { ValueObject } from './value-object';
 
 export class BooleanValueObject extends ValueObject<boolean> {
   constructor(value: boolean) {

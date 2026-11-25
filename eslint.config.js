@@ -107,6 +107,11 @@ export default [
     },
   },
   {
+    // building-blocks groups each concept in its own folder (e.g. string/) and shares base classes from the parent folder.
+    files: ['packages/building-blocks/src/**/*.ts'],
+    rules: { 'no-restricted-imports': 'off' },
+  },
+  {
     // Per-package vitest configs extend the shared base at the repo root; that is their only parent import.
     files: ['packages/*/vitest*.config.ts', 'apps/*/vitest*.config.ts'],
     rules: { 'no-restricted-imports': 'off' },

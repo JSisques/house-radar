@@ -1,5 +1,5 @@
+import { ValueObject } from '../value-object';
 import { InvalidNumberException } from './invalid-number.exception';
-import { ValueObject } from './value-object';
 
 export interface NumberValueObjectOptions {
   min?: number;

@@ -1,5 +1,5 @@
+import { ValueObject } from '../value-object';
 import { InvalidStringException } from './invalid-string.exception';
-import { ValueObject } from './value-object';
 
 export interface StringValueObjectOptions {
   minLength?: number;
