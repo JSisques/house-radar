@@ -45,8 +45,8 @@ export interface IRegisterManualListingInput {
 
 /** Cross-context port to `listings`. Its adapter is the only place that may import that context. */
 export interface IListingRegistryPort {
-  /** The manual listing already stored for this normalized URL, if any. */
-  findManualByNormalizedUrl(url: ListingUrl): Promise<ListingId | null>;
+  /** The listing of this (manual) source already stored for this normalized URL, if any. */
+  findManualByNormalizedUrl(source: SourceId, url: ListingUrl): Promise<ListingId | null>;
   /** Creates the listing and its first observation. */
   registerManual(input: IRegisterManualListingInput): Promise<ListingId>;
 }

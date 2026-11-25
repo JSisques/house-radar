@@ -11,7 +11,7 @@ Decisión [D29](/es/adr/d29-aggregate-boundaries/): los agregados son pequeños 
 
 ### `Source`
 
-- **Identidad:** `SourceId`, una clave de texto estable como `idealista` o `manual`.
+- **Identidad:** `SourceId`, un UUIDv7 generado al crear la fuente. La fuente `manual` es la de tipo `manual`, que se busca por tipo y nunca por un id fijo.
 - **Estado:** tipo (`api`, `feed`, `manual`) y un indicador de habilitada. La cadencia y el límite de tasa vienen de la configuración del despliegue, no del agregado.
 - **Eventos:** ninguno.
 

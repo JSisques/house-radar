@@ -1,6 +1,8 @@
 import { Migration } from '@mikro-orm/migrations';
 
-/** Sources of listings. The `manual` source is seeded enabled, as manual import needs it from the first run. */
+import { generateUuidV7 } from '@house-radar/building-blocks';
+
+/** Sources of listings. A `manual` source is seeded enabled, as manual import needs it from the first run. */
 export class Migration20261125000107 extends Migration {
   override up(): void {
     this.addSql(`
@@ -14,10 +16,11 @@ export class Migration20261125000107 extends Migration {
         constraint "source_kind_check" check ("kind" in ('api', 'feed', 'manual'))
       );
     `);
-    this.addSql(`
-      insert into "ingestion"."source" ("id", "kind", "enabled", "created_at", "updated_at")
-      values ('manual', 'manual', true, now(), now());
-    `);
+    // The id is a freshly generated UUIDv7 (never user input), so inlining it is safe.
+    this.addSql(
+      `insert into "ingestion"."source" ("id", "kind", "enabled", "created_at", "updated_at")
+       values ('${generateUuidV7()}', 'manual', true, now(), now());`,
+    );
   }
 
   override down(): void {

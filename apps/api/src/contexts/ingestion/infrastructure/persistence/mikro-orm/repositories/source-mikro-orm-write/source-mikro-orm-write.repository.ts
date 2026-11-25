@@ -5,6 +5,7 @@ import type { SourceId } from '@house-radar/shared-kernel';
 
 import type { SourceAggregate } from '@contexts/ingestion/domain/aggregates/source/source.aggregate';
 import type { ISourceWriteRepository } from '@contexts/ingestion/domain/repositories/write/source-write.repository';
+import type { SourceKind } from '@contexts/ingestion/domain/value-objects/source-kind/source-kind.value-object';
 import { SourceRowMapper } from '@contexts/ingestion/infrastructure/persistence/mikro-orm/mappers/source-row/source-row.mapper';
 import {
   SOURCE_ENTITY,
@@ -30,6 +31,11 @@ export class SourceMikroOrmWriteRepository implements ISourceWriteRepository {
 
   async findById(id: SourceId): Promise<SourceAggregate | null> {
     const row = await this.em.fork().findOne<SourceRow>(SOURCE_ENTITY, { id: id.value });
+    return row === null ? null : this.mapper.toAggregate(row);
+  }
+
+  async findByKind(kind: SourceKind): Promise<SourceAggregate | null> {
+    const row = await this.em.fork().findOne<SourceRow>(SOURCE_ENTITY, { kind: kind.value });
     return row === null ? null : this.mapper.toAggregate(row);
   }
 

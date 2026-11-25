@@ -1,7 +1,7 @@
 ﻿import { Inject } from '@nestjs/common';
 import { CommandHandler, type ICommandHandler } from '@nestjs/cqrs';
 
-import { ListingUrl, Money, SourceId } from '@house-radar/shared-kernel';
+import { isBlank, ListingUrl, Money } from '@house-radar/shared-kernel';
 
 import { ImportManualListingCommand } from '@contexts/ingestion/application/commands/import-manual-listing/import-manual-listing.command';
 import type { ImportManualListingResult } from '@contexts/ingestion/application/commands/import-manual-listing/import-manual-listing.result';
@@ -15,10 +15,7 @@ import {
   type ISourceWriteRepository,
   SOURCE_WRITE_REPOSITORY,
 } from '@contexts/ingestion/domain/repositories/write/source-write.repository';
-
-const MANUAL_SOURCE_ID = 'manual';
-
-const isBlank = (value: string | undefined): boolean => value === undefined || value.trim() === '';
+import { SourceKind } from '@contexts/ingestion/domain/value-objects/source-kind/source-kind.value-object';
 
 @CommandHandler(ImportManualListingCommand)
 export class ImportManualListingHandler implements ICommandHandler<ImportManualListingCommand> {
@@ -34,17 +31,17 @@ export class ImportManualListingHandler implements ICommandHandler<ImportManualL
     if (command.priceCents === undefined || command.priceCents === null) missingFields.push('price');
     if (missingFields.length > 0) return { status: 'invalid', missingFields };
 
-    const sourceId = new SourceId(MANUAL_SOURCE_ID);
-    const source = await this.sources.findById(sourceId);
-    if (source === null || !source.enabled) throw new SourceNotAvailableException(MANUAL_SOURCE_ID);
+    const manual = SourceKind.manual();
+    const source = await this.sources.findByKind(manual);
+    if (source === null || !source.enabled) throw new SourceNotAvailableException(manual.value);
 
     // The URL is only parsed and normalized, never requested (D17).
     const url = new ListingUrl(command.url as string);
-    const existing = await this.registry.findManualByNormalizedUrl(url);
+    const existing = await this.registry.findManualByNormalizedUrl(source.id, url);
     if (existing !== null) return { status: 'duplicate', listingId: existing.value, action: 'check_listing' };
 
     const listingId = await this.registry.registerManual({
-      source: sourceId,
+      source: source.id,
       url,
       price: new Money(command.priceCents as number),
       observedAt: this.now(),

@@ -32,35 +32,36 @@ describe('SourceMikroOrmWriteRepository', () => {
     await postgres.stop();
   });
 
-  it('should find the manual source seeded by the migration, enabled', async () => {
-    const source = await write.findById(new SourceId('manual'));
+  it('should find the manual source seeded by the migration by its kind, enabled, with a generated id', async () => {
+    const source = await write.findByKind(SourceKind.manual());
 
-    expect(source?.toPrimitives()).toEqual({ id: 'manual', kind: 'manual', enabled: true });
+    expect(source?.toPrimitives()).toEqual({ id: expect.any(String), kind: 'manual', enabled: true });
+    expect(await write.findById(source!.id)).not.toBeNull();
   });
 
-  it('should return null for an unknown source', async () => {
-    expect(await write.findById(new SourceId('unknown'))).toBeNull();
+  it('should return null for an unknown source or a kind with no source', async () => {
+    expect(await write.findById(SourceId.generate())).toBeNull();
+    expect(await write.findByKind(new SourceKind('feed'))).toBeNull();
   });
 
-  it('should insert a new source and update an existing one by its key', async () => {
-    const feed = new SourceBuilder().withId(new SourceId('feed-a')).withKind(new SourceKind('feed')).build();
-    await write.save(feed);
-    await write.save(
-      new SourceBuilder().withId(new SourceId('feed-a')).withKind(new SourceKind('feed')).withEnabled(false).build(),
-    );
+  it('should insert a new source and update an existing one by its id', async () => {
+    const id = SourceId.generate();
+    await write.save(new SourceBuilder().withId(id).withKind(new SourceKind('feed')).build());
+    await write.save(new SourceBuilder().withId(id).withKind(new SourceKind('feed')).withEnabled(false).build());
 
-    const stored = await write.findById(new SourceId('feed-a'));
-    const { rows } = await pool.query('select count(*)::int as n from ingestion.source where id = $1', ['feed-a']);
+    const stored = await write.findById(id);
+    const { rows } = await pool.query('select count(*)::int as n from ingestion.source where id = $1', [id.value]);
 
-    expect(stored?.toPrimitives()).toEqual({ id: 'feed-a', kind: 'feed', enabled: false });
+    expect(stored?.toPrimitives()).toEqual({ id: id.value, kind: 'feed', enabled: false });
     expect(rows[0].n).toBe(1);
   });
 
   it('should delete a source', async () => {
-    await write.save(new SourceBuilder().withId(new SourceId('gone')).withKind(new SourceKind('api')).build());
+    const id = SourceId.generate();
+    await write.save(new SourceBuilder().withId(id).withKind(new SourceKind('api')).build());
 
-    await write.delete(new SourceId('gone'));
+    await write.delete(id);
 
-    expect(await write.findById(new SourceId('gone'))).toBeNull();
+    expect(await write.findById(id)).toBeNull();
   });
 });

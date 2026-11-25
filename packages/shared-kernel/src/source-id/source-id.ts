@@ -1,23 +1,12 @@
-import { ValueObject } from '@house-radar/building-blocks';
+import { generateUuidV7, UuidValueObject } from '@house-radar/building-blocks';
 
-import { InvalidSourceIdException } from './invalid-source-id.exception';
-
-/** Identifier of a listing source (portal or manual import). */
-export class SourceId extends ValueObject<string> {
-  get value(): string {
-    return this._value;
+/** Identity of a listing source (portal, feed or manual import), referenced across contexts. UUIDv7. */
+export class SourceId extends UuidValueObject {
+  constructor(value: string) {
+    super(value, { version: 7 });
   }
 
-  protected validate(): void {
-    if (typeof this._value !== 'string' || this._value.length === 0) {
-      throw new InvalidSourceIdException('value must be a non-empty string');
-    }
-    if (this._value.trim() !== this._value) {
-      throw new InvalidSourceIdException('value must not have surrounding whitespace');
-    }
-  }
-
-  toPrimitives(): string {
-    return this._value;
+  static generate(): SourceId {
+    return new SourceId(generateUuidV7());
   }
 }

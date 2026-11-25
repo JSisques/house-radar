@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { isKnown, isUnknown, known, UNKNOWN } from './known';
+import { declaredOrUnknown, isKnown, isUnknown, known, UNKNOWN } from './known';
 
 describe('Known / Unknown', () => {
   it('wraps a value with its origin', () => {
@@ -25,5 +25,15 @@ describe('Known / Unknown', () => {
 
   it.each(['declared', 'calculated', 'inferred'] as const)('accepts origin %s', (origin) => {
     expect(known('x', origin).origin).toBe(origin);
+  });
+});
+
+describe('declaredOrUnknown', () => {
+  it('wraps a present value as declared', () => {
+    expect(declaredOrUnknown(3, (v) => v * 2)).toEqual(known(6, 'declared'));
+  });
+
+  it('is unknown when the value is absent', () => {
+    expect(declaredOrUnknown(undefined, (v: number) => v)).toBe(UNKNOWN);
   });
 });

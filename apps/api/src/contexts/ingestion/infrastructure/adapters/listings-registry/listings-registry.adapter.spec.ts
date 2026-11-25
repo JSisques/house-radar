@@ -9,6 +9,7 @@ import type { ObservationAggregate } from '@contexts/listings/domain/aggregates/
 import { ListingBuilderFactory } from '@contexts/listings/domain/builders/listing/listing-builder.factory';
 import { ObservationBuilderFactory } from '@contexts/listings/domain/builders/observation/observation-builder.factory';
 
+const SOURCE = SourceId.generate();
 const OBSERVED_AT = new DateValueObject(new Date('2026-11-25T10:00:00Z'));
 
 function setup(existingIds: string[] = []) {
@@ -42,7 +43,7 @@ describe('ListingsRegistryAdapter', () => {
   it('should return null when no manual listing has that normalized url', async () => {
     const { adapter, listingRead } = setup();
 
-    expect(await adapter.findManualByNormalizedUrl(url)).toBeNull();
+    expect(await adapter.findManualByNormalizedUrl(SOURCE, url)).toBeNull();
     expect(listingRead.findByCriteria).toHaveBeenCalledTimes(1);
   });
 
@@ -50,14 +51,14 @@ describe('ListingsRegistryAdapter', () => {
     const id = ListingId.generate().value;
     const { adapter } = setup([id]);
 
-    expect((await adapter.findManualByNormalizedUrl(url))?.value).toBe(id);
+    expect((await adapter.findManualByNormalizedUrl(SOURCE, url))?.value).toBe(id);
   });
 
   it('should create the listing and its first observation without a run id', async () => {
     const { adapter, saved } = setup();
 
     const id = await adapter.registerManual({
-      source: new SourceId('manual'),
+      source: SOURCE,
       url,
       price: new Money(25000000),
       observedAt: OBSERVED_AT,
@@ -66,7 +67,7 @@ describe('ListingsRegistryAdapter', () => {
 
     const listing = saved.listing?.toPrimitives();
     expect(listing?.id).toBe(id.value);
-    expect(listing?.source).toBe('manual');
+    expect(listing?.source).toBe(SOURCE.value);
     expect(listing?.originalUrl).toBe('https://example.com/home/1');
     expect(listing?.price).toEqual({ kind: 'known', origin: 'declared', value: 25000000 });
     expect(listing?.title).toEqual({ kind: 'unknown' });
@@ -82,7 +83,7 @@ describe('ListingsRegistryAdapter', () => {
     const { adapter, saved } = setup();
 
     await adapter.registerManual({
-      source: new SourceId('manual'),
+      source: SOURCE,
       url,
       price: new Money(25000000),
       observedAt: OBSERVED_AT,
@@ -109,7 +110,7 @@ describe('ListingsRegistryAdapter', () => {
     const { adapter, listingWrite, observationWrite } = setup();
 
     await adapter.registerManual({
-      source: new SourceId('manual'),
+      source: SOURCE,
       url,
       price: new Money(1),
       observedAt: OBSERVED_AT,

@@ -29,7 +29,7 @@ Mutable.
 
 | Columna | Tipo | Notas |
 | --- | --- | --- |
-| `id` | `text` | Clave primaria, por ejemplo `idealista`, `manual`. |
+| `id` | `text` | Clave primaria, un UUIDv7 guardado como texto. |
 | `kind` | `text not null` | `api`, `feed` o `manual` (check). |
 | `enabled` | `boolean not null` | Si la fuente se ingiere. |
 | `created_at` | `timestamptz not null` | Momento de creación de la fila. |

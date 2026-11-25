@@ -3,14 +3,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Criteria } from '@house-radar/building-blocks';
 import {
   Area,
+  declaredOrUnknown,
   EnergyCertificate,
   known,
   ListingId,
   type ListingUrl,
-  type Maybe,
   PropertyCondition,
   PropertyType,
-  UNKNOWN,
+  type SourceId,
 } from '@house-radar/shared-kernel';
 
 import {
@@ -46,13 +46,6 @@ import { ListingDescription } from '@contexts/listings/domain/value-objects/list
 import { ListingTitle } from '@contexts/listings/domain/value-objects/listing-title/listing-title.value-object';
 import { YearBuilt } from '@contexts/listings/domain/value-objects/year-built/year-built.value-object';
 
-const MANUAL_SOURCE = 'manual';
-
-/** Declared by the user: wraps the value when present, unknown otherwise. */
-function declared<TIn, TOut>(value: TIn | undefined, build: (value: TIn) => TOut): Maybe<TOut> {
-  return value === undefined ? UNKNOWN : known(build(value), 'declared');
-}
-
 /** Adapter to the `listings` context: the only place in `ingestion` that may import it. */
 @Injectable()
 export class ListingsRegistryAdapter implements IListingRegistryPort {
@@ -64,9 +57,9 @@ export class ListingsRegistryAdapter implements IListingRegistryPort {
     @Inject(OBSERVATION_BUILDER_FACTORY_TOKEN) private readonly observationBuilders: IObservationBuilderFactory,
   ) {}
 
-  async findManualByNormalizedUrl(url: ListingUrl): Promise<ListingId | null> {
+  async findManualByNormalizedUrl(source: SourceId, url: ListingUrl): Promise<ListingId | null> {
     const criteria = new Criteria()
-      .addFilter({ field: 'source', operator: 'eq', value: MANUAL_SOURCE })
+      .addFilter({ field: 'source', operator: 'eq', value: source.value })
       .addFilter({ field: 'originalUrl', operator: 'eq', value: url.value });
     const { items } = await this.listingRead.findByCriteria(criteria);
     const first = items[0];
@@ -82,16 +75,16 @@ export class ListingsRegistryAdapter implements IListingRegistryPort {
       .withOriginalUrl(input.url)
       .withAddedAt(input.observedAt)
       .withPrice(price)
-      .withTitle(declared(details.title, (v) => new ListingTitle(v)))
-      .withDescription(declared(details.description, (v) => new ListingDescription(v)))
-      .withBuiltArea(declared(details.builtArea, (v) => new Area(v)))
-      .withUsableArea(declared(details.usableArea, (v) => new Area(v)))
-      .withPlotArea(declared(details.plotArea, (v) => new Area(v)))
-      .withBedrooms(declared(details.bedrooms, (v) => new Bedrooms(v)))
-      .withBathrooms(declared(details.bathrooms, (v) => new Bathrooms(v)))
-      .withYearBuilt(declared(details.yearBuilt, (v) => new YearBuilt(v)))
-      .withPropertyType(declared(details.propertyType, (v) => new PropertyType(v)))
-      .withCondition(declared(details.condition, (v) => new PropertyCondition(v)))
+      .withTitle(declaredOrUnknown(details.title, (v) => new ListingTitle(v)))
+      .withDescription(declaredOrUnknown(details.description, (v) => new ListingDescription(v)))
+      .withBuiltArea(declaredOrUnknown(details.builtArea, (v) => new Area(v)))
+      .withUsableArea(declaredOrUnknown(details.usableArea, (v) => new Area(v)))
+      .withPlotArea(declaredOrUnknown(details.plotArea, (v) => new Area(v)))
+      .withBedrooms(declaredOrUnknown(details.bedrooms, (v) => new Bedrooms(v)))
+      .withBathrooms(declaredOrUnknown(details.bathrooms, (v) => new Bathrooms(v)))
+      .withYearBuilt(declaredOrUnknown(details.yearBuilt, (v) => new YearBuilt(v)))
+      .withPropertyType(declaredOrUnknown(details.propertyType, (v) => new PropertyType(v)))
+      .withCondition(declaredOrUnknown(details.condition, (v) => new PropertyCondition(v)))
       .withFeatures(this.featuresOf(details))
       .build();
     listing.create();
@@ -112,18 +105,18 @@ export class ListingsRegistryAdapter implements IListingRegistryPort {
   private featuresOf(details: IManualListingDetails): AdditionalFeatures {
     const f = details.features ?? {};
     return new AdditionalFeatures({
-      garage: declared(f.garage, (v) => v),
-      garden: declared(f.garden, (v) => v),
-      swimmingPool: declared(f.swimmingPool, (v) => v),
-      terrace: declared(f.terrace, (v) => v),
-      balcony: declared(f.balcony, (v) => v),
-      heating: declared(f.heating, (v) => v),
-      elevator: declared(f.elevator, (v) => v),
-      energyCertificate: declared(f.energyCertificate, (v) => new EnergyCertificate(v)),
-      landType: declared(f.landType, (v) => new LandType(v)),
-      water: declared(f.water, (v) => v),
-      electricity: declared(f.electricity, (v) => v),
-      sanitation: declared(f.sanitation, (v) => v),
+      garage: declaredOrUnknown(f.garage, (v) => v),
+      garden: declaredOrUnknown(f.garden, (v) => v),
+      swimmingPool: declaredOrUnknown(f.swimmingPool, (v) => v),
+      terrace: declaredOrUnknown(f.terrace, (v) => v),
+      balcony: declaredOrUnknown(f.balcony, (v) => v),
+      heating: declaredOrUnknown(f.heating, (v) => v),
+      elevator: declaredOrUnknown(f.elevator, (v) => v),
+      energyCertificate: declaredOrUnknown(f.energyCertificate, (v) => new EnergyCertificate(v)),
+      landType: declaredOrUnknown(f.landType, (v) => new LandType(v)),
+      water: declaredOrUnknown(f.water, (v) => v),
+      electricity: declaredOrUnknown(f.electricity, (v) => v),
+      sanitation: declaredOrUnknown(f.sanitation, (v) => v),
     });
   }
 }

@@ -15,15 +15,17 @@ const URL_WITH_NOISE = 'https://example.com/home/1?ref=a#photos';
 const NORMALIZED = 'https://example.com/home/1';
 const EXISTING_ID = ListingId.generate();
 const NEW_ID = ListingId.generate();
+const SOURCE_ID = SourceId.generate();
 
 const manualSource = (enabled = true) =>
-  new SourceBuilder().withId(new SourceId('manual')).withKind(SourceKind.manual()).withEnabled(enabled).build();
+  new SourceBuilder().withId(SOURCE_ID).withKind(SourceKind.manual()).withEnabled(enabled).build();
 
 const setup = (opts: { source?: ReturnType<typeof manualSource> | null; existing?: ListingId | null } = {}) => {
   const sources: ISourceWriteRepository = {
     save: vi.fn(),
     delete: vi.fn(),
-    findById: vi.fn().mockResolvedValue(opts.source === undefined ? manualSource() : opts.source),
+    findById: vi.fn(),
+    findByKind: vi.fn().mockResolvedValue(opts.source === undefined ? manualSource() : opts.source),
   };
   const registry: IListingRegistryPort = {
     findManualByNormalizedUrl: vi.fn().mockResolvedValue(opts.existing ?? null),
@@ -47,7 +49,7 @@ describe('ImportManualListingHandler', () => {
     const input = vi.mocked(registry.registerManual).mock.calls[0]![0];
     expect(input.url).toEqual(new ListingUrl(NORMALIZED));
     expect(input.price).toEqual(new Money(25_000_000));
-    expect(input.source.value).toBe('manual');
+    expect(input.source).toEqual(SOURCE_ID);
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 
@@ -90,7 +92,7 @@ describe('ImportManualListingHandler', () => {
     );
 
     expect(result).toEqual({ status: 'duplicate', listingId: EXISTING_ID.value, action: 'check_listing' });
-    expect(registry.findManualByNormalizedUrl).toHaveBeenCalledWith(new ListingUrl(NORMALIZED));
+    expect(registry.findManualByNormalizedUrl).toHaveBeenCalledWith(SOURCE_ID, new ListingUrl(NORMALIZED));
     expect(registry.registerManual).not.toHaveBeenCalled();
   });
 

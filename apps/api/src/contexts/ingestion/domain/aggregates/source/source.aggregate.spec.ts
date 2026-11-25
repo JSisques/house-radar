@@ -1,4 +1,4 @@
-﻿import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { SourceId } from '@house-radar/shared-kernel';
 
@@ -6,27 +6,25 @@ import { SourceBuilder } from '@contexts/ingestion/domain/builders/source/source
 import { InvalidSourceKindException } from '@contexts/ingestion/domain/exceptions/invalid-source-kind/invalid-source-kind.exception';
 import { SourceKind } from '@contexts/ingestion/domain/value-objects/source-kind/source-kind.value-object';
 
+const ID = SourceId.generate();
+
 describe('SourceAggregate', () => {
   it('exposes its primitives and raises no events', () => {
-    const source = new SourceBuilder().withId(new SourceId('manual')).withKind(SourceKind.manual()).build();
+    const source = new SourceBuilder().withId(ID).withKind(SourceKind.manual()).build();
 
-    expect(source.toPrimitives()).toEqual({ id: 'manual', kind: 'manual', enabled: true });
+    expect(source.toPrimitives()).toEqual({ id: ID.value, kind: 'manual', enabled: true });
     expect(source.peekDomainEvents()).toEqual([]);
   });
 
   it('can be built disabled', () => {
-    const source = new SourceBuilder()
-      .withId(new SourceId('manual'))
-      .withKind(SourceKind.manual())
-      .withEnabled(false)
-      .build();
+    const source = new SourceBuilder().withId(ID).withKind(SourceKind.manual()).withEnabled(false).build();
 
     expect(source.enabled).toBe(false);
   });
 
   it('requires id and kind', () => {
     expect(() => new SourceBuilder().withKind(SourceKind.manual()).build()).toThrow();
-    expect(() => new SourceBuilder().withId(new SourceId('manual')).build()).toThrow();
+    expect(() => new SourceBuilder().withId(ID).build()).toThrow();
   });
 
   it('rejects an unknown kind', () => {

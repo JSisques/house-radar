@@ -4,7 +4,6 @@ import { join } from 'node:path';
 
 import { EntitySchema } from '@mikro-orm/core';
 import { MikroORM } from '@mikro-orm/postgresql';
-import pg from 'pg';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import { type StartedPostgres, startPostgres } from '@house-radar/testing';
@@ -27,10 +26,7 @@ describe('migration generation', () => {
   beforeAll(async () => {
     postgres = await startPostgres();
     await runMigrations(postgres.connectionUri);
-    // Another context already owns a table: a listings migration must not drop it.
-    const pool = new pg.Pool({ connectionString: postgres.connectionUri });
-    await pool.query('create table ingestion.source (id text primary key)');
-    await pool.end();
+    // The ingestion context owns `ingestion.source` (created by its migration): a listings migration must not drop it.
     dir = await mkdtemp(join(tmpdir(), 'house-radar-migrations-'));
   });
   afterAll(async () => {
