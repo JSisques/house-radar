@@ -19,4 +19,12 @@ export class AppConfig {
   get redisUrl(): string {
     return this.env.REDIS_URL;
   }
+
+  get logLevel(): Env['LOG_LEVEL'] {
+    return this.env.LOG_LEVEL;
+  }
+
+  get otlpEndpoint(): string | undefined {
+    return this.env.OTEL_EXPORTER_OTLP_ENDPOINT;
+  }
 }

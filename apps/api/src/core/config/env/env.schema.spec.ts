@@ -9,7 +9,20 @@ describe('validateEnv', () => {
       PORT: 3000,
       DATABASE_URL: 'postgres://house_radar:house_radar@localhost:55432/house_radar',
       REDIS_URL: 'redis://localhost:56379',
+      LOG_LEVEL: 'info',
     });
+  });
+
+  it('reads the OTLP endpoint and log level from the environment', () => {
+    const env = validateEnv({ OTEL_EXPORTER_OTLP_ENDPOINT: 'http://otel:4318', LOG_LEVEL: 'debug' });
+
+    expect(env.OTEL_EXPORTER_OTLP_ENDPOINT).toBe('http://otel:4318');
+    expect(env.LOG_LEVEL).toBe('debug');
+  });
+
+  it('fails naming the variable when the OTLP endpoint is not a URL or LOG_LEVEL is unknown', () => {
+    expect(() => validateEnv({ OTEL_EXPORTER_OTLP_ENDPOINT: 'nope' })).toThrow(/OTEL_EXPORTER_OTLP_ENDPOINT/);
+    expect(() => validateEnv({ LOG_LEVEL: 'loud' })).toThrow(/LOG_LEVEL/);
   });
 
   it('accepts connection URLs from the environment', () => {
