@@ -41,12 +41,13 @@ export abstract class OutboxWriteRepository<
   protected abstract toAggregate(row: TRow): TAggregate;
 
   async save(aggregate: TAggregate): Promise<void> {
-    const id = aggregate.id.value;
     const events = aggregate.peekDomainEvents();
     let version: number;
+    let id = aggregate.id.value;
     try {
       version = await this.em.transactional(async (em) => {
-        const row = aggregate.isNew() ? this.insertRow(em, aggregate) : await this.lockRow(em, aggregate);
+        const row = aggregate.isNew() ? await this.upsertRow(em, aggregate) : await this.lockRow(em, aggregate);
+        id = row.id;
         await em.flush();
         for (const event of events) {
           await em.insert(
@@ -73,6 +74,23 @@ export abstract class OutboxWriteRepository<
 
   async delete(id: TId): Promise<void> {
     await this.em.nativeDelete(this.options.entity, { id: id.value } as never);
+  }
+
+  /**
+   * Natural-key hook for upserts: a new aggregate whose natural key already has a row updates that row (keeping its id)
+   * instead of inserting. The default has no natural key, so a new aggregate is always inserted.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- parameters document the hook for overrides
+  protected findRowByNaturalKey(_em: EntityManager, _aggregate: TAggregate): Promise<TRow | null> {
+    return Promise.resolve(null);
+  }
+
+  private async upsertRow(em: EntityManager, aggregate: TAggregate): Promise<TRow> {
+    const existing = await this.findRowByNaturalKey(em, aggregate);
+    if (existing === null) return this.insertRow(em, aggregate);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- the id of the existing row is kept
+    const { id: _id, ...state } = this.toRow(aggregate);
+    return em.assign(existing, state as never) as TRow;
   }
 
   private insertRow(em: EntityManager, aggregate: TAggregate): TRow {
