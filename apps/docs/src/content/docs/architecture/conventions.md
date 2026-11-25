@@ -320,7 +320,7 @@ Style:
 - **Workspace tests** check the Turborepo wiring itself. `pnpm test:workspace` runs them serially, outside `turbo run test`.
 - **ESLint** uses one flat config at the repository root, `eslint.config.js`, shared by every workspace. Each workspace runs `eslint .` as its `lint` script, and `pnpm lint` runs them through Turborepo. Root files (`tests/**` and `eslint.config.js`) are linted by `pnpm lint:root`, outside Turborepo, like `test:workspace`. The root `package.json` sets `"type": "module"` so the config loads as ESM. The `lint` cache keys on `eslint.config.js`, so editing a rule invalidates only lint results. The rules are:
   - Layer and context boundaries from `eslint-plugin-boundaries` (rule id `boundaries/dependencies`), following the Layers table. Only `infrastructure/adapters` may reach into other contexts.
-  - No parent-relative `../` imports (`no-restricted-imports`). Use an alias or a same-directory import. The only exception is `packages/building-blocks/src`, where per-concept folders import their base classes from the parent folder.
+  - No parent-relative `../` imports (`no-restricted-imports`). Use an alias or a same-directory import. The only exceptions are `packages/building-blocks/src` and `packages/shared-kernel/src`, where per-concept folders import their base classes and sibling concepts from the parent folder.
   - No explicit `any` (`@typescript-eslint/no-explicit-any`) on top of the strict TypeScript setup.
   - Import and export order (see below).
 - **Path aliases** `@contexts/*`, `@core/*` and `@shared/*` are declared once in `tsconfig.base.json`, using `${configDir}` so each extending project resolves them against its own `src/`. ESLint resolves them through `eslint-import-resolver-typescript`.

@@ -107,8 +107,8 @@ export default [
     },
   },
   {
-    // building-blocks groups each concept in its own folder (e.g. string/) and shares base classes from the parent folder.
-    files: ['packages/building-blocks/src/**/*.ts'],
+    // building-blocks and shared-kernel group each concept in its own folder (e.g. money/) and import sibling concepts from the parent folder.
+    files: ['packages/building-blocks/src/**/*.ts', 'packages/shared-kernel/src/**/*.ts'],
     rules: { 'no-restricted-imports': 'off' },
   },
   {
