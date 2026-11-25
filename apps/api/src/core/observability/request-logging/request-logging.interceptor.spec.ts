@@ -23,6 +23,7 @@ function fakes(): { logger: ILogger; telemetry: ITelemetry; entries: Entry[]; sp
   const telemetry: ITelemetry = {
     runInSpan: (name, fn) => (spans.push(name), fn()),
     currentTraceId: () => 'trace-1',
+    emitLog: () => undefined,
   };
   return { logger, telemetry, entries, spans };
 }

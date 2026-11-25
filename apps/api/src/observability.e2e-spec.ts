@@ -68,6 +68,7 @@ describe('API observability', () => {
     const fake: ITelemetry = {
       runInSpan: (name, fn) => (spans.push(name), fn()),
       currentTraceId: () => 'fake-trace-id',
+      emitLog: () => undefined,
     };
     const { app: booted, lines } = await boot(fake);
 

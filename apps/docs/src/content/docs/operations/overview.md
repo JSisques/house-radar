@@ -25,6 +25,12 @@ Decision [D15](/adr/d15-observability/): full stack from the MVP.
 
 Instrumentation uses OpenTelemetry behind an adapter, so the backends are interchangeable.
 
+### Local stack
+
+The stack is an opt-in Compose profile (`observability`). `pnpm infra:up` still starts only PostgreSQL and Redis; `pnpm infra:up:obs` also starts the OpenTelemetry Collector, Prometheus, Loki, Tempo, and Grafana. `pnpm infra:down` stops everything.
+
+Point an app at the Collector with `OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318`. Grafana is at `http://localhost:3030` (anonymous admin, local only) with the Prometheus, Loki, and Tempo datasources provisioned and one placeholder dashboard. Configuration lives in `infra/observability/`. Ports are overridable through the variables in `.env.example`.
+
 ## Alerts
 
 Grafana alerts, as a minimum, for:
