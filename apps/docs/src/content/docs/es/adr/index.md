@@ -1,11 +1,11 @@
 ---
 title: "Registros de decisiones de arquitectura"
-description: "Índice de todas las decisiones de arquitectura D0 a D37."
+description: "Índice de todas las decisiones de arquitectura D0 a D38."
 sidebar:
   order: 0
 ---
 
-Decisiones de producto y técnicas tomadas antes de empezar el desarrollo. Cada decisión del registro se documenta como un ADR cuyo identificador coincide con el del registro (D0 a D37). La numeración de los ADR es el número de la decisión. Usa la [plantilla](/es/adr/template/) para nuevas decisiones.
+Decisiones de producto y técnicas tomadas antes de empezar el desarrollo. Cada decisión del registro se documenta como un ADR cuyo identificador coincide con el del registro (D0 a D38). La numeración de los ADR es el número de la decisión. Usa la [plantilla](/es/adr/template/) para nuevas decisiones.
 
 | ID | Decisión | Resultado | Fecha |
 | --- | --- | --- | --- |
@@ -47,3 +47,4 @@ Decisiones de producto y técnicas tomadas antes de empezar el desarrollo. Cada 
 | D35 | [Entornos y despliegue en staging](/es/adr/d35-environments-and-staging-deployment/) | Local, CI, un staging desechable accesible solo por Tailscale y una producción sin definir; imágenes en GHCR, despliegue automático al fusionar, secretos en GitHub Environments, health checks por servicio y rollback. | 2026-11-20 |
 | D36 | [Alojamiento de la documentación en Cloudflare Pages](/es/adr/d36-docs-hosting-cloudflare-pages/) | El portal de documentación se publica en Cloudflare Pages en la raíz de su dominio pages.dev, con una previsualización por pull request. | 2026-11-20 |
 | D37 | [Conector de páginas de detalle de Fotocasa](/es/adr/d37-fotocasa-detail-connector/) | Un conector lee páginas individuales de anuncios de Fotocasa (importación por el usuario y refresco diario de anuncios seguidos) respetando robots.txt, solo para uso privado y deshabilitado en producción. El descubrimiento automático queda aplazado. | 2026-11-20 |
+| D38 | [Filas de persistencia definidas con defineEntity](/es/adr/d38-persistence-row-definition/) | Las filas siguen siendo esquemas de MikroORM declarados con `defineEntity`; el tipo de la fila se infiere del esquema y no se adoptan clases de fila decoradas. | 2026-11-25 |
