@@ -1,0 +1,41 @@
+{
+  "$schema": "https://docs.renovate.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "rangeStrategy": "pin",
+  "semanticCommits": "enabled",
+  "semanticCommitType": "chore",
+  "semanticCommitScope": "deps",
+  "schedule": ["before 6am on monday"],
+  "timezone": "Europe/Madrid",
+  "dependencyDashboard": { "enabled": true },
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 6am on monday"],
+    "automerge": true
+  },
+  "packageRules": [
+    {
+      "description": "Automerge non-major updates once CI is green. 0.x versions are excluded because their minors can break.",
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": true
+    },
+    {
+      "groupName": "typescript-eslint",
+      "matchPackageNames": ["typescript-eslint", "@typescript-eslint/**"]
+    },
+    {
+      "groupName": "commitlint",
+      "matchPackageNames": ["@commitlint/**"]
+    },
+    {
+      "groupName": "astro",
+      "matchPackageNames": ["astro", "@astrojs/starlight", "@astrojs/check"]
+    },
+    {
+      "description": "Engines are ranges (>=24), so never pin them: Renovate only edits them when the current range no longer fits.",
+      "matchDepTypes": ["engines"],
+      "rangeStrategy": "replace"
+    }
+  ]
+}
