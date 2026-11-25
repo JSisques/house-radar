@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { test } from 'node:test';
 
 import { readJson, repoRoot } from './support.mjs';
@@ -289,7 +290,7 @@ test('commitlint packages are exact-pinned on the same major', () => {
 });
 
 test('commitlint config extends the conventional preset only', async () => {
-  const { default: config } = await import(join(repoRoot, 'commitlint.config.js'));
+  const { default: config } = await import(pathToFileURL(join(repoRoot, 'commitlint.config.js')).href);
   assert.deepEqual(config, { extends: ['@commitlint/config-conventional'] });
 });
 
