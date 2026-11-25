@@ -453,6 +453,9 @@ importers:
         specifier: 6.1.0
         version: 6.1.0
     devDependencies:
+      '@house-radar/testing':
+        specifier: workspace:*
+        version: link:../testing
       '@swc/cli':
         specifier: 0.8.2
         version: 0.8.2(@swc/core@1.16.22)(chokidar@5.0.0)
@@ -462,6 +465,12 @@ importers:
       '@types/node':
         specifier: 26.6.10
         version: 26.6.10
+      '@types/pg':
+        specifier: 8.23.1
+        version: 8.23.1
+      pg:
+        specifier: 8.23.1
+        version: 8.23.1
       typescript:
         specifier: 5.9.3
         version: 5.9.3

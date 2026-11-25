@@ -9,6 +9,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./testing": {
+      "types": "./dist/create-outbox-tables.d.ts",
+      "default": "./dist/create-outbox-tables.js"
     }
   },
   "files": [
@@ -18,6 +22,7 @@
     "build": "swc src -d dist --strip-leading-paths --ignore \"**/*.spec.ts\" --ignore \"**/*.integration-spec.ts\" && tsc -p tsconfig.build.json --emitDeclarationOnly",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
     "lint": "eslint ."
   },
   "dependencies": {
@@ -27,9 +32,12 @@
     "ioredis": "6.1.0"
   },
   "devDependencies": {
+    "@house-radar/testing": "workspace:*",
     "@swc/cli": "0.8.2",
     "@swc/core": "1.16.22",
     "@types/node": "26.6.10",
+    "@types/pg": "8.23.1",
+    "pg": "8.23.1",
     "typescript": "5.9.3",
     "vitest": "5.1.1"
   }

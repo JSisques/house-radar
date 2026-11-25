@@ -5,30 +5,9 @@ import pg from 'pg';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 
 import { outboxQueueName, type OutboxRelayProcess, startOutboxRelayProcess } from '@house-radar/outbox';
+import { createOutboxTables } from '@house-radar/outbox/testing';
 import { type StartedPostgres, type StartedRedis, startPostgres, startRedis } from '@house-radar/testing';
 
-// Only the shape the relay reads; the real table is created by the api migrations.
-const OUTBOX_DDL = `
-  create schema if not exists listings;
-  create table if not exists listings.outbox_event (
-    id uuid primary key,
-    aggregate_type text not null,
-    aggregate_id uuid not null,
-    aggregate_version integer not null,
-    event_type text not null,
-    schema_version integer not null,
-    payload jsonb not null,
-    metadata jsonb not null,
-    occurred_at timestamptz not null,
-    published_at timestamptz
-  );
-  create schema if not exists ingestion;
-  create schema if not exists properties;
-  create schema if not exists identity;
-  create table if not exists ingestion.outbox_event (like listings.outbox_event including all);
-  create table if not exists properties.outbox_event (like listings.outbox_event including all);
-  create table if not exists identity.outbox_event (like listings.outbox_event including all);
-`;
 describe('startOutboxRelayProcess', () => {
   let postgres: StartedPostgres;
   let redis: StartedRedis;
@@ -39,7 +18,7 @@ describe('startOutboxRelayProcess', () => {
   beforeAll(async () => {
     [postgres, redis] = await Promise.all([startPostgres(), startRedis()]);
     pool = new pg.Pool({ connectionString: postgres.connectionUri });
-    await pool.query(OUTBOX_DDL);
+    await createOutboxTables(postgres.connectionUri);
     queue = new Queue(outboxQueueName('listings'), { connection: { url: redis.url } });
   });
   afterEach(async () => {
