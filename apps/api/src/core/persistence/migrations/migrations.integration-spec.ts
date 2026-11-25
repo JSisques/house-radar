@@ -44,6 +44,42 @@ describe('persistence migrations', () => {
     expect(extensions).toHaveLength(1);
   });
 
+  it('should create the outbox table with its unpublished index only in the event-emitting contexts', async () => {
+    await postgres.reset();
+    await rows(postgres.connectionUri, 'DROP EXTENSION postgis CASCADE');
+
+    await runMigrations(postgres.connectionUri);
+
+    const tables = await rows<{ table_schema: string }>(
+      postgres.connectionUri,
+      "SELECT table_schema FROM information_schema.tables WHERE table_name = 'outbox_event'",
+    );
+    expect(tables.map((t) => t.table_schema).sort()).toEqual(['identity', 'ingestion', 'listings', 'properties']);
+    const columns = await rows<{ column_name: string }>(
+      postgres.connectionUri,
+      "SELECT column_name FROM information_schema.columns WHERE table_schema = 'listings' AND table_name = 'outbox_event'",
+    );
+    expect(columns.map((c) => c.column_name).sort()).toEqual(
+      [
+        'id',
+        'aggregate_type',
+        'aggregate_id',
+        'aggregate_version',
+        'event_type',
+        'schema_version',
+        'payload',
+        'metadata',
+        'occurred_at',
+        'published_at',
+      ].sort(),
+    );
+    const indexes = await rows<{ indexdef: string }>(
+      postgres.connectionUri,
+      "SELECT indexdef FROM pg_indexes WHERE schemaname = 'listings' AND indexname = 'outbox_event_unpublished_idx'",
+    );
+    expect(indexes[0]?.indexdef).toContain('WHERE (published_at IS NULL)');
+  });
+
   it('should be idempotent when run twice', async () => {
     await postgres.reset();
     await rows(postgres.connectionUri, 'DROP EXTENSION postgis CASCADE');
