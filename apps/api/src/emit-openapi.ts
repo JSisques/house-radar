@@ -4,7 +4,7 @@ import { writeFile } from 'node:fs/promises';
 
 import { NestFactory } from '@nestjs/core';
 
-import { buildOpenApiDocument } from '@core/openapi/openapi/openapi.js';
+import { buildOpenApiDocument } from '@core/openapi/openapi-document/openapi-document.js';
 
 import { AppModule } from './app.module.js';
 import { configureApp } from './bootstrap.js';

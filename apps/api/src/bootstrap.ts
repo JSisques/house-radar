@@ -1,6 +1,6 @@
 import type { INestApplication } from '@nestjs/common';
 
-import { setupOpenApi } from '@core/openapi/openapi/openapi.js';
+import { setupOpenApi } from '@core/openapi/openapi-document/openapi-document.js';
 
 export const GLOBAL_PREFIX = 'api';
 
