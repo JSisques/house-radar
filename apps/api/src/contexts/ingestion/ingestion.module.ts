@@ -25,6 +25,7 @@ import { SOURCE_WRITE_REPOSITORY } from '@contexts/ingestion/domain/repositories
 import { ListingsRegistryAdapter } from '@contexts/ingestion/infrastructure/adapters/listings-registry/listings-registry.adapter';
 import { SourceRowMapper } from '@contexts/ingestion/infrastructure/persistence/mikro-orm/mappers/source-row/source-row.mapper';
 import { SourceMikroOrmWriteRepository } from '@contexts/ingestion/infrastructure/persistence/mikro-orm/repositories/source-mikro-orm-write/source-mikro-orm-write.repository';
+import { ManualListingsController } from '@contexts/ingestion/transport/rest/controllers/manual-listings/manual-listings.controller';
 import { ListingsModule } from '@contexts/listings/listings.module';
 import { ExceptionMappingRegistry } from '@core/exceptions/exception-mapping/exception-mapping.registry.js';
 import { contextOrmProviders } from '@core/persistence/context-orm/context-orm.providers.js';
@@ -32,6 +33,7 @@ import { contextOrmProviders } from '@core/persistence/context-orm/context-orm.p
 /** Ingestion: imports listings from outside (manual entry today). */
 @Module({
   imports: [ListingsModule],
+  controllers: [ManualListingsController],
   providers: [
     ...contextOrmProviders('ingestion'),
     SourceRowMapper,

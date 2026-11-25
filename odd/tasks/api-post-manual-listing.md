@@ -14,8 +14,8 @@ Objective: issue #46 `[M1] API: POST manual listing endpoint` (S-M1-05, parent #
 
 ## Tasks
 
-- T1. S6, S2, S3: assert service + typed exceptions (400/409 with details), handler returns `{ id }`, error body carries details. Route: inline. Commit: pending.
-- T2. S7: MikroORM runtime module + `ListingsModule` + `IngestionModule`, registered in `AppModule`. Route: inline. Commit: pending.
+- T1. S6, S2, S3: assert service + typed exceptions (400/409 with details), handler returns `{ id }`, error body carries details. Route: inline. Commit: 4eea716 (done).
+- T2. S7: MikroORM runtime module + `ListingsModule` + `IngestionModule`, registered in `AppModule`. Route: inline. Commit: e5ec4b5 (done).
 - T3. S1-S4: controller, DTOs, class-validator pipe, OpenAPI, e2e spec. Route: inline. Commit: pending.
 - T4. S6: conventions docs (en + es). Route: inline. Commit: pending.
 
