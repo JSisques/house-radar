@@ -268,7 +268,7 @@ TanStack Router ([D26](/es/adr/d26-tanstack-router/)). Los parámetros de búsqu
 
 `react-i18next` detrás del adaptador de i18n ([D27](/es/adr/d27-react-i18next/), [D12](/es/adr/d12-web-internationalization/)).
 
-- Un namespace por contexto, accedido con `useTranslation`. Sin pasar `dict` por props.
+- Un namespace por contexto. Los componentes leen textos y formatos con `useI18n()`, que devuelve el `I18nPort` del composition root, no con `useTranslation` directamente; el adapter de react-i18next es el único código que toca la librería. Así un test puede inyectar un puerto falso sin `I18nextProvider`. Sin pasar `dict` por props.
 - Las claves se tipan mediante una declaración de recursos de TypeScript, de modo que una clave mal escrita no compila.
 - Los idiomas se cargan de forma diferida. Un test verifica la paridad de idiomas por contexto.
 - Precios, superficies y fechas se formatean con `Intl.NumberFormat` (`currency: 'EUR'`) e `Intl.DateTimeFormat`, dentro del adaptador.
