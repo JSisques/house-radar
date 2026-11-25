@@ -13,6 +13,7 @@ These conventions apply to `apps/api`, `apps/ingestion`, `apps/web`, `packages/b
 - **The domain is framework-free.** No NestJS, MikroORM, `@nestjs/cqrs` or React in `domain`. Decorators and dependency injection live in the outer layers ([D4](/adr/d04-backend-framework/), [D10](/adr/d10-cross-cutting-architecture/)).
 - **Rules are enforced by lint, not by review.** Layer boundaries, import paths and ordering are ESLint rules. A rule that cannot be enforced automatically is a rule that erodes.
 - **No barrel files.** Import from the file that defines the symbol.
+- **One concept per folder.** In the backend, every concept lives in a folder named after it, holding its files and its spec (`exceptions/exception-mapping/exception-mapping.registry.ts` next to `exception-mapping.registry.spec.ts`), as commands, queries and domain concepts already do.
 - **One type per file.** The only exception is `{Name}CommandInput` / `{Name}QueryInput`, declared in the command or query file.
 - **Path aliases.** Cross-directory imports use aliases (`@contexts/*`, `@core/*`, `@shared/*`). Relative imports are allowed only inside the same directory.
 
@@ -166,7 +167,7 @@ REST only ([D22](/adr/d22-api-style/)): no GraphQL and no MCP. Controllers valid
 
 ### Errors
 
-Domain and application code throws typed exceptions. There are no `Result` types. A global filter maps exceptions to HTTP responses, and each context registers its own exception-to-status mapping. Adding a context never edits `core`.
+Domain and application code throws typed exceptions. There are no `Result` types. A global filter maps exceptions to HTTP responses, and each context registers its own exception-to-status mapping. Adding a context never edits `core`. In `apps/api`, a context registers `{ exception, status, code }` mappings with `ExceptionMappingRegistry` in its module's `onModuleInit`; responses have the shape `{ statusCode, code, message }`, and unmapped errors answer `500 INTERNAL_ERROR`.
 
 ### Naming
 
