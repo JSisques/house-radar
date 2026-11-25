@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0](https://github.com/JSisques/house-radar/compare/v1.0.0...v1.1.0) (2026-11-25)
+
+
+### Features
+
+* **building-blocks:** add value object base and generic value objects ([126eb49](https://github.com/JSisques/house-radar/commit/126eb499731978ce6684d810e8be0691e2b6519f))
+* **building-blocks:** add value object base and generic value objects ([#154](https://github.com/JSisques/house-radar/issues/154)) ([92a19a0](https://github.com/JSisques/house-radar/commit/92a19a08955920d32246dc9a74a899fb3990f117))
+
 ## 1.0.0 (2026-11-24)
 
 
