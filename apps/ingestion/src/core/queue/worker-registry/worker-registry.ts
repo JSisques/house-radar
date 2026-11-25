@@ -12,19 +12,30 @@ export type JobHandler = (job: Job) => Promise<unknown>;
  */
 @Injectable()
 export class WorkerRegistry implements OnApplicationShutdown {
-  private readonly workers: Worker[] = [];
+  private readonly workers = new Map<Worker, { connected: boolean }>();
 
   constructor(private readonly config: AppConfig) {}
 
-  /** Resolves once the worker is connected and ready to claim jobs. */
-  async start(queueName: string, handler: JobHandler, options: Partial<WorkerOptions> = {}): Promise<Worker> {
+  /**
+   * Starts the worker without waiting for Redis: BullMQ keeps reconnecting, so the process boots even when Redis is
+   * down and `/health` reports it instead of the boot hanging.
+   */
+  start(queueName: string, handler: JobHandler, options: Partial<WorkerOptions> = {}): Worker {
     const worker = new Worker(queueName, handler, { ...options, connection: { url: this.config.redisUrl } });
-    this.workers.push(worker);
-    await worker.waitUntilReady();
+    const state = { connected: false };
+    worker.on('ready', () => {
+      state.connected = true;
+    });
+    worker.on('error', () => undefined);
+    this.workers.set(worker, state);
     return worker;
   }
 
   async onApplicationShutdown(): Promise<void> {
-    await Promise.all(this.workers.splice(0).map((worker) => worker.close()));
+    const entries = [...this.workers];
+    this.workers.clear();
+    // A graceful close waits for Redis and never settles when it is unreachable (and BullMQ caches that pending
+    // promise, so it cannot be retried with force): only connected workers get the graceful close.
+    await Promise.all(entries.map(([worker, state]) => worker.close(!state.connected)));
   }
 }

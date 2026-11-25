@@ -13,8 +13,8 @@ export class NoopProcessor implements OnApplicationBootstrap {
 
   constructor(private readonly workers: WorkerRegistry) {}
 
-  async onApplicationBootstrap(): Promise<void> {
-    await this.workers.start(NOOP_QUEUE, (job) => this.process(job));
+  onApplicationBootstrap(): void {
+    this.workers.start(NOOP_QUEUE, (job) => this.process(job));
   }
 
   private process(job: Job): Promise<void> {
