@@ -1,7 +1,12 @@
-import { type EnergyCertificate, type Maybe, UNKNOWN } from '@house-radar/shared-kernel';
+import {
+  type EnergyCertificate,
+  type Maybe,
+  type MaybePrimitives,
+  maybeToPrimitives,
+  UNKNOWN,
+} from '@house-radar/shared-kernel';
 
 import type { IAdditionalFeaturesProps } from '@contexts/listings/domain/interfaces/additional-features-props.interface';
-import { type MaybePrimitives, maybeToPrimitives } from '@contexts/listings/domain/primitives/maybe.primitives';
 import type { LandType } from '@contexts/listings/domain/value-objects/land-type/land-type.value-object';
 
 export interface IAdditionalFeaturesPrimitives {

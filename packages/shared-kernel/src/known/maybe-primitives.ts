@@ -1,4 +1,4 @@
-import { type DataOrigin, isKnown, type Maybe } from '@house-radar/shared-kernel';
+import { type DataOrigin, isKnown, type Maybe } from './known';
 
 /**
  * Plain, serializable form of a datum that may be unknown (`Known<T> | Unknown`).

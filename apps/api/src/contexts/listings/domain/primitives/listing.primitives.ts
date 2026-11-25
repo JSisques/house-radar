@@ -1,4 +1,5 @@
-import type { MaybePrimitives } from '@contexts/listings/domain/primitives/maybe.primitives';
+import type { MaybePrimitives } from '@house-radar/shared-kernel';
+
 import type { IAdditionalFeaturesPrimitives } from '@contexts/listings/domain/value-objects/additional-features/additional-features';
 
 export interface IListingPrimitives {

@@ -5,6 +5,7 @@ import {
   type ListingId,
   type ListingUrl,
   type Maybe,
+  maybeToPrimitives,
   type Money,
   type PropertyCondition,
   type PropertyType,
@@ -15,7 +16,6 @@ import {
 import { ListingImportedEvent } from '@contexts/listings/domain/events/listing-imported/listing-imported.event';
 import type { IListingProps } from '@contexts/listings/domain/interfaces/listing-props.interface';
 import type { IListingPrimitives } from '@contexts/listings/domain/primitives/listing.primitives';
-import { maybeToPrimitives } from '@contexts/listings/domain/primitives/maybe.primitives';
 import { AdditionalFeatures } from '@contexts/listings/domain/value-objects/additional-features/additional-features';
 import type { Bathrooms } from '@contexts/listings/domain/value-objects/bathrooms/bathrooms.value-object';
 import type { Bedrooms } from '@contexts/listings/domain/value-objects/bedrooms/bedrooms.value-object';
