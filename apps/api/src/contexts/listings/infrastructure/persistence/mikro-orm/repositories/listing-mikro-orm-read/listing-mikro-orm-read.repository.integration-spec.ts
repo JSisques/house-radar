@@ -8,8 +8,10 @@ import { type StartedPostgres, startPostgres } from '@house-radar/testing';
 
 import type { ListingAggregate } from '@contexts/listings/domain/aggregates/listing/listing.aggregate';
 import { ListingBuilder } from '@contexts/listings/domain/builders/listing/listing.builder';
-import { ListingMikroOrmReadRepository } from '@contexts/listings/infrastructure/persistence/mikro-orm/repositories/listing-mikro-orm-read.repository';
-import { ListingMikroOrmWriteRepository } from '@contexts/listings/infrastructure/persistence/mikro-orm/repositories/listing-mikro-orm-write.repository';
+import { ListingBuilderFactory } from '@contexts/listings/domain/builders/listing/listing-builder.factory';
+import { ListingRowMapper } from '@contexts/listings/infrastructure/persistence/mikro-orm/mappers/listing-row/listing-row.mapper';
+import { ListingMikroOrmReadRepository } from '@contexts/listings/infrastructure/persistence/mikro-orm/repositories/listing-mikro-orm-read/listing-mikro-orm-read.repository';
+import { ListingMikroOrmWriteRepository } from '@contexts/listings/infrastructure/persistence/mikro-orm/repositories/listing-mikro-orm-write/listing-mikro-orm-write.repository';
 import { runMigrations } from '@core/persistence/migrations/run-migrations.js';
 import { createOrmOptions } from '@core/persistence/orm-config/orm-config.js';
 
@@ -21,6 +23,8 @@ function listing(source: string, externalId: string, day: number): ListingAggreg
     .withAddedAt(new DateValueObject(new Date(`2026-11-${day}T10:00:00.000Z`)))
     .build();
 }
+
+const listingMapper = new ListingRowMapper(new ListingBuilderFactory());
 
 describe('ListingMikroOrmReadRepository', () => {
   let postgres: StartedPostgres;
@@ -34,8 +38,8 @@ describe('ListingMikroOrmReadRepository', () => {
     await runMigrations(postgres.connectionUri);
     pool = new pg.Pool({ connectionString: postgres.connectionUri });
     orm = await MikroORM.init(createOrmOptions('listings', postgres.connectionUri));
-    write = new ListingMikroOrmWriteRepository(orm.em);
-    read = new ListingMikroOrmReadRepository(orm.em);
+    write = new ListingMikroOrmWriteRepository(orm.em, listingMapper);
+    read = new ListingMikroOrmReadRepository(orm.em, listingMapper);
   });
   afterEach(async () => {
     await pool.query('truncate listings.observation, listings.listing, listings.outbox_event cascade');

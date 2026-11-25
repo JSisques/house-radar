@@ -19,6 +19,7 @@ import { type StartedPostgres, startPostgres } from '@house-radar/testing';
 
 import type { ListingAggregate } from '@contexts/listings/domain/aggregates/listing/listing.aggregate';
 import { ListingBuilder } from '@contexts/listings/domain/builders/listing/listing.builder';
+import { ListingBuilderFactory } from '@contexts/listings/domain/builders/listing/listing-builder.factory';
 import { AdditionalFeatures } from '@contexts/listings/domain/value-objects/additional-features/additional-features';
 import { Bathrooms } from '@contexts/listings/domain/value-objects/bathrooms/bathrooms.value-object';
 import { Bedrooms } from '@contexts/listings/domain/value-objects/bedrooms/bedrooms.value-object';
@@ -27,7 +28,8 @@ import { ListingDescription } from '@contexts/listings/domain/value-objects/list
 import { ListingStatus } from '@contexts/listings/domain/value-objects/listing-status/listing-status.value-object';
 import { ListingTitle } from '@contexts/listings/domain/value-objects/listing-title/listing-title.value-object';
 import { YearBuilt } from '@contexts/listings/domain/value-objects/year-built/year-built.value-object';
-import { ListingMikroOrmWriteRepository } from '@contexts/listings/infrastructure/persistence/mikro-orm/repositories/listing-mikro-orm-write.repository';
+import { ListingRowMapper } from '@contexts/listings/infrastructure/persistence/mikro-orm/mappers/listing-row/listing-row.mapper';
+import { ListingMikroOrmWriteRepository } from '@contexts/listings/infrastructure/persistence/mikro-orm/repositories/listing-mikro-orm-write/listing-mikro-orm-write.repository';
 import { runMigrations } from '@core/persistence/migrations/run-migrations.js';
 import { OptimisticLockException } from '@core/persistence/optimistic-lock/optimistic-lock.exception.js';
 import { createOrmOptions } from '@core/persistence/orm-config/orm-config.js';
@@ -66,6 +68,8 @@ function fullListing(overrides: { externalId?: string; price?: number; title?: s
   return listing;
 }
 
+const listingMapper = new ListingRowMapper(new ListingBuilderFactory());
+
 describe('ListingMikroOrmWriteRepository', () => {
   let postgres: StartedPostgres;
   let pool: pg.Pool;
@@ -77,7 +81,7 @@ describe('ListingMikroOrmWriteRepository', () => {
     await runMigrations(postgres.connectionUri);
     pool = new pg.Pool({ connectionString: postgres.connectionUri });
     orm = await MikroORM.init(createOrmOptions('listings', postgres.connectionUri));
-    repository = new ListingMikroOrmWriteRepository(orm.em);
+    repository = new ListingMikroOrmWriteRepository(orm.em, listingMapper);
   });
   afterEach(async () => {
     await pool.query('truncate listings.observation, listings.listing, listings.outbox_event');

@@ -8,11 +8,15 @@ import { type StartedPostgres, startPostgres } from '@house-radar/testing';
 
 import type { ObservationAggregate } from '@contexts/listings/domain/aggregates/observation/observation.aggregate';
 import { ListingBuilder } from '@contexts/listings/domain/builders/listing/listing.builder';
+import { ListingBuilderFactory } from '@contexts/listings/domain/builders/listing/listing-builder.factory';
 import { ObservationBuilder } from '@contexts/listings/domain/builders/observation/observation.builder';
+import { ObservationBuilderFactory } from '@contexts/listings/domain/builders/observation/observation-builder.factory';
 import { ListingStatus } from '@contexts/listings/domain/value-objects/listing-status/listing-status.value-object';
 import { RunId } from '@contexts/listings/domain/value-objects/run-id/run-id.value-object';
-import { ListingMikroOrmWriteRepository } from '@contexts/listings/infrastructure/persistence/mikro-orm/repositories/listing-mikro-orm-write.repository';
-import { ObservationMikroOrmWriteRepository } from '@contexts/listings/infrastructure/persistence/mikro-orm/repositories/observation-mikro-orm-write.repository';
+import { ListingRowMapper } from '@contexts/listings/infrastructure/persistence/mikro-orm/mappers/listing-row/listing-row.mapper';
+import { ObservationRowMapper } from '@contexts/listings/infrastructure/persistence/mikro-orm/mappers/observation-row/observation-row.mapper';
+import { ListingMikroOrmWriteRepository } from '@contexts/listings/infrastructure/persistence/mikro-orm/repositories/listing-mikro-orm-write/listing-mikro-orm-write.repository';
+import { ObservationMikroOrmWriteRepository } from '@contexts/listings/infrastructure/persistence/mikro-orm/repositories/observation-mikro-orm-write/observation-mikro-orm-write.repository';
 import { runMigrations } from '@core/persistence/migrations/run-migrations.js';
 import { createOrmOptions } from '@core/persistence/orm-config/orm-config.js';
 
@@ -41,7 +45,10 @@ describe('ObservationMikroOrmWriteRepository', () => {
     await runMigrations(postgres.connectionUri);
     pool = new pg.Pool({ connectionString: postgres.connectionUri });
     orm = await MikroORM.init(createOrmOptions('listings', postgres.connectionUri));
-    repository = new ObservationMikroOrmWriteRepository(orm.em);
+    repository = new ObservationMikroOrmWriteRepository(
+      orm.em,
+      new ObservationRowMapper(new ObservationBuilderFactory()),
+    );
   });
   beforeEach(async () => {
     const listing = new ListingBuilder()
@@ -49,7 +56,7 @@ describe('ObservationMikroOrmWriteRepository', () => {
       .withOriginalUrl(new ListingUrl('https://example.com/piso'))
       .withAddedAt(new DateValueObject(new Date('2026-11-25T09:00:00.000Z')))
       .build();
-    await new ListingMikroOrmWriteRepository(orm.em).save(listing);
+    await new ListingMikroOrmWriteRepository(orm.em, new ListingRowMapper(new ListingBuilderFactory())).save(listing);
     listingId = listing.id;
     await pool.query('truncate listings.outbox_event');
   });
