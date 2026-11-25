@@ -21,6 +21,7 @@
     "lint:root": "eslint tests eslint.config.js",
     "test": "turbo run test",
     "test:integration": "turbo run test:integration",
+    "test:e2e": "turbo run test:e2e",
     "typecheck": "turbo run typecheck",
     "test:workspace": "node --test --test-concurrency=1 'tests/workspace/*.test.mjs'",
     "format": "prettier --write .",

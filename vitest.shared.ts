@@ -1,3 +1,4 @@
+import type { PluginOption } from 'vite';
 import { defineConfig } from 'vitest/config';
 
 /**
@@ -7,7 +8,7 @@ import { defineConfig } from 'vitest/config';
 export const specKinds = {
   unit: ['**/*.spec.{ts,tsx}'],
   integration: ['**/*.integration-spec.ts'],
-  // Reserved by name: no root task runs it yet (`test:e2e` arrives with apps/api).
+  // Booted-application specs, run by the `test:e2e` task of each app that has them.
   e2e: ['**/*.e2e-spec.ts'],
 } as const;
 
@@ -22,8 +23,9 @@ export const coverage = {
 } as const;
 
 /** Shared base for every package-level config. Never import the root `vitest.config.ts` from a project config. */
-export function defineKindConfig(kind: Exclude<SpecKind, 'e2e'>) {
+export function defineKindConfig(kind: SpecKind, extra: { plugins?: PluginOption[] } = {}) {
   return defineConfig({
+    ...extra,
     test: {
       include: [...specKinds[kind]],
       passWithNoTests: true,

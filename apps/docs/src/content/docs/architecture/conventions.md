@@ -166,7 +166,7 @@ REST only ([D22](/adr/d22-api-style/)): no GraphQL and no MCP. Controllers valid
 
 ### Errors
 
-Domain and application code throws typed exceptions. There are no `Result` types. A global filter maps exceptions to HTTP responses, and each context registers its own exception-to-status mapping. Adding a context never edits `core`.
+Domain and application code throws typed exceptions. There are no `Result` types. A global filter maps exceptions to HTTP responses, and each context registers its own exception-to-status mapping. Adding a context never edits `core`. In `apps/api`, a context registers `{ exception, status, code }` mappings with `ExceptionMappingRegistry` in its module's `onModuleInit`; responses have the shape `{ statusCode, code, message }`, and unmapped errors answer `500 INTERNAL_ERROR`.
 
 ### Naming
 
