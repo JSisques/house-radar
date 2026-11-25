@@ -7,7 +7,7 @@ import type { ITelemetry } from '@core/observability/telemetry/telemetry.port.js
 import { PinoLogger } from './pino-logger.adapter.js';
 
 function fakeTelemetry(traceId: string | undefined): ITelemetry {
-  return { runInSpan: (_name, fn) => fn(), currentTraceId: () => traceId };
+  return { runInSpan: (_name, fn) => fn(), currentTraceId: () => traceId, emitLog: () => undefined };
 }
 
 function capture(traceId: string | undefined): { logger: PinoLogger; lines: () => Record<string, unknown>[] } {
@@ -63,6 +63,27 @@ describe('PinoLogger', () => {
     logger.info('req', { headers: { authorization: 'Bearer abc' } });
 
     expect(JSON.stringify(lines()[0])).not.toContain('Bearer abc');
+  });
+
+  it('forwards each record to telemetry with level, message and redacted attributes', () => {
+    const emitted: unknown[] = [];
+    const telemetry: ITelemetry = {
+      ...fakeTelemetry('t-1'),
+      emitLog: (level, message, attributes) => emitted.push({ level, message, attributes }),
+    };
+    const destination = new Writable({ write: (_c: Buffer, _e, d) => d() });
+    const logger = new PinoLogger({ level: 'info', serviceName: 'svc', destination }, telemetry);
+
+    logger.warn('careful', { userId: 7, password: 'secret-value' });
+    logger.debug('dropped');
+
+    expect(emitted).toHaveLength(1);
+    expect(emitted[0]).toMatchObject({
+      level: 'warn',
+      message: 'careful',
+      attributes: { userId: 7, password: '[REDACTED]' },
+    });
+    expect(JSON.stringify(emitted)).not.toContain('secret-value');
   });
 
   it('honors the configured level', () => {

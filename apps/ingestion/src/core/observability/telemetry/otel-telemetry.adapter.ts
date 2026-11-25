@@ -1,18 +1,29 @@
 import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
-import { context, SpanStatusCode, trace } from '@opentelemetry/api';
+import { context, logs, SeverityNumber, SpanStatusCode, trace } from '@opentelemetry/api';
+import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http';
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
+import { BatchLogRecordProcessor } from '@opentelemetry/sdk-logs';
 import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { BatchSpanProcessor, NoopSpanProcessor } from '@opentelemetry/sdk-trace';
 
-import type { ITelemetry } from '@core/observability/telemetry/telemetry.port.js';
+import type { ITelemetry, LogLevel } from '@core/observability/telemetry/telemetry.port.js';
 
 export interface OtelTelemetryOptions {
   serviceName: string;
   /** OTLP/HTTP base URL of the collector. Without it spans stay in-process (ids still work) and nothing is exported. */
   otlpEndpoint?: string;
 }
+
+type LogAttributes = NonNullable<Parameters<ReturnType<typeof logs.getLogger>['emit']>[0]['attributes']>;
+
+const SEVERITY: Record<LogLevel, SeverityNumber> = {
+  debug: SeverityNumber.DEBUG,
+  info: SeverityNumber.INFO,
+  warn: SeverityNumber.WARN,
+  error: SeverityNumber.ERROR,
+};
 
 /** OpenTelemetry adapter: starts the SDK (traces + metrics) and exposes spans through `ITelemetry`. */
 export class OtelTelemetry implements ITelemetry, OnModuleInit, OnApplicationShutdown {
@@ -31,6 +42,9 @@ export class OtelTelemetry implements ITelemetry, OnModuleInit, OnApplicationShu
       ],
       metricReaders: base
         ? [new PeriodicExportingMetricReader({ exporter: new OTLPMetricExporter({ url: `${base}/v1/metrics` }) })]
+        : [],
+      logRecordProcessors: base
+        ? [new BatchLogRecordProcessor({ exporter: new OTLPLogExporter({ url: `${base}/v1/logs` }) })]
         : [],
     });
   }
@@ -59,5 +73,14 @@ export class OtelTelemetry implements ITelemetry, OnModuleInit, OnApplicationShu
   currentTraceId(): string | undefined {
     const spanContext = trace.getSpan(context.active())?.spanContext();
     return spanContext && trace.isSpanContextValid(spanContext) ? spanContext.traceId : undefined;
+  }
+
+  emitLog(level: LogLevel, message: string, attributes: Record<string, unknown>): void {
+    logs.getLogger(this.tracerName).emit({
+      severityNumber: SEVERITY[level],
+      severityText: level.toUpperCase(),
+      body: message,
+      attributes: attributes as LogAttributes,
+    });
   }
 }
