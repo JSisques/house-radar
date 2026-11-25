@@ -36,7 +36,7 @@ Reglas para la migración:
 - Las convenciones, la skill `house-radar-backend` y el discovery de persistencia no necesitan describir decoradores ni una nueva convención de carpetas.
 - Las factorías de outbox y processed-event siguen funcionando sin cambios.
 - Quien venga de las clases de entidad de TypeORM se encuentra con una API de constructor en lugar de decoradores.
-- Las filas `EntitySchema` existentes se migran en trabajo posterior, seguido en #195.
+- Todas las filas `EntitySchema` se migran a `defineEntity`, incluidas las factorías de outbox y processed-event. El SQL de creación de esquema generado es idéntico antes y después.
 
 ## Alternativas consideradas
 

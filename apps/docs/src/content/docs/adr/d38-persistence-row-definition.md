@@ -36,7 +36,7 @@ Rules for the migration:
 - The conventions, the `house-radar-backend` skill and the persistence discovery do not need to describe decorators or a new folder convention.
 - The outbox and processed-event factories keep working unchanged.
 - Contributors used to TypeORM entity classes meet a builder API instead of decorators.
-- Existing `EntitySchema` rows migrate in follow-up work tracked by #195.
+- All `EntitySchema` rows are migrated to `defineEntity`, including the outbox and processed-event factories. The generated create-schema SQL is identical before and after.
 
 ## Alternatives considered
 
