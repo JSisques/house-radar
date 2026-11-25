@@ -13,7 +13,7 @@ Estas convenciones se aplican a `apps/api`, `apps/ingestion`, `apps/web`, `packa
 - **El dominio no tiene framework.** Nada de NestJS, MikroORM, `@nestjs/cqrs` ni React en `domain`. Los decoradores y la inyección de dependencias viven en las capas externas ([D4](/es/adr/d04-backend-framework/), [D10](/es/adr/d10-cross-cutting-architecture/)).
 - **Las reglas las impone el lint, no la revisión.** Los límites entre capas, las rutas de importación y su orden son reglas de ESLint. Una regla que no se puede comprobar automáticamente es una regla que se erosiona.
 - **Sin archivos barrel.** Se importa desde el archivo que define el símbolo.
-- **Un concepto por carpeta.** En el backend, cada concepto vive en una carpeta con su nombre, con sus archivos y su spec (`exceptions/exception-mapping/exception-mapping.registry.ts` junto a `exception-mapping.registry.spec.ts`), como ya hacen los commands, queries y conceptos de dominio.
+- **Un concepto por carpeta.** Cada concepto vive en una carpeta con su nombre, con sus archivos y su spec (`exceptions/exception-mapping/exception-mapping.registry.ts` junto a `exception-mapping.registry.spec.ts` en el backend, `router/app-router/app-router.tsx` junto a `app-router.spec.tsx` en la web), como ya hacen los commands, queries y conceptos de dominio.
 - **Un tipo por archivo.** La única excepción es `{Name}CommandInput` / `{Name}QueryInput`, declarado en el archivo del comando o de la consulta.
 - **Alias de rutas.** Las importaciones entre directorios usan alias (`@contexts/*`, `@core/*`, `@shared/*`). Las importaciones relativas solo se permiten dentro del mismo directorio.
 
