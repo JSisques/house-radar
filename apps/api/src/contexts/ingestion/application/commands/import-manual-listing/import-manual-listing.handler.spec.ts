@@ -6,7 +6,10 @@ import { ListingId, ListingUrl, Money, SourceId } from '@house-radar/shared-kern
 import { ImportManualListingCommand } from '@contexts/ingestion/application/commands/import-manual-listing/import-manual-listing.command';
 import { ImportManualListingHandler } from '@contexts/ingestion/application/commands/import-manual-listing/import-manual-listing.handler';
 import type { IListingRegistryPort } from '@contexts/ingestion/application/ports/listing-registry.port';
+import { AssertManualListingInputService } from '@contexts/ingestion/application/services/assert-manual-listing-input/assert-manual-listing-input.service';
 import { SourceBuilder } from '@contexts/ingestion/domain/builders/source/source.builder';
+import { DuplicateManualListingException } from '@contexts/ingestion/domain/exceptions/duplicate-manual-listing/duplicate-manual-listing.exception';
+import { MissingManualListingFieldsException } from '@contexts/ingestion/domain/exceptions/missing-manual-listing-fields/missing-manual-listing-fields.exception';
 import { SourceNotAvailableException } from '@contexts/ingestion/domain/exceptions/source-not-available/source-not-available.exception';
 import type { ISourceWriteRepository } from '@contexts/ingestion/domain/repositories/write/source-write.repository';
 import { SourceKind } from '@contexts/ingestion/domain/value-objects/source-kind/source-kind.value-object';
@@ -38,7 +41,12 @@ const setup = (opts: { source?: ReturnType<typeof manualSource> | null; existing
     registerManual: vi.fn().mockResolvedValue(NEW_ID),
   };
   const fetchSpy = vi.spyOn(globalThis, 'fetch');
-  const handler = new ImportManualListingHandler(sources, registry, () => new DateValueObject(new Date('2026-01-01')));
+  const handler = new ImportManualListingHandler(
+    sources,
+    registry,
+    () => new DateValueObject(new Date('2026-01-01')),
+    new AssertManualListingInputService(),
+  );
   return { handler, sources, registry, fetchSpy };
 };
 
@@ -50,7 +58,7 @@ describe('ImportManualListingHandler', () => {
       new ImportManualListingCommand({ url: URL_WITH_NOISE, priceCents: 25_000_000 }),
     );
 
-    expect(result).toEqual({ status: 'created', listingId: NEW_ID.value });
+    expect(result).toEqual({ id: NEW_ID.value });
     expect(registry.registerManual).toHaveBeenCalledTimes(1);
     const input = vi.mocked(registry.registerManual).mock.calls[0]![0];
     expect(input.url).toEqual(new ListingUrl(NORMALIZED));
@@ -74,9 +82,10 @@ describe('ImportManualListingHandler', () => {
   it('creates nothing and reports every missing field (HR-F001-AC2)', async () => {
     const { handler, registry } = setup();
 
-    const result = await handler.execute(new ImportManualListingCommand({ url: '' }));
+    const error = await handler.execute(new ImportManualListingCommand({ url: '' })).catch((e: unknown) => e);
 
-    expect(result).toEqual({ status: 'invalid', missingFields: ['url', 'price'] });
+    expect(error).toBeInstanceOf(MissingManualListingFieldsException);
+    expect((error as MissingManualListingFieldsException).missingFields).toEqual(['url', 'price']);
     expect(registry.registerManual).not.toHaveBeenCalled();
     expect(registry.findManualByNormalizedUrl).not.toHaveBeenCalled();
   });
@@ -84,20 +93,22 @@ describe('ImportManualListingHandler', () => {
   it('reports only the missing field', async () => {
     const { handler } = setup();
 
-    expect(await handler.execute(new ImportManualListingCommand({ url: URL_WITH_NOISE }))).toEqual({
-      status: 'invalid',
-      missingFields: ['price'],
-    });
+    const error = await handler
+      .execute(new ImportManualListingCommand({ url: URL_WITH_NOISE }))
+      .catch((e: unknown) => e);
+
+    expect((error as MissingManualListingFieldsException).missingFields).toEqual(['price']);
   });
 
-  it('warns and offers checking the listing when the normalized URL already exists (HR-F001-AC12)', async () => {
+  it('throws with the existing listing reference when the normalized URL already exists (HR-F001-AC12)', async () => {
     const { handler, registry } = setup({ existing: EXISTING_ID });
 
-    const result = await handler.execute(
-      new ImportManualListingCommand({ url: URL_WITH_NOISE, priceCents: 25_000_000 }),
-    );
+    const error = await handler
+      .execute(new ImportManualListingCommand({ url: URL_WITH_NOISE, priceCents: 25_000_000 }))
+      .catch((e: unknown) => e);
 
-    expect(result).toEqual({ status: 'duplicate', listingId: EXISTING_ID.value, action: 'check_listing' });
+    expect(error).toBeInstanceOf(DuplicateManualListingException);
+    expect((error as DuplicateManualListingException).listingId).toBe(EXISTING_ID.value);
     expect(registry.findManualByNormalizedUrl).toHaveBeenCalledWith(SOURCE_ID, new ListingUrl(NORMALIZED));
     expect(registry.registerManual).not.toHaveBeenCalled();
   });

@@ -129,6 +129,7 @@ CQRS con `@nestjs/cqrs` ([D25](/es/adr/d25-cqrs-and-context-structure/)).
 - Cada comando y consulta tiene su propia carpeta con su nombre, que contiene el mensaje, su handler y su spec.
 - Un comando cambia el estado y devuelve como mucho `{ id }`. Una consulta lee y nunca cambia el estado.
 - Los handlers pasan por repositorios y servicios. El transporte pasa solo por `CommandBus` y `QueryBus`.
+- Los comandos llevan primitivos, no objetos de valor, y todo campo que el usuario debe aportar se tipa como opcional. El handler llama a un servicio de aserción inyectado (por ejemplo `AssertManualListingInputService`) que comprueba la presencia, acumula todos los campos que faltan y lanza una única excepción tipada, de modo que una petición sin varios campos los reporta todos. Después el handler construye los objetos de valor a partir de los primitivos; sus excepciones de dominio se mapean a 400 en la capa de transporte. Los DTO solo comprueban forma y tipos.
 - Los servicios se dividen en `services/write/` y `services/read/`.
 - Los repositorios de escritura exponen solo `save`, `findById` y `delete`. Los de lectura son de solo lectura (`findById`, `findByCriteria`).
 - Los eventos de dominio los consumen handlers de eventos y proyecciones, por ejemplo el modelo de lectura del precio representativo ([D19](/es/adr/d19-search-read-model/)). El agregado registra eventos con `record()`; los handlers nunca los publican ([D31](/es/adr/d31-transactional-outbox/)):

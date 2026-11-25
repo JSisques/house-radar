@@ -1,7 +1,7 @@
 ﻿import { Inject } from '@nestjs/common';
 import { CommandHandler, type ICommandHandler } from '@nestjs/cqrs';
 
-import { isBlank, ListingUrl, Money } from '@house-radar/shared-kernel';
+import { ListingUrl, Money } from '@house-radar/shared-kernel';
 
 import { ImportManualListingCommand } from '@contexts/ingestion/application/commands/import-manual-listing/import-manual-listing.command';
 import type { ImportManualListingResult } from '@contexts/ingestion/application/commands/import-manual-listing/import-manual-listing.result';
@@ -10,6 +10,8 @@ import {
   type IListingRegistryPort,
   LISTING_REGISTRY_PORT,
 } from '@contexts/ingestion/application/ports/listing-registry.port';
+import { AssertManualListingInputService } from '@contexts/ingestion/application/services/assert-manual-listing-input/assert-manual-listing-input.service';
+import { DuplicateManualListingException } from '@contexts/ingestion/domain/exceptions/duplicate-manual-listing/duplicate-manual-listing.exception';
 import { SourceNotAvailableException } from '@contexts/ingestion/domain/exceptions/source-not-available/source-not-available.exception';
 import {
   type ISourceWriteRepository,
@@ -23,30 +25,28 @@ export class ImportManualListingHandler implements ICommandHandler<ImportManualL
     @Inject(SOURCE_WRITE_REPOSITORY) private readonly sources: ISourceWriteRepository,
     @Inject(LISTING_REGISTRY_PORT) private readonly registry: IListingRegistryPort,
     @Inject(CLOCK_PORT) private readonly now: IClock,
+    private readonly assertInput: AssertManualListingInputService,
   ) {}
 
   async execute(command: ImportManualListingCommand): Promise<ImportManualListingResult> {
-    const missingFields: string[] = [];
-    if (isBlank(command.url)) missingFields.push('url');
-    if (command.priceCents === undefined || command.priceCents === null) missingFields.push('price');
-    if (missingFields.length > 0) return { status: 'invalid', missingFields };
+    const input = this.assertInput.execute({ url: command.url, priceCents: command.priceCents });
 
     const manual = SourceKind.manual();
     const source = await this.sources.findByKind(manual);
     if (source === null || !source.enabled) throw new SourceNotAvailableException(manual.value);
 
     // The URL is only parsed and normalized, never requested (D17).
-    const url = new ListingUrl(command.url as string);
+    const url = new ListingUrl(input.url);
     const existing = await this.registry.findManualByNormalizedUrl(source.id, url);
-    if (existing !== null) return { status: 'duplicate', listingId: existing.value, action: 'check_listing' };
+    if (existing !== null) throw new DuplicateManualListingException(existing.value);
 
     const listingId = await this.registry.registerManual({
       source: source.id,
       url,
-      price: new Money(command.priceCents as number),
+      price: new Money(input.priceCents),
       observedAt: this.now(),
       details: command.details,
     });
-    return { status: 'created', listingId: listingId.value };
+    return { id: listingId.value };
   }
 }
