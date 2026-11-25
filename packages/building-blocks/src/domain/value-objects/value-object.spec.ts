@@ -22,6 +22,30 @@ class Label extends ValueObject<string> {
   }
 }
 
+type PointPrimitives = { x: number; y: number };
+
+class Point extends ValueObject<PointPrimitives> {
+  protected validate(): void {}
+
+  toPrimitives(): PointPrimitives {
+    return { x: this._value.x, y: this._value.y };
+  }
+}
+
+describe('ValueObject with composite primitives', () => {
+  it('is equal when every field of the primitives is equal', () => {
+    expect(new Point({ x: 1, y: 2 }).equals(new Point({ x: 1, y: 2 }))).toBe(true);
+  });
+
+  it('is not equal when any field differs', () => {
+    expect(new Point({ x: 1, y: 2 }).equals(new Point({ x: 1, y: 3 }))).toBe(false);
+  });
+
+  it('is not equal to a scalar value object', () => {
+    expect(new Point({ x: 1, y: 2 }).equals(new Name('a'))).toBe(false);
+  });
+});
+
 describe('ValueObject', () => {
   it('runs validate() on construction', () => {
     validations = 0;

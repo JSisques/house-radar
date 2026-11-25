@@ -10,6 +10,10 @@ describe('GeoPoint', () => {
     expect(point.longitude).toBe(-3.7038);
   });
 
+  it('serializes to latitude and longitude', () => {
+    expect(new GeoPoint(40.4, -3.7).toPrimitives()).toEqual({ latitude: 40.4, longitude: -3.7 });
+  });
+
   it('compares by value', () => {
     expect(new GeoPoint(40.4, -3.7).equals(new GeoPoint(40.4, -3.7))).toBe(true);
     expect(new GeoPoint(40.4, -3.7).equals(new GeoPoint(40.4, -3.8))).toBe(false);

@@ -2,10 +2,8 @@ import { ValueObject } from '@house-radar/building-blocks';
 
 import { InvalidGeoPointException } from './invalid-geo-point.exception';
 
-export interface GeoPointPrimitives {
-  latitude: number;
-  longitude: number;
-}
+// A type alias, not an interface: composite primitives must be assignable to an index signature.
+export type GeoPointPrimitives = { latitude: number; longitude: number };
 
 /** WGS84 coordinate. Latitude in [-90, 90], longitude in [-180, 180]. */
 export class GeoPoint extends ValueObject<GeoPointPrimitives> {
@@ -31,8 +29,7 @@ export class GeoPoint extends ValueObject<GeoPointPrimitives> {
     }
   }
 
-  /** `"latitude,longitude"`; the base contract only allows scalar primitives. */
-  toPrimitives(): string {
-    return `${this._value.latitude},${this._value.longitude}`;
+  toPrimitives(): GeoPointPrimitives {
+    return { latitude: this._value.latitude, longitude: this._value.longitude };
   }
 }
