@@ -17,6 +17,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/listings/manual": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Imports one listing by hand */
+        post: operations["ManualListingsController_import"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -70,6 +87,50 @@ export interface components {
                     [key: string]: unknown;
                 };
             };
+        };
+        ImportManualListingFeaturesDto: {
+            garage?: boolean;
+            garden?: boolean;
+            swimmingPool?: boolean;
+            terrace?: boolean;
+            balcony?: boolean;
+            heating?: boolean;
+            elevator?: boolean;
+            energyCertificate?: string;
+            landType?: string;
+            water?: boolean;
+            electricity?: boolean;
+            sanitation?: boolean;
+        };
+        ImportManualListingDetailsDto: {
+            title?: string;
+            description?: string;
+            /** @description Square meters */
+            builtArea?: number;
+            /** @description Square meters */
+            usableArea?: number;
+            /** @description Square meters */
+            plotArea?: number;
+            bedrooms?: number;
+            bathrooms?: number;
+            yearBuilt?: number;
+            propertyType?: string;
+            condition?: string;
+            features?: components["schemas"]["ImportManualListingFeaturesDto"];
+        };
+        ImportManualListingDto: {
+            /** @description Required. Listing URL; it is stored, never fetched. */
+            url?: string;
+            /**
+             * @description Required. Asking price in euro cents.
+             * @example 25000000
+             */
+            priceCents?: number;
+            details?: components["schemas"]["ImportManualListingDetailsDto"];
+        };
+        ListingReferenceDto: {
+            /** @description Listing id */
+            id: string;
         };
     };
     responses: never;
@@ -157,6 +218,44 @@ export interface operations {
                         details?: unknown;
                     } & components["schemas"]["TerminusHealthCheckResult"];
                 };
+            };
+        };
+    };
+    ManualListingsController_import: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ImportManualListingDto"];
+            };
+        };
+        responses: {
+            /** @description The listing was created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListingReferenceDto"];
+                };
+            };
+            /** @description Required fields are missing (listed in `details.missingFields`) or invalid */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The normalized URL is already stored; `details.listingId` references the existing listing */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
