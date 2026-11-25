@@ -306,6 +306,8 @@ Running specs:
 - Run `pnpm --filter <package> exec vitest run --coverage` for a coverage report (`coverage/`, ignored by git).
 - `packages/vitest-scratch` only exists to prove discovery for each spec kind. Real packages must not depend on it.
 
+Integration specs get their containers from `@house-radar/testing`: `startPostgres()` (PostGIS, same image as `compose.yaml`) and `startRedis()`, each call a fresh throwaway container so parallel suites share no state, plus `resetSchema()` to wipe a database between cases. Run them with `pnpm test:integration`, which needs Docker and aborts with an explicit message when it is missing. Add `@house-radar/testing/global-setup` as the Vitest `globalSetup` to fail fast.
+
 Style:
 
 - One `describe` per class, a nested `describe` per method, and one `it('should …')` per case or edge case.

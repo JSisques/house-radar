@@ -1,0 +1,39 @@
+{
+  "name": "@house-radar/testing",
+  "version": "0.0.0",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./global-setup": {
+      "types": "./dist/global-setup.d.ts",
+      "default": "./dist/global-setup.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@testcontainers/postgresql": "12.2.2",
+    "@testcontainers/redis": "12.2.2",
+    "pg": "8.23.1",
+    "testcontainers": "12.2.2"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.10",
+    "@types/pg": "8.23.1",
+    "typescript": "5.9.3",
+    "vitest": "5.1.1"
+  }
+}
