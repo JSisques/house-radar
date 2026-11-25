@@ -47,7 +47,7 @@ Los merges consecutivos se despliegan uno tras otro: un grupo `concurrency` de A
 
 ## Imágenes de contenedor
 
-El workflow `publish-images` construye una imagen por servicio (`api`, `ingestion`, `web`) desde `apps/<servicio>/Dockerfile`, con la raíz del repositorio como contexto, y la publica en `ghcr.io/<owner>/house-radar-<servicio>`.
+El workflow `publish-images` construye una imagen por servicio (`api`, `ingestion`, `web`) desde `apps/<servicio>/Dockerfile`, con la raíz del repositorio como contexto, y la publica en `ghcr.io/<owner>/house-radar-<servicio>`. El relay del outbox (`node dist/relay.js`, healthcheck `GET :3002/health`, intervalo de sondeo `OUTBOX_RELAY_INTERVAL_MS`) se publica como cuarta imagen, `house-radar-relay`, construida desde `apps/api/relay.Dockerfile`.
 
 | Disparador | Etiquetas |
 | --- | --- |

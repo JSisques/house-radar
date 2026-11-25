@@ -47,7 +47,7 @@ Consecutive merges deploy one after another: an Actions `concurrency` group per 
 
 ## Container images
 
-The `publish-images` workflow builds one image per service (`api`, `ingestion`, `web`) from `apps/<service>/Dockerfile` with the repository root as context, and pushes it to `ghcr.io/<owner>/house-radar-<service>`.
+The `publish-images` workflow builds one image per service (`api`, `ingestion`, `web`) from `apps/<service>/Dockerfile` with the repository root as context, and pushes it to `ghcr.io/<owner>/house-radar-<service>`. The outbox relay (`node dist/relay.js`, healthcheck `GET :3002/health`, polling interval `OUTBOX_RELAY_INTERVAL_MS`) ships as a fourth image, `house-radar-relay`, built from `apps/api/relay.Dockerfile`.
 
 | Trigger | Tags |
 | --- | --- |

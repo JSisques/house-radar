@@ -16,6 +16,9 @@ jobs:
       fail-fast: false
       matrix:
         app: [api, ingestion, web]
+        include:
+          - app: relay
+            file: apps/api/relay.Dockerfile
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3
@@ -35,7 +38,7 @@ jobs:
       - uses: docker/build-push-action@v6
         with:
           context: .
-          file: apps/${{ matrix.app }}/Dockerfile
+          file: ${{ matrix.file || format('apps/{0}/Dockerfile', matrix.app) }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

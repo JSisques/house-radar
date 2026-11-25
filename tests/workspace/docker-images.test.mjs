@@ -66,6 +66,23 @@ test('publish workflow tags images with sha-<commit> and the release version', (
   assert.match(workflow, /type=sha,prefix=sha-,format=long/);
   assert.match(workflow, /type=semver,pattern=\{\{version\}\}/);
   assert.match(workflow, /app: \[api, ingestion, web\]/);
-  assert.match(workflow, /file: apps\/\$\{\{ matrix\.app \}\}\/Dockerfile/);
+  assert.match(workflow, /format\('apps\/\{0\}\/Dockerfile', matrix\.app\)/);
   assert.match(workflow, /GIT_SHA=\$\{\{ github\.sha \}\}/);
+});
+
+test('relay image starts dist/relay.js as non-root and checks the relay healthcheck', () => {
+  const file = 'apps/api/relay.Dockerfile';
+  assert.ok(existsSync(join(repoRoot, file)), `${file} is missing`);
+  const text = readText(file);
+  assert.ok((text.match(/^FROM /gm) ?? []).length >= 2, 'expected at least two build stages');
+  assert.match(text, /^USER node$/m);
+  assert.match(text, /^HEALTHCHECK /m);
+  assert.match(text, /:3002\/health/);
+  assert.match(text, /"dist\/relay\.js"/);
+});
+
+test('publish workflow builds and tags the relay image like the others', () => {
+  const workflow = readText(WORKFLOW);
+  assert.match(workflow, /- app: relay\s+file: apps\/api\/relay\.Dockerfile/);
+  assert.match(workflow, /house-radar-\$\{\{ matrix\.app \}\}/);
 });
