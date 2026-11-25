@@ -1,4 +1,4 @@
-﻿import type { EntityManager } from '@mikro-orm/postgresql';
+import type { EntityManager } from '@mikro-orm/postgresql';
 
 import type { OutboxContext } from '@core/persistence/outbox/outbox-event.schema.js';
 

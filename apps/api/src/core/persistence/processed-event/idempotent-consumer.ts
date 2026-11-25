@@ -1,4 +1,4 @@
-﻿import type { EntityManager } from '@mikro-orm/postgresql';
+import type { EntityManager } from '@mikro-orm/postgresql';
 
 import type { ProcessedEventContext } from '@core/persistence/processed-event/processed-event.schema.js';
 

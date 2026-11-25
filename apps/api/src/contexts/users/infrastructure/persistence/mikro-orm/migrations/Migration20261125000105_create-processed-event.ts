@@ -1,4 +1,4 @@
-﻿import { Migration } from '@mikro-orm/migrations';
+import { Migration } from '@mikro-orm/migrations';
 
 /** Idempotent consumers (D31): a consumer claims (event_id, consumer) and skips events it already processed. */
 export class Migration20261125000105 extends Migration {

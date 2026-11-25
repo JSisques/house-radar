@@ -1,4 +1,4 @@
-﻿import { EntitySchema } from '@mikro-orm/core';
+import { EntitySchema } from '@mikro-orm/core';
 
 /** Contexts that consume events and therefore own a `processed_event` table (D31). */
 export const PROCESSED_EVENT_CONTEXTS = ['properties', 'users'] as const;

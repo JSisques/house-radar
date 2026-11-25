@@ -365,7 +365,7 @@ Also has: `processed_event` (see below).
 
 ## Outbox
 
-Every schema that emits events (`ingestion`, `listings`, `properties`, `identity`) has an `outbox_event` table ([D31](/adr/d31-transactional-outbox/)). The write repository inserts the aggregate's recorded events (`peekDomainEvents()`) in the same transaction; a relay reads unpublished rows (`FOR UPDATE SKIP LOCKED`, so concurrent relays never take the same row), delivers them in occurrence order to in-process handlers and sets `published_at`; a failed delivery stays unpublished and is retried on the next run. The table is also an auditable event log that can be replayed to rebuild projections.
+Every schema that emits events (`ingestion`, `listings`, `properties`, `identity`) has an `outbox_event` table ([D31](/adr/d31-transactional-outbox/)). The write repository inserts the aggregate's recorded events (`peekDomainEvents()`) in the same transaction; a relay publishes unpublished rows through BullMQ and sets `published_at`. The table is also an auditable event log that can be replayed to rebuild projections.
 
 | Column | Type | Notes |
 | --- | --- | --- |
