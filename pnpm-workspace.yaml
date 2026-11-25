@@ -1,3 +1,14 @@
 packages:
   - 'apps/*'
   - 'packages/*'
+allowBuilds:
+  '@scarf/scarf': true
+  '@swc/core': true
+  core-js-pure: true
+  cpu-features: true
+  dtrace-provider: true
+  esbuild: true
+  msgpackr-extract: true
+  protobufjs: true
+  re2: true
+  ssh2: true
