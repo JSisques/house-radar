@@ -8,18 +8,20 @@ export class Migration20261125000107 extends Migration {
     this.addSql(`
       create table "ingestion"."source" (
         "id" uuid not null,
+        "name" text not null,
         "kind" text not null,
         "enabled" boolean not null,
         "created_at" timestamptz not null,
         "updated_at" timestamptz not null,
         constraint "source_pkey" primary key ("id"),
+        constraint "source_name_uq" unique ("name"),
         constraint "source_kind_check" check ("kind" in ('api', 'feed', 'manual'))
       );
     `);
     // The id is a freshly generated UUIDv7 (never user input), so inlining it is safe.
     this.addSql(
-      `insert into "ingestion"."source" ("id", "kind", "enabled", "created_at", "updated_at")
-       values ('${generateUuidV7()}', 'manual', true, now(), now());`,
+      `insert into "ingestion"."source" ("id", "name", "kind", "enabled", "created_at", "updated_at")
+       values ('${generateUuidV7()}', 'manual', 'manual', true, now(), now());`,
     );
   }
 

@@ -16,7 +16,7 @@ export const ListingSchema = defineEntity({
   schema: 'listings',
   properties: {
     id: p.uuid().primary(),
-    sourceId: p.text(),
+    sourceId: p.uuid(),
     externalId: p.text().strictNullable(),
     url: p.text(),
     normalizedUrl: p.text(),

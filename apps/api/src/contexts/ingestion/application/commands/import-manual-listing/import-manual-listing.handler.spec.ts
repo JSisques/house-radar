@@ -10,6 +10,7 @@ import { SourceBuilder } from '@contexts/ingestion/domain/builders/source/source
 import { SourceNotAvailableException } from '@contexts/ingestion/domain/exceptions/source-not-available/source-not-available.exception';
 import type { ISourceWriteRepository } from '@contexts/ingestion/domain/repositories/write/source-write.repository';
 import { SourceKind } from '@contexts/ingestion/domain/value-objects/source-kind/source-kind.value-object';
+import { SourceName } from '@contexts/ingestion/domain/value-objects/source-name/source-name.value-object';
 
 const URL_WITH_NOISE = 'https://example.com/home/1?ref=a#photos';
 const NORMALIZED = 'https://example.com/home/1';
@@ -18,7 +19,12 @@ const NEW_ID = ListingId.generate();
 const SOURCE_ID = SourceId.generate();
 
 const manualSource = (enabled = true) =>
-  new SourceBuilder().withId(SOURCE_ID).withKind(SourceKind.manual()).withEnabled(enabled).build();
+  new SourceBuilder()
+    .withId(SOURCE_ID)
+    .withName(SourceName.manual())
+    .withKind(SourceKind.manual())
+    .withEnabled(enabled)
+    .build();
 
 const setup = (opts: { source?: ReturnType<typeof manualSource> | null; existing?: ListingId | null } = {}) => {
   const sources: ISourceWriteRepository = {
