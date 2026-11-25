@@ -25,6 +25,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test:changed": "turbo run build test --affected",
+    "infra:up": "docker compose up -d --wait",
+    "infra:down": "docker compose down",
     "prepare": "husky"
   },
   "devDependencies": {
