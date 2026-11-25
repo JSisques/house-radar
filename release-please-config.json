@@ -6,6 +6,12 @@
   "changelog-path": "CHANGELOG.md",
   "include-component-in-tag": false,
   "packages": {
-    ".": {}
+    ".": {
+      "extra-files": [
+        { "type": "json", "path": "package.json", "jsonpath": "$.version" },
+        { "type": "json", "path": "apps/*/package.json", "jsonpath": "$.version", "glob": true },
+        { "type": "json", "path": "packages/*/package.json", "jsonpath": "$.version", "glob": true }
+      ]
+    }
   }
 }
