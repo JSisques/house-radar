@@ -1,16 +1,23 @@
 import { createContext, type ReactNode, useContext } from 'react';
 
+import type { HttpClientPort } from '@shared/domain/http-client/http-client.port';
 import type { I18nPort } from '@shared/domain/i18n/i18n.port';
+import { createOpenApiFetchAdapter } from '@shared/infrastructure/http-client/openapi-fetch-adapter/openapi-fetch.adapter';
 import { createReactI18nextAdapter } from '@shared/infrastructure/i18n/react-i18next-adapter/react-i18next.adapter';
 
 /** Every adapter the app injects. New ports are added here. */
 export interface AppPorts {
+  httpClient: HttpClientPort;
   i18n: I18nPort;
 }
 
 /** Wires the real adapters; tests pass overrides instead of using `vi.mock`. */
 export async function createAppPorts(overrides: Partial<AppPorts> = {}): Promise<AppPorts> {
-  return { i18n: await createReactI18nextAdapter(), ...overrides };
+  return {
+    httpClient: createOpenApiFetchAdapter({ baseUrl: globalThis.location.origin }),
+    i18n: await createReactI18nextAdapter(),
+    ...overrides,
+  };
 }
 
 const CompositionContext = createContext<AppPorts | null>(null);
@@ -27,4 +34,8 @@ function usePorts(): AppPorts {
 
 export function useI18n(): I18nPort {
   return usePorts().i18n;
+}
+
+export function useHttpClient(): HttpClientPort {
+  return usePorts().httpClient;
 }

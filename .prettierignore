@@ -7,3 +7,4 @@ apps/docs/design/
 *.mdx
 storybook-static
 apps/web/public/mockServiceWorker.js
+apps/web/src/shared/domain/http-client/api-schema/api-schema.d.ts

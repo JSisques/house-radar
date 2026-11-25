@@ -1,10 +1,12 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
+import type { HttpClientPort } from '@shared/domain/http-client/http-client.port';
 import type { I18nPort } from '@shared/domain/i18n/i18n.port';
 import {
   CompositionProvider,
   createAppPorts,
+  useHttpClient,
   useI18n,
 } from '@shared/infrastructure/providers/composition/composition.provider';
 
@@ -43,6 +45,26 @@ describe('CompositionProvider', () => {
     );
 
     expect(screen.getByRole('heading')).toHaveTextContent('fake title');
+  });
+
+  it('lets a test swap the HTTP client without touching components', async () => {
+    const fakeHttp: HttpClientPort = {
+      request: () => Promise.resolve({ status: 200, data: { status: 'ok', details: {} } }) as never,
+    };
+    const ports = await createAppPorts({ httpClient: fakeHttp });
+    let used: HttpClientPort | undefined;
+    function Probe() {
+      used = useHttpClient();
+      return null;
+    }
+
+    render(
+      <CompositionProvider ports={ports}>
+        <Probe />
+      </CompositionProvider>,
+    );
+
+    expect(used).toBe(fakeHttp);
   });
 
   it('fails loudly when a component is rendered outside the provider', () => {
