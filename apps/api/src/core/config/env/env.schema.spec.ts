@@ -4,7 +4,24 @@ import { validateEnv } from './env.schema.js';
 
 describe('validateEnv', () => {
   it('applies defaults when optional variables are missing', () => {
-    expect(validateEnv({})).toEqual({ NODE_ENV: 'development', PORT: 3000 });
+    expect(validateEnv({})).toEqual({
+      NODE_ENV: 'development',
+      PORT: 3000,
+      DATABASE_URL: 'postgres://house_radar:house_radar@localhost:55432/house_radar',
+      REDIS_URL: 'redis://localhost:56379',
+    });
+  });
+
+  it('accepts connection URLs from the environment', () => {
+    const env = validateEnv({ DATABASE_URL: 'postgres://u:p@db:5432/x', REDIS_URL: 'redis://cache:6379' });
+
+    expect(env.DATABASE_URL).toBe('postgres://u:p@db:5432/x');
+    expect(env.REDIS_URL).toBe('redis://cache:6379');
+  });
+
+  it('fails naming the variable when a connection URL is empty', () => {
+    expect(() => validateEnv({ DATABASE_URL: '' })).toThrow(/DATABASE_URL/);
+    expect(() => validateEnv({ REDIS_URL: '' })).toThrow(/REDIS_URL/);
   });
 
   it('coerces PORT to a number', () => {

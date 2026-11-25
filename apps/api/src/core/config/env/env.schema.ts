@@ -3,6 +3,9 @@ import { z } from 'zod';
 export const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PORT: z.coerce.number().int().min(1).max(65535).default(3000),
+  // Defaults match the local docker-compose ports (.env.example).
+  DATABASE_URL: z.string().min(1).default('postgres://house_radar:house_radar@localhost:55432/house_radar'),
+  REDIS_URL: z.string().min(1).default('redis://localhost:56379'),
 });
 
 export type Env = z.infer<typeof envSchema>;

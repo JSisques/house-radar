@@ -11,4 +11,12 @@ export class AppConfig {
   get port(): number {
     return this.env.PORT;
   }
+
+  get databaseUrl(): string {
+    return this.env.DATABASE_URL;
+  }
+
+  get redisUrl(): string {
+    return this.env.REDIS_URL;
+  }
 }
