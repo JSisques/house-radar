@@ -18,7 +18,7 @@ import type { ObservationRow } from '@contexts/listings/infrastructure/persisten
 export class ObservationRowMapper {
   constructor(@Inject(OBSERVATION_BUILDER_FACTORY_TOKEN) private readonly builders: IObservationBuilderFactory) {}
 
-  toRow(aggregate: ObservationAggregate): Omit<ObservationRow, 'version'> {
+  toRow(aggregate: ObservationAggregate): Omit<ObservationRow, 'version' | 'createdAt'> {
     const p = aggregate.toPrimitives();
     return {
       id: p.id,

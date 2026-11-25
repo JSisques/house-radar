@@ -17,7 +17,7 @@ import { translateCriteria } from '@core/persistence/criteria/criteria-translato
 const DEFAULT_PAGE_SIZE = 20;
 
 /** Public field name -> row property. */
-const COLUMNS: Readonly<Record<string, keyof ListingRow>> = {
+const COLUMNS: Readonly<Record<string, Extract<keyof ListingRow, string>>> = {
   source: 'sourceId',
   externalId: 'externalId',
   status: 'status',

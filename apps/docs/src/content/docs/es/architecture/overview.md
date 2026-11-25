@@ -59,7 +59,7 @@ Ejemplos del registro de decisiones:
 - La librería de i18n detrás de un adaptador ([D12](/es/adr/d12-web-internationalization/)).
 - Autenticación expuesta mediante un puerto; OIDC o un SaaS implicaría un nuevo adaptador ([D13](/es/adr/d13-users-and-authentication/)).
 - Instrumentación OpenTelemetry detrás de un adaptador ([D15](/es/adr/d15-observability/)).
-- MikroORM mapeado con `EntitySchema`, de modo que las entidades de dominio no dependen de él ([D6](/es/adr/d06-persistence/)).
+- MikroORM mapeado con schemas `defineEntity`, de modo que las entidades de dominio no dependen de él ([D6](/es/adr/d06-persistence/)).
 
 ## Concurrencia de la ingesta
 

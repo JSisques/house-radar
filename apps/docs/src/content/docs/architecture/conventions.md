@@ -161,7 +161,7 @@ export const INFRASTRUCTURE_REPOSITORIES = [
 
 ### Persistence
 
-MikroORM mapped with `EntitySchema` ([D6](/adr/d06-persistence/)), so domain classes carry no ORM decorators. Schemas, mappers and repositories live in `infrastructure/persistence/mikro-orm/`. Mappers translate between schema entities and aggregates.
+MikroORM mapped with `defineEntity` schemas ([D6](/adr/d06-persistence/), [D38](/adr/d38-persistence-row-definition/)), so domain classes carry no ORM decorators. The row type is `InferEntity<typeof Schema>`; there is no hand-written row interface. Schemas, mappers and repositories live in `infrastructure/persistence/mikro-orm/`. Mappers translate between schema entities and aggregates. Decimal columns need `.columnType('numeric')` (the default is `numeric(10,0)`), nullable columns use `.strictNullable()` so the type stays `T | null`, and `toRow` omits `version`, `createdAt` and `updatedAt`.
 
 Write repositories update through the managed entity: load it with `LockMode.OPTIMISTIC` and `lockVersion` (the aggregate's `version`), then `assign` the new state. They insert a new entity only when `isNew()` is true; persisting a fresh object for an existing row would be an `INSERT`.
 
@@ -194,7 +194,7 @@ Files are kebab-case with a role suffix. Classes are PascalCase with the same su
 | `.adapter` | Implementation of a port |
 | `.repository` | Repository interface or implementation |
 | `.mapper` | Mapping between representations |
-| `.schema` | MikroORM `EntitySchema` |
+| `.schema` | MikroORM `defineEntity` schema |
 | `.controller` | REST controller |
 | `.dto` | Transport data object |
 | `.view-model` | Read model shape |

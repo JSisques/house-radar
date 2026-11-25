@@ -29,7 +29,7 @@ export class ListingMikroOrmWriteRepository
     super(em, { entity: LISTING_ENTITY, outboxSchema: 'listings', aggregateType: 'Listing' });
   }
 
-  protected toRow(aggregate: ListingAggregate): Omit<ListingRow, 'version'> {
+  protected toRow(aggregate: ListingAggregate): Omit<ListingRow, 'version' | 'createdAt' | 'updatedAt'> {
     return this.mapper.toRow(aggregate);
   }
 

@@ -1,11 +1,11 @@
 ---
 title: "Architecture decision records"
-description: "Index of all architecture decisions D0 to D37."
+description: "Index of all architecture decisions D0 to D38."
 sidebar:
   order: 0
 ---
 
-Product and technical decisions taken before development started. Each decision in the decision log is documented as an ADR whose identifier matches the log (D0 to D37). The ADR numbering is the decision number. Use the [template](/adr/template/) for new decisions.
+Product and technical decisions taken before development started. Each decision in the decision log is documented as an ADR whose identifier matches the log (D0 to D38). The ADR numbering is the decision number. Use the [template](/adr/template/) for new decisions.
 
 | ID | Decision | Result | Date |
 | --- | --- | --- | --- |
@@ -47,3 +47,4 @@ Product and technical decisions taken before development started. Each decision 
 | D35 | [Environments and staging deployment](/adr/d35-environments-and-staging-deployment/) | Local, CI, a disposable staging reachable only through Tailscale and an undefined production; images in GHCR, automatic deploy on merge, secrets in GitHub Environments, per-service health checks and rollback. | 2026-11-20 |
 | D36 | [Docs hosting on Cloudflare Pages](/adr/d36-docs-hosting-cloudflare-pages/) | The docs portal is published on Cloudflare Pages at the root of its pages.dev domain, with a preview per pull request. | 2026-11-20 |
 | D37 | [Fotocasa detail-page connector](/adr/d37-fotocasa-detail-connector/) | A connector reads individual Fotocasa listing pages (user import and daily refresh of tracked listings) honoring robots.txt, for private use only and disabled in production. Automatic discovery is deferred. | 2026-11-20 |
+| D38 | [Persistence rows defined with defineEntity](/adr/d38-persistence-row-definition/) | Rows stay as MikroORM schemas declared with `defineEntity`; the row type is inferred from the schema and decorated row classes are not adopted. | 2026-11-25 |

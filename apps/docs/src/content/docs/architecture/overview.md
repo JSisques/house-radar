@@ -59,7 +59,7 @@ Examples in the decision log:
 - The i18n library behind an adapter ([D12](/adr/d12-web-internationalization/)).
 - Authentication exposed through a port; OIDC or a SaaS would be a new adapter ([D13](/adr/d13-users-and-authentication/)).
 - OpenTelemetry instrumentation behind an adapter ([D15](/adr/d15-observability/)).
-- MikroORM mapped with `EntitySchema`, so domain entities do not depend on it ([D6](/adr/d06-persistence/)).
+- MikroORM mapped with `defineEntity` schemas, so domain entities do not depend on it ([D6](/adr/d06-persistence/)).
 
 ## Ingestion concurrency
 
