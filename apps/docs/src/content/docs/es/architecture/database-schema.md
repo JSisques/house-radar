@@ -140,6 +140,14 @@ Restricciones e índices:
 - Único `(listing_id, run_id)` donde `run_id is not null`.
 - Índice `(listing_id, observed_at)`.
 
+Implementado en la migración `Migration20261125000106` (S-M1-03). Cubre solo lo que los agregados modelan hoy:
+
+- `listings.listing` aún no tiene `location`, `location_precision`, `postal_code`, `missed_runs` ni `published_at`; llegarán con los cortes que los modelen.
+- Las columnas `<attr>_origin` se sustituyen por una sola columna `origins jsonb` (nombre del atributo a `declared|calculated|inferred`; los atributos desconocidos no tienen entrada). También tiene `land_type`, `has_water`, `has_electricity` y `has_sanitation`, y un `version int` para el bloqueo optimista.
+- `url` y `normalized_url` guardan ambas la URL normalizada. El único `(normalized_url)` aplica a los anuncios manuales (`external_id is null`).
+- `listings.observation` añade `price_origin text`, `snapshot jsonb` y `version int`.
+- Reingestar un `(source_id, external_id)` existente actualiza la fila guardada y conserva su `id`.
+
 #### `listings.listing_correction`
 
 Auditoría de correcciones descriptivas; append-only.

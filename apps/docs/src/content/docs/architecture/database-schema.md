@@ -140,6 +140,14 @@ Constraints and indexes:
 - Unique `(listing_id, run_id)` where `run_id is not null`.
 - Index `(listing_id, observed_at)`.
 
+Implemented in migration `Migration20261125000106` (S-M1-03). It covers only what the aggregates model today:
+
+- `listings.listing` has no `location`, `location_precision`, `postal_code`, `missed_runs` or `published_at` yet; they arrive with the slices that model them.
+- The `<attr>_origin` columns are replaced by one `origins jsonb` column (attribute name to `declared|calculated|inferred`; unknown attributes have no entry). It also has `land_type`, `has_water`, `has_electricity` and `has_sanitation`, and a `version int` for optimistic locking.
+- `url` and `normalized_url` both hold the normalized URL. The unique `(normalized_url)` applies to manual listings (`external_id is null`).
+- `listings.observation` adds `price_origin text`, `snapshot jsonb` and `version int`.
+- Re-ingesting an existing `(source_id, external_id)` updates the stored row and keeps its `id`.
+
 #### `listings.listing_correction`
 
 Audit of descriptive corrections; append-only.

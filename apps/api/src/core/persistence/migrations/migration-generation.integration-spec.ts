@@ -12,10 +12,11 @@ import { type StartedPostgres, startPostgres } from '@house-radar/testing';
 import { runMigrations } from '@core/persistence/migrations/run-migrations.js';
 import { createOrmOptions } from '@core/persistence/orm-config/orm-config.js';
 
+// A table no migration creates, so the generated diff is never empty.
 const Listing = new EntitySchema({
-  name: 'Listing',
+  name: 'MigrationProbe',
   schema: 'listings',
-  tableName: 'listing',
+  tableName: 'migration_probe',
   properties: { id: { type: 'uuid', primary: true } },
 });
 
@@ -52,8 +53,9 @@ describe('migration generation', () => {
 
     const [file] = await readdir(dir);
     const sql = await readFile(join(dir, file ?? ''), 'utf8');
-    expect(sql).toContain('listing');
+    expect(sql).toContain('migration_probe');
     expect(sql).not.toContain('ingestion');
-    expect(sql).not.toContain('source');
+    // `source_id` columns of the listings tables are legitimate: only the other context's table must be absent.
+    expect(sql).not.toContain('"source"');
   });
 });
