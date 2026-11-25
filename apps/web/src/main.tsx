@@ -2,8 +2,8 @@ import { RouterProvider } from '@tanstack/react-router';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
-import { QueryProvider } from '@shared/infrastructure/providers/query.provider';
-import { createAppRouter } from '@shared/presentation/router/app-router';
+import { QueryProvider } from '@shared/infrastructure/providers/query/query.provider';
+import { createAppRouter } from '@shared/presentation/router/app-router/app-router';
 
 const router = createAppRouter();
 
