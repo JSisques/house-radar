@@ -110,7 +110,9 @@ test('building-blocks manifest is a private ESM package with exact pins', () => 
   // Versions move in lockstep with the root package (see release-please.test.mjs).
   assert.equal(pkg.version, readJson('package.json').version);
   assert.deepEqual(pkg.scripts, {
-    build: 'tsc -p tsconfig.build.json',
+    // swc emits Node-resolvable ESM (explicit `.js` extensions); tsc only emits the declarations.
+    build:
+      'swc src -d dist --strip-leading-paths --ignore "**/*.spec.ts" --ignore "**/*.integration-spec.ts" && tsc -p tsconfig.build.json --emitDeclarationOnly',
     typecheck: 'tsc --noEmit',
     test: 'vitest run',
     'test:integration': 'vitest run --config vitest.integration.config.ts',
