@@ -70,6 +70,17 @@ describe('ListingMikroOrmReadRepository', () => {
     expect(result.items.map((item) => item.source)).toEqual(['fotocasa']);
   });
 
+  it('should filter by original url', async () => {
+    await write.save(listing('idealista', '1', 10));
+    await write.save(listing('fotocasa', '2', 11));
+
+    const result = await read.findByCriteria(
+      new Criteria().addFilter({ field: 'originalUrl', operator: 'eq', value: 'https://fotocasa.example.com/2' }),
+    );
+
+    expect(result.items.map((item) => item.externalId)).toEqual(['2']);
+  });
+
   it('should sort and paginate', async () => {
     await write.save(listing('idealista', '1', 10));
     await write.save(listing('idealista', '2', 11));
