@@ -18,6 +18,20 @@ Decisions: [D35](/adr/d35-environments-and-staging-deployment/) (environments an
 
 Staging is exposed only inside the Tailscale private network: the server has no public ports. Staging data is disposable: it can be wiped and regenerated, and destructive migrations are acceptable there, never in production.
 
+## Local setup
+
+Requires Docker. From the repository root:
+
+```sh
+cp .env.example .env   # optional: defaults work without it
+pnpm infra:up          # starts PostgreSQL + PostGIS and Redis, waits until healthy
+pnpm infra:down        # stops the containers; data volumes persist
+```
+
+Host ports are high and uncommon to avoid clashing with other local containers: PostgreSQL `55432` and Redis `56379`. Override them with `POSTGRES_PORT` and `REDIS_PORT` in `.env`.
+
+Data lives in the named volumes `postgres-data` and `redis-data`. To wipe it, run `docker compose down -v`.
+
 ## Staging deployment
 
 Images are built in GitHub Actions and pushed to GitHub Container Registry, tagged with the commit SHA. Every merge to `main` triggers this flow:
