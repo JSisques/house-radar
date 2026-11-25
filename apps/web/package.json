@@ -15,6 +15,7 @@
     "zustand": "5.1.0"
   },
   "devDependencies": {
+    "@storybook/react-vite": "10.6.9",
     "@testing-library/dom": "10.4.2",
     "@testing-library/jest-dom": "8.0.0",
     "@testing-library/react": "16.3.3",
@@ -23,6 +24,9 @@
     "@types/react-dom": "19.3.0",
     "@vitejs/plugin-react": "6.3.0",
     "jsdom": "31.0.1",
+    "msw": "3.0.7",
+    "msw-storybook-addon": "3.0.3",
+    "storybook": "10.6.9",
     "typescript": "5.9.3",
     "vite": "8.3.8",
     "vitest": "5.1.1"
@@ -33,6 +37,8 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   }
 }
