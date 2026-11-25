@@ -68,6 +68,9 @@ importers:
       '@house-radar/outbox':
         specifier: workspace:*
         version: link:../../packages/outbox
+      '@house-radar/shared-kernel':
+        specifier: workspace:*
+        version: link:../../packages/shared-kernel
       '@mikro-orm/core':
         specifier: 7.2.11
         version: 7.2.11
