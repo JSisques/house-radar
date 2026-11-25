@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "exclude": ["src/**/*.spec.ts", "src/**/*.spec.tsx", "src/**/*.integration-spec.ts", "src/**/*.e2e-spec.ts"]
+}

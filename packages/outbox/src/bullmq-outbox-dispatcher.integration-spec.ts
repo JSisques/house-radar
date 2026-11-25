@@ -1,16 +1,16 @@
-import { MikroORM } from '@mikro-orm/postgresql';
+import { randomUUID } from 'node:crypto';
+
+import { defineConfig, MikroORM } from '@mikro-orm/postgresql';
 import { Queue } from 'bullmq';
 import pg from 'pg';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 
-import { generateUuidV7 } from '@house-radar/building-blocks';
 import { type StartedPostgres, type StartedRedis, startPostgres, startRedis } from '@house-radar/testing';
 
-import { runMigrations } from '@core/persistence/migrations/run-migrations.js';
-import { createOrmOptions } from '@core/persistence/orm-config/orm-config.js';
-import { bullmqOutboxDispatcher, outboxQueueName } from '@core/persistence/outbox/bullmq-outbox-dispatcher.js';
-import { createOutboxEventSchema } from '@core/persistence/outbox/outbox-event.schema.js';
-import { OutboxRelay } from '@core/persistence/outbox/outbox-relay.js';
+import { bullmqOutboxDispatcher, outboxQueueName } from './bullmq-outbox-dispatcher';
+import { createOutboxTables } from './create-outbox-tables';
+import { createOutboxEventSchema } from './outbox-event.schema';
+import { OutboxRelay } from './outbox-relay';
 
 describe('bullmqOutboxDispatcher', () => {
   let postgres: StartedPostgres;
@@ -21,10 +21,14 @@ describe('bullmqOutboxDispatcher', () => {
 
   beforeAll(async () => {
     [postgres, redis] = await Promise.all([startPostgres(), startRedis()]);
-    await runMigrations(postgres.connectionUri);
+    await createOutboxTables(postgres.connectionUri);
     pool = new pg.Pool({ connectionString: postgres.connectionUri });
     orm = await MikroORM.init(
-      createOrmOptions('listings', postgres.connectionUri, { entities: [createOutboxEventSchema('listings')] }),
+      defineConfig({
+        clientUrl: postgres.connectionUri,
+        entities: [createOutboxEventSchema('listings')],
+        discovery: { warnWhenNoEntities: false },
+      }),
     );
     queue = new Queue(outboxQueueName('listings'), { connection: { url: redis.url } });
   });
@@ -39,12 +43,12 @@ describe('bullmqOutboxDispatcher', () => {
     await Promise.all([postgres.stop(), redis.stop()]);
   });
 
-  async function insertEvent(id = generateUuidV7()): Promise<string> {
+  async function insertEvent(id = randomUUID()): Promise<string> {
     await pool.query(
       `insert into listings.outbox_event
         (id, aggregate_type, aggregate_id, aggregate_version, event_type, schema_version, payload, metadata, occurred_at)
        values ($1, 'Widget', $2, 4, 'WidgetRenamed', 1, '{"name":"a"}', '{"correlationId":"c","causationId":null}', $3)`,
-      [id, generateUuidV7(), new Date('2026-01-01T00:00:00Z')],
+      [id, randomUUID(), new Date('2026-01-01T00:00:00Z')],
     );
     return id;
   }

@@ -6,7 +6,7 @@ import { test } from 'node:test';
 import { repoRoot } from './support.mjs';
 
 const WORKFLOW = '.github/workflows/publish-images.yml';
-const IMAGES = ['api', 'ingestion', 'web'];
+const IMAGES = ['api', 'ingestion', 'relay', 'web'];
 
 const readText = (relativePath) => readFileSync(join(repoRoot, relativePath), 'utf8');
 const dockerfile = (app) => `apps/${app}/Dockerfile`;
@@ -31,6 +31,7 @@ test('node services run as a non-root user and start dist/main.js', () => {
 test('healthchecks target the endpoints the services expose', () => {
   assert.match(readText(dockerfile('api')), /:3000\/api\/health/);
   assert.match(readText(dockerfile('ingestion')), /:3001\/health/);
+  assert.match(readText(dockerfile('relay')), /:3002\/health/);
   assert.match(readText(dockerfile('web')), /\/version\.json/);
 });
 
@@ -65,7 +66,13 @@ test('publish workflow tags images with sha-<commit> and the release version', (
   const workflow = readText(WORKFLOW);
   assert.match(workflow, /type=sha,prefix=sha-,format=long/);
   assert.match(workflow, /type=semver,pattern=\{\{version\}\}/);
-  assert.match(workflow, /app: \[api, ingestion, web\]/);
+  assert.match(workflow, /app: \[api, ingestion, relay, web\]/);
   assert.match(workflow, /file: apps\/\$\{\{ matrix\.app \}\}\/Dockerfile/);
   assert.match(workflow, /GIT_SHA=\$\{\{ github\.sha \}\}/);
+});
+
+test('relay image runs as non-root and starts dist/relay.js', () => {
+  const text = readText(dockerfile('relay'));
+  assert.match(text, /^USER node$/m);
+  assert.match(text, /"dist\/relay\.js"/);
 });

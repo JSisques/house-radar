@@ -1,6 +1,6 @@
 import type { EntityManager } from '@mikro-orm/postgresql';
 
-import type { OutboxContext } from '@core/persistence/outbox/outbox-event.schema.js';
+import type { OutboxContext } from './outbox-event.schema';
 
 /** What a handler receives: the outbox row with camelCase names. */
 export interface OutboxMessage {

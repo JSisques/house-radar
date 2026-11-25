@@ -3,12 +3,12 @@ import pg from 'pg';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 
 import { AggregateRoot, DomainEvent, generateUuidV7, UuidValueObject } from '@house-radar/building-blocks';
+import { createOutboxEventSchema, outboxEventEntityName } from '@house-radar/outbox';
 import { type StartedPostgres, startPostgres } from '@house-radar/testing';
 
 import { runMigrations } from '@core/persistence/migrations/run-migrations.js';
 import { OptimisticLockException } from '@core/persistence/optimistic-lock/optimistic-lock.exception.js';
 import { createOrmOptions } from '@core/persistence/orm-config/orm-config.js';
-import { createOutboxEventSchema, outboxEventEntityName } from '@core/persistence/outbox/outbox-event.schema.js';
 import { OutboxWriteRepository } from '@core/persistence/outbox/outbox-write.repository.js';
 import { MikroOrmTransactionManager } from '@core/persistence/transaction-manager/mikro-orm-transaction-manager.js';
 

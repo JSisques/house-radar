@@ -7,13 +7,9 @@ import {
   type IWriteRepository,
   type ValueObject,
 } from '@house-radar/building-blocks';
+import { type OutboxContext, outboxEventEntityName, type OutboxEventRow } from '@house-radar/outbox';
 
 import { OptimisticLockException } from '@core/persistence/optimistic-lock/optimistic-lock.exception.js';
-import {
-  type OutboxContext,
-  outboxEventEntityName,
-  type OutboxEventRow,
-} from '@core/persistence/outbox/outbox-event.schema.js';
 
 export interface OutboxWriteRepositoryOptions<TRow> {
   /** Schema of the aggregate's table. It must map an integer `version` property with `version: true`. */
