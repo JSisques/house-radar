@@ -6,6 +6,10 @@
   "type": "module",
   "sideEffects": false,
   "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
     "./package-marker": {
       "types": "./dist/package-marker.d.ts",
       "default": "./dist/package-marker.js"
