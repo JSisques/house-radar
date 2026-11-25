@@ -45,6 +45,17 @@ Las imágenes se construyen en GitHub Actions y se publican en GitHub Container 
 
 Los merges consecutivos se despliegan uno tras otro: un grupo `concurrency` de Actions por entorno evita despliegues solapados.
 
+## Imágenes de contenedor
+
+El workflow `publish-images` construye una imagen por servicio (`api`, `ingestion`, `web`) desde `apps/<servicio>/Dockerfile`, con la raíz del repositorio como contexto, y la publica en `ghcr.io/<owner>/house-radar-<servicio>`.
+
+| Disparador | Etiquetas |
+| --- | --- |
+| Push a `main` | `sha-<commit>` |
+| Tag de release `v0.3.0` | `0.3.0` y `sha-<commit>` |
+
+Para construir una en local: `docker build -f apps/web/Dockerfile --build-arg GIT_SHA=$(git rev-parse HEAD) .`. La imagen `web` sirve `/version.json` con el commit del que se construyó. La imagen del outbox relay se sigue en [#187](https://github.com/JSisques/house-radar/issues/187).
+
 ## Health checks
 
 Cada servicio declara su propio healthcheck de Docker Compose. Las mismas comprobaciones funcionan en local.

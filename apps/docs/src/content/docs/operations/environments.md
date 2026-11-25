@@ -45,6 +45,17 @@ Images are built in GitHub Actions and pushed to GitHub Container Registry, tagg
 
 Consecutive merges deploy one after another: an Actions `concurrency` group per environment prevents overlapping deploys.
 
+## Container images
+
+The `publish-images` workflow builds one image per service (`api`, `ingestion`, `web`) from `apps/<service>/Dockerfile` with the repository root as context, and pushes it to `ghcr.io/<owner>/house-radar-<service>`.
+
+| Trigger | Tags |
+| --- | --- |
+| Push to `main` | `sha-<commit>` |
+| Release tag `v0.3.0` | `0.3.0` and `sha-<commit>` |
+
+Build one locally with `docker build -f apps/web/Dockerfile --build-arg GIT_SHA=$(git rev-parse HEAD) .`. The `web` image serves `/version.json` with the commit it was built from. The outbox relay image is tracked in [#187](https://github.com/JSisques/house-radar/issues/187).
+
 ## Health checks
 
 Every service declares its own Docker Compose healthcheck. The same checks work locally.
