@@ -10,6 +10,7 @@ import { type StartedPostgres, startPostgres } from '@house-radar/testing';
 
 import { CreatePropertyFromListingObservedHandler } from '@contexts/properties/application/commands/create-property-from-listing-observed/create-property-from-listing-observed.handler';
 import { PropertyBuilderFactory } from '@contexts/properties/domain/builders/property/property-builder.factory';
+import { ListingEventPayloadMapper } from '@contexts/properties/infrastructure/messaging/listing-event-payload/listing-event-payload.mapper';
 import { ListingObservedConsumer } from '@contexts/properties/infrastructure/messaging/listing-observed/listing-observed.consumer';
 import { PropertyRowMapper } from '@contexts/properties/infrastructure/persistence/mikro-orm/mappers/property-row/property-row.mapper';
 import { ProcessedEventMikroOrmRepository } from '@contexts/properties/infrastructure/persistence/mikro-orm/repositories/processed-event-mikro-orm/processed-event-mikro-orm.repository';
@@ -39,7 +40,7 @@ describe('relay -> ListingObservedConsumer -> properties tables', () => {
       new PropertyBuilderFactory(),
     );
     const commands = { execute: (command: never) => handler.execute(command) } as unknown as CommandBus;
-    const consumer = new ListingObservedConsumer(commands);
+    const consumer = new ListingObservedConsumer(commands, new ListingEventPayloadMapper());
     relay = new OutboxRelay(listingsOrm.em, 'listings', (message) => consumer.handle(message));
   });
   afterEach(async () => {
@@ -63,7 +64,17 @@ describe('relay -> ListingObservedConsumer -> properties tables', () => {
       `insert into listings.outbox_event
          (id, aggregate_type, aggregate_id, aggregate_version, event_type, schema_version, payload, metadata, occurred_at)
        values ($1, 'Observation', $2, 1, $3, 1, $4, '{}', now())`,
-      [eventId, generateUuidV7(), eventType, JSON.stringify({ listingId })],
+      [
+        eventId,
+        generateUuidV7(),
+        eventType,
+        JSON.stringify({
+          listingId,
+          status: 'active',
+          observedAt: '2026-11-01T10:00:00.000Z',
+          price: { kind: 'unknown' },
+        }),
+      ],
     );
     return eventId;
   }

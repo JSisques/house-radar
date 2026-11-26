@@ -1,6 +1,6 @@
 import { ListingId } from '@house-radar/shared-kernel';
 
-export interface ICreatePropertyFromListingObservedInput {
+export interface ICreatePropertyFromListingObservedCommandInput {
   /** Id of the `ListingObserved` event, used to deduplicate redeliveries. */
   eventId: string;
   listingId: string;
@@ -14,7 +14,7 @@ export class CreatePropertyFromListingObservedCommand {
   readonly listingId: ListingId;
   readonly aggregateVersion: number;
 
-  constructor(input: ICreatePropertyFromListingObservedInput) {
+  constructor(input: ICreatePropertyFromListingObservedCommandInput) {
     this.eventId = input.eventId;
     this.listingId = new ListingId(input.listingId);
     this.aggregateVersion = input.aggregateVersion;
