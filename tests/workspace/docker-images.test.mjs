@@ -6,7 +6,7 @@ import { test } from 'node:test';
 import { repoRoot } from './support.mjs';
 
 const WORKFLOW = '.github/workflows/publish-images.yml';
-const IMAGES = ['api', 'ingestion', 'relay', 'web'];
+const IMAGES = ['api', 'docs', 'ingestion', 'relay', 'web'];
 
 const readText = (relativePath) => readFileSync(join(repoRoot, relativePath), 'utf8');
 const dockerfile = (app) => `apps/${app}/Dockerfile`;
@@ -66,7 +66,7 @@ test('publish workflow tags images with sha-<commit> and the release version', (
   const workflow = readText(WORKFLOW);
   assert.match(workflow, /type=sha,prefix=sha-,format=long/);
   assert.match(workflow, /type=semver,pattern=\{\{version\}\}/);
-  assert.match(workflow, /app: \[api, ingestion, relay, web\]/);
+  assert.match(workflow, /app: \[api, docs, ingestion, relay, web\]/);
   assert.match(workflow, /file: apps\/\$\{\{ matrix\.app \}\}\/Dockerfile/);
   assert.match(workflow, /GIT_SHA=\$\{\{ github\.sha \}\}/);
 });
