@@ -182,6 +182,8 @@ Minimal aggregate.
 | `created_at` | `timestamptz not null` | Row creation time. |
 | `updated_at` | `timestamptz not null` | Last update time. |
 
+`chosen_location` and `chosen_location_precision` are added with the location work: the aggregate does not model them yet. The row changes `updated_at` whenever a listing's applied version changes, which bumps `version`.
+
 #### `properties.property_listing`
 
 Membership of listings in properties.
@@ -191,6 +193,7 @@ Membership of listings in properties.
 | `id` | `uuid` | Primary key (UUIDv7). |
 | `property_id` | `uuid not null` | Foreign key to `property` (same schema). |
 | `listing_id` | `uuid not null` | Listing (reference by ID, no foreign key across schemas). Unique: a listing belongs to exactly one property. |
+| `applied_version` | `int not null` | Newest listing event version applied, so late events are ignored ([D31](/adr/d31-transactional-outbox/)). |
 | `created_at` | `timestamptz not null` | Row creation time. |
 
 Constraints and indexes:

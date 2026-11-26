@@ -48,6 +48,7 @@ export abstract class OutboxWriteRepository<
       version = await this.em.transactional(async (em) => {
         const row = aggregate.isNew() ? await this.upsertRow(em, aggregate) : await this.lockRow(em, aggregate);
         id = row.id;
+        await this.syncChildRows(em, row, aggregate);
         await em.flush();
         for (const event of events) {
           await em.insert(
@@ -84,6 +85,13 @@ export abstract class OutboxWriteRepository<
   protected findRowByNaturalKey(_em: EntityManager, _aggregate: TAggregate): Promise<TRow | null> {
     return Promise.resolve(null);
   }
+
+  /**
+   * Child-row hook for aggregates stored in more than one table: registers the child rows on the unit of work, so
+   * they are flushed with the root row in the same transaction. The default has no child rows.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- parameters document the hook for overrides
+  protected syncChildRows(_em: EntityManager, _row: TRow, _aggregate: TAggregate): void | Promise<void> {}
 
   private async upsertRow(em: EntityManager, aggregate: TAggregate): Promise<TRow> {
     const existing = await this.findRowByNaturalKey(em, aggregate);

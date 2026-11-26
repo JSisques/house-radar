@@ -35,6 +35,9 @@ export function createOrmOptions(
   const { path, schema } = streamPaths(stream);
   return defineConfig({
     clientUrl,
+    // Transaction contexts are matched by this name: with the shared default, a transaction of one context's ORM would
+    // be picked up by another context's ORM running inside it (for example a consumer called from the relay).
+    contextName: stream,
     ...(schema ? { schema } : {}),
     entities:
       stream === 'core'
