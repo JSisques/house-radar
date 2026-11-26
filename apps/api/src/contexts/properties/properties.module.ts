@@ -1,5 +1,5 @@
 import { EntityManager, MikroORM } from '@mikro-orm/postgresql';
-import { Inject, Module, type OnApplicationShutdown } from '@nestjs/common';
+import { Inject, Module, type OnApplicationShutdown, type Provider } from '@nestjs/common';
 
 import { CreatePropertyFromListingObservedHandler } from '@contexts/properties/application/commands/create-property-from-listing-observed/create-property-from-listing-observed.handler';
 import { PROCESSED_EVENT_REPOSITORY_TOKEN } from '@contexts/properties/application/ports/processed-event-repository.port';
@@ -17,22 +17,38 @@ import { PropertyMikroOrmWriteRepository } from '@contexts/properties/infrastruc
 import { contextOrmProviders } from '@core/persistence/context-orm/context-orm.providers.js';
 import { MikroOrmTransactionManager } from '@core/persistence/transaction-manager/mikro-orm-transaction-manager.js';
 
+const COMMAND_HANDLERS: Provider[] = [CreatePropertyFromListingObservedHandler];
+
+const DOMAIN_BUILDER_FACTORIES: Provider[] = [
+  { provide: PROPERTY_BUILDER_FACTORY_TOKEN, useClass: PropertyBuilderFactory },
+];
+
+const INFRASTRUCTURE_MAPPERS: Provider[] = [PropertyRowMapper];
+
+const INFRASTRUCTURE_REPOSITORIES: Provider[] = [
+  { provide: PROPERTY_WRITE_REPOSITORY, useClass: PropertyMikroOrmWriteRepository },
+  { provide: PROCESSED_EVENT_REPOSITORY_TOKEN, useClass: ProcessedEventMikroOrmRepository },
+];
+
+const INFRASTRUCTURE_ADAPTERS: Provider[] = [
+  {
+    provide: TRANSACTION_MANAGER_TOKEN,
+    inject: [EntityManager],
+    useFactory: (em: EntityManager) => new MikroOrmTransactionManager(em),
+  },
+  ListingObservedConsumer,
+  ListingEventsWorker,
+];
+
 /** Properties persistence and the consumer of the listings event stream. */
 @Module({
   providers: [
     ...contextOrmProviders('properties'),
-    PropertyRowMapper,
-    CreatePropertyFromListingObservedHandler,
-    ListingObservedConsumer,
-    ListingEventsWorker,
-    { provide: PROPERTY_BUILDER_FACTORY_TOKEN, useClass: PropertyBuilderFactory },
-    { provide: PROPERTY_WRITE_REPOSITORY, useClass: PropertyMikroOrmWriteRepository },
-    { provide: PROCESSED_EVENT_REPOSITORY_TOKEN, useClass: ProcessedEventMikroOrmRepository },
-    {
-      provide: TRANSACTION_MANAGER_TOKEN,
-      inject: [EntityManager],
-      useFactory: (em: EntityManager) => new MikroOrmTransactionManager(em),
-    },
+    ...COMMAND_HANDLERS,
+    ...DOMAIN_BUILDER_FACTORIES,
+    ...INFRASTRUCTURE_MAPPERS,
+    ...INFRASTRUCTURE_REPOSITORIES,
+    ...INFRASTRUCTURE_ADAPTERS,
   ],
   exports: [ListingObservedConsumer],
 })
