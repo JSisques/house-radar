@@ -16,6 +16,7 @@ Branch: `feat/properties-persistence`. Delivery: single PR. Test runner: vitest 
 - [x] T1 (S1) inline: migration `property` + `property_listing`, schemas, mapper, write repository, `syncChildRows` hook in `OutboxWriteRepository`, `processed_event` adapter, module.
 - [x] T2 (S1-S3) inline: `ListingObservedConsumer` + relay → consumer → table integration spec.
 - [x] T3 (S1) inline: `database-schema.md` (EN + ES).
+- [x] T4 (S1) inline: BullMQ `ListingEventsWorker` and `PropertiesModule` in `AppModule`.
 
 ## Log
 
@@ -24,5 +25,6 @@ Branch: `feat/properties-persistence`. Delivery: single PR. Test runner: vitest 
 - Root row has no own state, so `updatedAt` is touched when a child changes to bump `version`.
 - Eager `listings` collection broke optimistic locking (lock mode propagated to the child query): listings are populated explicitly.
 - `createOrmOptions` now sets `contextName` per stream: with the shared default name, a consumer run inside the relay's transaction used the listings ORM context.
-- Not done: no BullMQ worker or `AppModule` import yet; the consumer is exported by `PropertiesModule` and exercised through `OutboxRelay`.
+- User follow-up: "Si, hazlo en esta PR y cuando acabes crea la PR". Added `ListingEventsWorker` (BullMQ worker on `listings.events`) and imported `PropertiesModule` in `AppModule`.
+- The worker closes with `close(true)`: a graceful close hung the app shutdown for 120s when Redis was unreachable (health and observability e2e specs).
 - Risk: item 3 (shared `OutboxWriteRepository` hook is additive; `contextName` change affects every ORM, all integration specs pass).

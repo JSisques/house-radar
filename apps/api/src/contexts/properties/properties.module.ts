@@ -9,6 +9,7 @@ import {
   PropertyBuilderFactory,
 } from '@contexts/properties/domain/builders/property/property-builder.factory';
 import { PROPERTY_WRITE_REPOSITORY } from '@contexts/properties/domain/repositories/write/property-write.repository';
+import { ListingEventsWorker } from '@contexts/properties/infrastructure/messaging/listing-events.worker';
 import { ListingObservedConsumer } from '@contexts/properties/infrastructure/messaging/listing-observed.consumer';
 import { PropertyRowMapper } from '@contexts/properties/infrastructure/persistence/mikro-orm/mappers/property-row/property-row.mapper';
 import { ProcessedEventMikroOrmRepository } from '@contexts/properties/infrastructure/persistence/mikro-orm/repositories/processed-event-mikro-orm/processed-event-mikro-orm.repository';
@@ -23,6 +24,7 @@ import { MikroOrmTransactionManager } from '@core/persistence/transaction-manage
     PropertyRowMapper,
     CreatePropertyFromListingObservedHandler,
     ListingObservedConsumer,
+    ListingEventsWorker,
     { provide: PROPERTY_BUILDER_FACTORY_TOKEN, useClass: PropertyBuilderFactory },
     { provide: PROPERTY_WRITE_REPOSITORY, useClass: PropertyMikroOrmWriteRepository },
     { provide: PROCESSED_EVENT_REPOSITORY_TOKEN, useClass: ProcessedEventMikroOrmRepository },
