@@ -14,7 +14,7 @@ Estas convenciones se aplican a `apps/api`, `apps/ingestion`, `apps/web`, `packa
 - **Las reglas las impone el lint, no la revisión.** Los límites entre capas, las rutas de importación y su orden son reglas de ESLint. Una regla que no se puede comprobar automáticamente es una regla que se erosiona.
 - **Sin archivos barrel.** Se importa desde el archivo que define el símbolo.
 - **Un concepto por carpeta.** Cada concepto vive en una carpeta con su nombre, con sus archivos y su spec (`exceptions/exception-mapping/exception-mapping.registry.ts` junto a `exception-mapping.registry.spec.ts` en el backend, `router/app-router/app-router.tsx` junto a `app-router.spec.tsx` en la web), como ya hacen los commands, queries y conceptos de dominio.
-- **Un tipo por archivo.** La única excepción es `{Name}CommandInput` / `{Name}QueryInput` / `{Name}ServiceInput`, declarado en el archivo del comando, de la consulta o del servicio.
+- **Un tipo por archivo.** La única excepción es `I{Name}CommandInput` / `I{Name}QueryInput` / `I{ServiceName}Input`, declarado en el archivo del comando, de la consulta o del servicio.
 - **Alias de rutas.** Las importaciones entre directorios usan alias (`@contexts/*`, `@core/*`, `@shared/*`). Las importaciones relativas solo se permiten dentro del mismo directorio.
 
 ## Paquetes del monorepo
@@ -35,7 +35,7 @@ Bloques DDD genéricos, sin conceptos de House Radar.
 | Consultas | `Criteria` inmutable, `PaginatedResult`, `FilterFieldRegistry`. Sin `any` en `Filter.value`. |
 | Puertos de repositorio | Puertos de lectura y de escritura separados. |
 | `DomainException` | Lleva un `code` y una `cause` opcional. |
-| `IService<TInput, TOutput>` | Contrato estándar de servicios de aplicación: un método público `execute(input)` que devuelve `TOutput` o `Promise<TOutput>`. Cada servicio de aplicación lo implementa con un único `execute`; cuando un servicio tiene dos operaciones distintas, se divide en dos servicios. Las entradas se declaran como `{Name}ServiceInput` en el archivo del servicio. |
+| `IService<TInput, TOutput>` | Contrato estándar de servicios de aplicación: un método público `execute(input)` que devuelve `TOutput` o `Promise<TOutput>`. Cada servicio de aplicación lo implementa con un único `execute`; cuando un servicio tiene dos operaciones distintas, se divide en dos servicios. Las entradas se declaran como `I{ServiceName}Input` en el archivo del servicio. |
 
 Los IDs son UUIDv7, generados con el paquete `uuid` (`v7()`), de modo que el paquete también funciona en el navegador (`apps/web`) ([D32](/es/adr/d32-uuid-v7/)). Aquí nunca se añaden value objects específicos del proyecto.
 

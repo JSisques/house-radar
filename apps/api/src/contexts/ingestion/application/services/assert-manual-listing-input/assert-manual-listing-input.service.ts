@@ -5,7 +5,7 @@ import { isBlank } from '@house-radar/shared-kernel';
 
 import { MissingManualListingFieldsException } from '@contexts/ingestion/domain/exceptions/missing-manual-listing-fields/missing-manual-listing-fields.exception';
 
-export interface IManualListingInput {
+export interface IManualListingServiceInput {
   url?: string;
   priceCents?: number;
 }
@@ -17,8 +17,8 @@ export interface IValidManualListingInput {
 
 /** Ensures every required manual listing field is present, reporting all missing ones at once. */
 @Injectable()
-export class AssertManualListingInputService implements IService<IManualListingInput, IValidManualListingInput> {
-  execute(input: IManualListingInput): IValidManualListingInput {
+export class AssertManualListingInputService implements IService<IManualListingServiceInput, IValidManualListingInput> {
+  execute(input: IManualListingServiceInput): IValidManualListingInput {
     const missingFields: string[] = [];
     if (isBlank(input.url)) missingFields.push('url');
     if (input.priceCents === undefined || input.priceCents === null) missingFields.push('price');

@@ -12,13 +12,13 @@ import {
 } from '@contexts/properties/application/ports/property-search-view-repository.port';
 import { PropertySearchViewConsolidationService } from '@contexts/properties/application/services/write/property-search-view-consolidation/property-search-view-consolidation.service';
 
-export interface RefreshPropertySearchViewServiceInput {
+export interface IRefreshPropertySearchViewServiceInput {
   propertyId: string;
 }
 
 /** Recomputes the search view of a property from the state of its listings. */
 @Injectable()
-export class RefreshPropertySearchViewService implements IService<RefreshPropertySearchViewServiceInput, void> {
+export class RefreshPropertySearchViewService implements IService<IRefreshPropertySearchViewServiceInput, void> {
   constructor(
     @Inject(PROJECTED_LISTING_REPOSITORY_TOKEN) private readonly listings: IProjectedListingRepository,
     @Inject(PROPERTY_SEARCH_VIEW_REPOSITORY_TOKEN) private readonly views: IPropertySearchViewRepository,
@@ -26,7 +26,7 @@ export class RefreshPropertySearchViewService implements IService<RefreshPropert
     private readonly consolidation: PropertySearchViewConsolidationService,
   ) {}
 
-  async execute({ propertyId }: RefreshPropertySearchViewServiceInput): Promise<void> {
+  async execute({ propertyId }: IRefreshPropertySearchViewServiceInput): Promise<void> {
     const listings = await this.listings.findByProperty(propertyId);
     await this.views.save(this.consolidation.execute({ propertyId, listings }));
   }

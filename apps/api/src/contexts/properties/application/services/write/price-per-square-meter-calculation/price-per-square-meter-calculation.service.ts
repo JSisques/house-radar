@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { IService } from '@house-radar/building-blocks';
 import { Area, isKnown, known, Money, PricePerSquareMeter } from '@house-radar/shared-kernel';
 
-export interface PricePerSquareMeterCalculationServiceInput {
+export interface IPricePerSquareMeterCalculationServiceInput {
   priceCents: number | null;
   builtAreaM2: number | null;
 }
@@ -14,10 +14,10 @@ export interface PricePerSquareMeterCalculationServiceInput {
  */
 @Injectable()
 export class PricePerSquareMeterCalculationService implements IService<
-  PricePerSquareMeterCalculationServiceInput,
+  IPricePerSquareMeterCalculationServiceInput,
   number | null
 > {
-  execute({ priceCents, builtAreaM2 }: PricePerSquareMeterCalculationServiceInput): number | null {
+  execute({ priceCents, builtAreaM2 }: IPricePerSquareMeterCalculationServiceInput): number | null {
     if (priceCents === null || priceCents <= 0 || builtAreaM2 === null || builtAreaM2 <= 0) return null;
     const builtArea = known(new Area(builtAreaM2), 'declared');
     const pricePerSquareMeter = PricePerSquareMeter.calculate(new Money(priceCents), builtArea);

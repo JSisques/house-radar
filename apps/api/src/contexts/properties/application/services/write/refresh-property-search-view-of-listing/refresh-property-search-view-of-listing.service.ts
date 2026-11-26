@@ -8,14 +8,14 @@ import {
 } from '@contexts/properties/application/ports/projected-listing-repository.port';
 import { RefreshPropertySearchViewService } from '@contexts/properties/application/services/write/refresh-property-search-view/refresh-property-search-view.service';
 
-export interface RefreshPropertySearchViewOfListingServiceInput {
+export interface IRefreshPropertySearchViewOfListingServiceInput {
   listingId: string;
 }
 
 /** Finds the property of the listing and refreshes its search view; does nothing while the listing has no property yet. */
 @Injectable()
 export class RefreshPropertySearchViewOfListingService implements IService<
-  RefreshPropertySearchViewOfListingServiceInput,
+  IRefreshPropertySearchViewOfListingServiceInput,
   void
 > {
   constructor(
@@ -23,7 +23,7 @@ export class RefreshPropertySearchViewOfListingService implements IService<
     @Inject(RefreshPropertySearchViewService) private readonly refresher: RefreshPropertySearchViewService,
   ) {}
 
-  async execute({ listingId }: RefreshPropertySearchViewOfListingServiceInput): Promise<void> {
+  async execute({ listingId }: IRefreshPropertySearchViewOfListingServiceInput): Promise<void> {
     const propertyId = await this.listings.findPropertyIdOf(listingId);
     if (propertyId !== null) await this.refresher.execute({ propertyId });
   }

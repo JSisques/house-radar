@@ -14,7 +14,7 @@ These conventions apply to `apps/api`, `apps/ingestion`, `apps/web`, `packages/b
 - **Rules are enforced by lint, not by review.** Layer boundaries, import paths and ordering are ESLint rules. A rule that cannot be enforced automatically is a rule that erodes.
 - **No barrel files.** Import from the file that defines the symbol.
 - **One concept per folder.** Every concept lives in a folder named after it, holding its files and its spec (`exceptions/exception-mapping/exception-mapping.registry.ts` next to `exception-mapping.registry.spec.ts` in the backend, `router/app-router/app-router.tsx` next to `app-router.spec.tsx` in the web app), as commands, queries and domain concepts already do.
-- **One type per file.** The only exception is `{Name}CommandInput` / `{Name}QueryInput` / `{Name}ServiceInput`, declared in the command, query, or service file.
+- **One type per file.** The only exception is `I{Name}CommandInput` / `I{Name}QueryInput` / `I{ServiceName}Input`, declared in the command, query, or service file.
 - **Path aliases.** Cross-directory imports use aliases (`@contexts/*`, `@core/*`, `@shared/*`). Relative imports are allowed only inside the same directory.
 
 ## Monorepo packages
@@ -35,7 +35,7 @@ Generic DDD building blocks with no House Radar concepts.
 | Querying | Immutable `Criteria`, `PaginatedResult`, `FilterFieldRegistry`. No `any` in `Filter.value`. |
 | Repository ports | Separate read and write ports. |
 | `DomainException` | Carries a `code` and an optional `cause`. |
-| `IService<TInput, TOutput>` | Standard application service contract: one public method `execute(input)` returning `TOutput` or `Promise<TOutput>`. Every application service implements it with a single `execute`; when a service has two distinct operations, they are split into two services. Inputs are declared as `{Name}ServiceInput` in the service file. |
+| `IService<TInput, TOutput>` | Standard application service contract: one public method `execute(input)` returning `TOutput` or `Promise<TOutput>`. Every application service implements it with a single `execute`; when a service has two distinct operations, they are split into two services. Inputs are declared as `I{ServiceName}Input` in the service file. |
 
 IDs are UUIDv7, generated with the `uuid` package (`v7()`), so the package also works in the browser (`apps/web`) ([D32](/adr/d32-uuid-v7/)). Project-specific value objects are never added here.
 

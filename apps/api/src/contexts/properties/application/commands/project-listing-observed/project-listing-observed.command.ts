@@ -1,4 +1,4 @@
-export interface ProjectListingObservedCommandInput {
+export interface IProjectListingObservedCommandInput {
   /** Id of the `ListingObserved` event, used to deduplicate redeliveries. */
   eventId: string;
   listingId: string;
@@ -16,7 +16,7 @@ export class ProjectListingObservedCommand {
   readonly priceCents: number | null;
   readonly observedAt: Date;
 
-  constructor(input: ProjectListingObservedCommandInput) {
+  constructor(input: IProjectListingObservedCommandInput) {
     this.eventId = input.eventId;
     this.listingId = input.listingId;
     this.status = input.status;

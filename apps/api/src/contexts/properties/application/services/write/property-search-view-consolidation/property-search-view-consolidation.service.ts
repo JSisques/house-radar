@@ -13,7 +13,7 @@ import type { ListingAttributeValue } from '@contexts/properties/domain/interfac
 import type { ListingAttributes } from '@contexts/properties/domain/interfaces/listing-attributes.interface';
 import type { IProjectedListingProps } from '@contexts/properties/domain/interfaces/projected-listing-props.interface';
 
-export interface PropertySearchViewConsolidationServiceInput {
+export interface IPropertySearchViewConsolidationServiceInput {
   propertyId: string;
   listings: readonly IProjectedListingProps[];
 }
@@ -24,7 +24,7 @@ export interface PropertySearchViewConsolidationServiceInput {
  */
 @Injectable()
 export class PropertySearchViewConsolidationService implements IService<
-  PropertySearchViewConsolidationServiceInput,
+  IPropertySearchViewConsolidationServiceInput,
   IPropertySearchViewModel
 > {
   constructor(
@@ -32,7 +32,7 @@ export class PropertySearchViewConsolidationService implements IService<
     private readonly pricePerSquareMeter: PricePerSquareMeterCalculationService,
   ) {}
 
-  execute({ propertyId, listings }: PropertySearchViewConsolidationServiceInput): IPropertySearchViewModel {
+  execute({ propertyId, listings }: IPropertySearchViewConsolidationServiceInput): IPropertySearchViewModel {
     const observations = this.observationsByAttribute(listings);
     const chosen = (name: string): ListingAttributeValue | undefined => observations.get(name)?.at(-1)?.value;
 

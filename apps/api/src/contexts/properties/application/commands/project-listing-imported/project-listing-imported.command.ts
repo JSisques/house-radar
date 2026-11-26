@@ -1,6 +1,6 @@
 import type { ListingAttributes } from '@contexts/properties/domain/interfaces/listing-attributes.interface';
 
-export interface ProjectListingImportedCommandInput {
+export interface IProjectListingImportedCommandInput {
   /** Id of the `ListingImported` event, used to deduplicate redeliveries. */
   eventId: string;
   listingId: string;
@@ -23,7 +23,7 @@ export class ProjectListingImportedCommand {
   readonly attributes: ListingAttributes;
   readonly observedAt: Date;
 
-  constructor(input: ProjectListingImportedCommandInput) {
+  constructor(input: IProjectListingImportedCommandInput) {
     this.eventId = input.eventId;
     this.listingId = input.listingId;
     this.source = input.source;
