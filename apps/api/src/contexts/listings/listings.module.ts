@@ -1,5 +1,5 @@
 import { MikroORM } from '@mikro-orm/postgresql';
-import { Inject, Module, type OnApplicationShutdown } from '@nestjs/common';
+import { Inject, Module, type OnApplicationShutdown, type Provider } from '@nestjs/common';
 
 import {
   LISTING_BUILDER_FACTORY_TOKEN,
@@ -19,17 +19,26 @@ import { ListingMikroOrmWriteRepository } from '@contexts/listings/infrastructur
 import { ObservationMikroOrmWriteRepository } from '@contexts/listings/infrastructure/persistence/mikro-orm/repositories/observation-mikro-orm-write/observation-mikro-orm-write.repository';
 import { contextOrmProviders } from '@core/persistence/context-orm/context-orm.providers.js';
 
+const DOMAIN_BUILDER_FACTORIES: Provider[] = [
+  { provide: LISTING_BUILDER_FACTORY_TOKEN, useClass: ListingBuilderFactory },
+  { provide: OBSERVATION_BUILDER_FACTORY_TOKEN, useClass: ObservationBuilderFactory },
+];
+
+const INFRASTRUCTURE_MAPPERS: Provider[] = [ListingRowMapper, ObservationRowMapper];
+
+const INFRASTRUCTURE_REPOSITORIES: Provider[] = [
+  { provide: LISTING_READ_REPOSITORY, useClass: ListingMikroOrmReadRepository },
+  { provide: LISTING_WRITE_REPOSITORY, useClass: ListingMikroOrmWriteRepository },
+  { provide: OBSERVATION_WRITE_REPOSITORY, useClass: ObservationMikroOrmWriteRepository },
+];
+
 /** Listings persistence. Exports what other contexts' adapters need to register a listing. */
 @Module({
   providers: [
     ...contextOrmProviders('listings'),
-    ListingRowMapper,
-    ObservationRowMapper,
-    { provide: LISTING_BUILDER_FACTORY_TOKEN, useClass: ListingBuilderFactory },
-    { provide: OBSERVATION_BUILDER_FACTORY_TOKEN, useClass: ObservationBuilderFactory },
-    { provide: LISTING_READ_REPOSITORY, useClass: ListingMikroOrmReadRepository },
-    { provide: LISTING_WRITE_REPOSITORY, useClass: ListingMikroOrmWriteRepository },
-    { provide: OBSERVATION_WRITE_REPOSITORY, useClass: ObservationMikroOrmWriteRepository },
+    ...DOMAIN_BUILDER_FACTORIES,
+    ...INFRASTRUCTURE_MAPPERS,
+    ...INFRASTRUCTURE_REPOSITORIES,
   ],
   exports: [
     LISTING_BUILDER_FACTORY_TOKEN,

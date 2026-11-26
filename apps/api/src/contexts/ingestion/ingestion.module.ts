@@ -1,5 +1,5 @@
 import { MikroORM } from '@mikro-orm/postgresql';
-import { Inject, Module, type OnApplicationShutdown } from '@nestjs/common';
+import { Inject, Module, type OnApplicationShutdown, type Provider } from '@nestjs/common';
 
 import { DateValueObject } from '@house-radar/building-blocks';
 import {
@@ -30,19 +30,39 @@ import { ListingsModule } from '@contexts/listings/listings.module';
 import { ExceptionMappingRegistry } from '@core/exceptions/exception-mapping/exception-mapping.registry.js';
 import { contextOrmProviders } from '@core/persistence/context-orm/context-orm.providers.js';
 
+const COMMAND_HANDLERS: Provider[] = [ImportManualListingHandler];
+
+const APPLICATION_SERVICES: Provider[] = [AssertManualListingInputService];
+
+const DOMAIN_BUILDER_FACTORIES: Provider[] = [
+  { provide: SOURCE_BUILDER_FACTORY_TOKEN, useClass: SourceBuilderFactory },
+];
+
+const INFRASTRUCTURE_MAPPERS: Provider[] = [SourceRowMapper];
+
+const INFRASTRUCTURE_REPOSITORIES: Provider[] = [
+  { provide: SOURCE_WRITE_REPOSITORY, useClass: SourceMikroOrmWriteRepository },
+];
+
+const INFRASTRUCTURE_ADAPTERS: Provider[] = [
+  { provide: LISTING_REGISTRY_PORT, useClass: ListingsRegistryAdapter },
+  { provide: CLOCK_PORT, useValue: () => new DateValueObject(new Date()) },
+];
+
+const REST_CONTROLLERS = [ManualListingsController];
+
 /** Ingestion: imports listings from outside (manual entry today). */
 @Module({
   imports: [ListingsModule],
-  controllers: [ManualListingsController],
+  controllers: REST_CONTROLLERS,
   providers: [
     ...contextOrmProviders('ingestion'),
-    SourceRowMapper,
-    AssertManualListingInputService,
-    ImportManualListingHandler,
-    { provide: SOURCE_BUILDER_FACTORY_TOKEN, useClass: SourceBuilderFactory },
-    { provide: SOURCE_WRITE_REPOSITORY, useClass: SourceMikroOrmWriteRepository },
-    { provide: LISTING_REGISTRY_PORT, useClass: ListingsRegistryAdapter },
-    { provide: CLOCK_PORT, useValue: () => new DateValueObject(new Date()) },
+    ...COMMAND_HANDLERS,
+    ...APPLICATION_SERVICES,
+    ...DOMAIN_BUILDER_FACTORIES,
+    ...INFRASTRUCTURE_MAPPERS,
+    ...INFRASTRUCTURE_REPOSITORIES,
+    ...INFRASTRUCTURE_ADAPTERS,
   ],
 })
 export class IngestionModule implements OnApplicationShutdown {
