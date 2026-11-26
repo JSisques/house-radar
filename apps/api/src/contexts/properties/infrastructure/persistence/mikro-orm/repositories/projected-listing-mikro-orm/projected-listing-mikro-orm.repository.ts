@@ -1,25 +1,26 @@
-import { EntityManager } from '@mikro-orm/postgresql';
+﻿import { EntityManager } from '@mikro-orm/postgresql';
 import { Inject, Injectable } from '@nestjs/common';
 
 import type { ProjectListingImportedCommand } from '@contexts/properties/application/commands/project-listing-imported/project-listing-imported.command';
 import type { ProjectListingObservedCommand } from '@contexts/properties/application/commands/project-listing-observed/project-listing-observed.command';
 import type { IProjectedListingRepository } from '@contexts/properties/application/ports/projected-listing-repository.port';
-import type { ListingAttributes } from '@contexts/properties/domain/interfaces/listing-attributes.interface';
 import type { IProjectedListingProps } from '@contexts/properties/domain/interfaces/projected-listing-props.interface';
-
-interface IProjectedListingRow {
-  listing_id: string;
-  source: string | null;
-  status: string | null;
-  price_cents: number | null;
-  attributes: ListingAttributes | null;
-  attributes_observed_at: Date | null;
-}
+import {
+  PROPERTY_ENTITY,
+  PROPERTY_LISTING_ENTITY,
+  type PropertyListingRow,
+  type PropertyRow,
+} from '@contexts/properties/infrastructure/persistence/mikro-orm/schemas/property.schema';
+import { PROJECTED_LISTING_ENTITY } from '@contexts/properties/infrastructure/persistence/mikro-orm/schemas/property-search-view.schema';
 
 /**
  * Stores the per-listing state in `properties.projected_listing`. Price and status are replaced only by an observation
  * at least as recent as the stored one, and the attributes only by a check at least as recent, so a late event never
  * overwrites newer data and a replay is harmless. The writes run in the ambient transaction.
+ *
+ * The two writes are SQL on purpose: each column group decides in the database, in one atomic statement, whether the
+ * event is newer than the stored state. With the ORM that is a read followed by a write, and two events of one listing
+ * could both insert the first row. Reads go through the ORM, refreshed so they see what the transaction just wrote.
  */
 @Injectable()
 export class ProjectedListingMikroOrmRepository implements IProjectedListingRepository {
@@ -78,34 +79,35 @@ export class ProjectedListingMikroOrmRepository implements IProjectedListingRepo
   }
 
   async findPropertyIdOf(listingId: string): Promise<string | null> {
-    const rows = await this.em.execute<{ property_id: string }[]>(
-      'select "property_id" from "properties"."property_listing" where "listing_id" = ?',
-      [listingId],
-    );
-    return rows[0]?.property_id ?? null;
+    const link = await this.em.findOne<PropertyListingRow>(PROPERTY_LISTING_ENTITY, { listingId }, { refresh: true });
+    return link?.property.id ?? null;
   }
 
   async findByProperty(propertyId: string): Promise<IProjectedListingProps[]> {
-    const rows = await this.em.execute<IProjectedListingRow[]>(
-      `select l."listing_id", l."source", l."status", l."price_cents"::float8 as "price_cents", l."attributes",
-              l."attributes_observed_at"
-         from "properties"."property_listing" link
-         join "properties"."projected_listing" l on l."listing_id" = link."listing_id"
-        where link."property_id" = ?`,
-      [propertyId],
+    const links = await this.em.find<PropertyListingRow>(
+      PROPERTY_LISTING_ENTITY,
+      { property: propertyId },
+      { refresh: true },
+    );
+    if (links.length === 0) return [];
+
+    const rows = await this.em.find(
+      PROJECTED_LISTING_ENTITY,
+      { listingId: { $in: links.map((link) => link.listingId) } },
+      { refresh: true },
     );
     return rows.map((row) => ({
-      listingId: row.listing_id,
+      listingId: row.listingId,
       source: row.source,
       status: row.status,
-      priceCents: row.price_cents,
+      priceCents: row.priceCents,
       attributes: row.attributes,
-      attributesObservedAt: row.attributes_observed_at === null ? null : new Date(row.attributes_observed_at),
+      attributesObservedAt: row.attributesObservedAt,
     }));
   }
 
   async listPropertyIds(): Promise<string[]> {
-    const rows = await this.em.execute<{ id: string }[]>('select "id" from "properties"."property" order by "id"');
-    return rows.map((row) => row.id);
+    const properties = await this.em.find<PropertyRow>(PROPERTY_ENTITY, {}, { orderBy: { id: 'asc' } });
+    return properties.map((property) => property.id);
   }
 }
