@@ -4,10 +4,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { ProjectListingImportedCommand } from '@contexts/properties/application/commands/project-listing-imported/project-listing-imported.command';
 import type { ProjectListingObservedCommand } from '@contexts/properties/application/commands/project-listing-observed/project-listing-observed.command';
 import type { IProjectedListingRepository } from '@contexts/properties/application/ports/projected-listing-repository.port';
-import type {
-  IProjectedListingProps,
-  ListingAttributes,
-} from '@contexts/properties/domain/interfaces/projected-listing-props.interface';
+import type { ListingAttributes } from '@contexts/properties/domain/interfaces/listing-attributes.interface';
+import type { IProjectedListingProps } from '@contexts/properties/domain/interfaces/projected-listing-props.interface';
 
 interface IProjectedListingRow {
   listing_id: string;
@@ -50,7 +48,7 @@ export class ProjectedListingMikroOrmRepository implements IProjectedListingRepo
          "state_observed_at" = greatest("projected_listing"."state_observed_at", excluded."state_observed_at"),
          "updated_at" = now()`,
       [
-        command.listingId.value,
+        command.listingId,
         command.source,
         command.status,
         command.priceCents,
@@ -75,7 +73,7 @@ export class ProjectedListingMikroOrmRepository implements IProjectedListingRepo
                               then excluded."price_cents" else "projected_listing"."price_cents" end,
          "state_observed_at" = greatest("projected_listing"."state_observed_at", excluded."state_observed_at"),
          "updated_at" = now()`,
-      [command.listingId.value, command.status, command.priceCents, command.observedAt],
+      [command.listingId, command.status, command.priceCents, command.observedAt],
     );
   }
 

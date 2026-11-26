@@ -1,12 +1,8 @@
-import type {
-  IProjectedListingProps,
-  ListingAttributes,
-  ListingAttributeValue,
-} from '@contexts/properties/domain/interfaces/projected-listing-props.interface';
-import type {
-  IAttributeConflictValuePrimitives,
-  IPropertySearchViewPrimitives,
-} from '@contexts/properties/domain/primitives/property-search-view.primitives';
+import type { IAttributeConflictValueViewModel } from '@contexts/properties/application/view-models/attribute-conflict-value/attribute-conflict-value.view-model';
+import type { IPropertySearchViewModel } from '@contexts/properties/application/view-models/property-search-view/property-search-view.view-model';
+import type { ListingAttributeValue } from '@contexts/properties/domain/interfaces/listing-attribute-value.interface';
+import type { ListingAttributes } from '@contexts/properties/domain/interfaces/listing-attributes.interface';
+import type { IProjectedListingProps } from '@contexts/properties/domain/interfaces/projected-listing-props.interface';
 
 /** Additional features of HR-F002-BR3: they are kept apart from the general fields in the view. */
 export const ADDITIONAL_FEATURE_NAMES = [
@@ -43,7 +39,7 @@ const asNumber = (value: ListingAttributeValue | undefined): number | null =>
  * only has to feed it the stored listing state again.
  */
 export class PropertySearchViewConsolidationService {
-  consolidate(propertyId: string, listings: readonly IProjectedListingProps[]): IPropertySearchViewPrimitives {
+  consolidate(propertyId: string, listings: readonly IProjectedListingProps[]): IPropertySearchViewModel {
     const observations = this.observationsByAttribute(listings);
     const chosen = (name: string): ListingAttributeValue | undefined => observations.get(name)?.at(-1)?.value;
 
@@ -114,8 +110,8 @@ export class PropertySearchViewConsolidationService {
 
   private conflicts(
     observations: Map<string, IAttributeObservation[]>,
-  ): Record<string, IAttributeConflictValuePrimitives[]> {
-    const conflicts: Record<string, IAttributeConflictValuePrimitives[]> = {};
+  ): Record<string, IAttributeConflictValueViewModel[]> {
+    const conflicts: Record<string, IAttributeConflictValueViewModel[]> = {};
     for (const [name, values] of observations) {
       if (new Set(values.map((observation) => observation.value)).size > 1) conflicts[name] = values;
     }

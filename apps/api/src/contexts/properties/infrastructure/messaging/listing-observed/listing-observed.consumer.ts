@@ -6,20 +6,12 @@ import type { OutboxMessage } from '@house-radar/outbox';
 import { CreatePropertyFromListingObservedCommand } from '@contexts/properties/application/commands/create-property-from-listing-observed/create-property-from-listing-observed.command';
 import { ProjectListingImportedCommand } from '@contexts/properties/application/commands/project-listing-imported/project-listing-imported.command';
 import { ProjectListingObservedCommand } from '@contexts/properties/application/commands/project-listing-observed/project-listing-observed.command';
-import {
-  readKnownValue,
-  readListingAttributes,
-} from '@contexts/properties/domain/services/listing-attributes-reader/listing-attributes.reader';
+import { ListingEventPayloadMapper } from '@contexts/properties/infrastructure/messaging/listing-event-payload/listing-event-payload.mapper';
 
 export const LISTING_OBSERVED_EVENT_TYPE = 'ListingObservedEvent';
 export const LISTING_IMPORTED_EVENT_TYPE = 'ListingImportedEvent';
 
 type Payload = Readonly<Record<string, unknown>>;
-
-const priceCentsOf = (payload: Payload): number | null => {
-  const price = readKnownValue(payload['price']);
-  return typeof price === 'number' ? price : null;
-};
 
 /**
  * Receives the listings outbox stream (from the relay or a queue worker). A `ListingObserved` gives the listing a
@@ -28,7 +20,10 @@ const priceCentsOf = (payload: Payload): number | null => {
  */
 @Injectable()
 export class ListingObservedConsumer {
-  constructor(@Inject(CommandBus) private readonly commands: CommandBus) {}
+  constructor(
+    @Inject(CommandBus) private readonly commands: CommandBus,
+    @Inject(ListingEventPayloadMapper) private readonly payloads: ListingEventPayloadMapper,
+  ) {}
 
   async handle(message: OutboxMessage): Promise<void> {
     const payload = message.payload as Payload;
@@ -47,7 +42,7 @@ export class ListingObservedConsumer {
           eventId: message.eventId,
           listingId,
           status: payload['status'] as string,
-          priceCents: priceCentsOf(payload),
+          priceCents: this.payloads.toPriceCents(payload),
           observedAt: new Date(payload['observedAt'] as string),
         }),
       );
@@ -58,8 +53,8 @@ export class ListingObservedConsumer {
           listingId: payload['id'] as string,
           source: payload['source'] as string,
           status: payload['status'] as string,
-          priceCents: priceCentsOf(payload),
-          attributes: readListingAttributes(payload),
+          priceCents: this.payloads.toPriceCents(payload),
+          attributes: this.payloads.toAttributes(payload),
           observedAt: new Date(payload['lastCheckedAt'] as string),
         }),
       );

@@ -9,7 +9,7 @@ import {
   type ITransactionManager,
   TRANSACTION_MANAGER_TOKEN,
 } from '@contexts/properties/application/ports/transaction-manager.port';
-import { PropertySearchViewRefresherService } from '@contexts/properties/application/services/property-search-view-refresher/property-search-view-refresher.service';
+import { PropertySearchViewRefresherService } from '@contexts/properties/application/services/write/property-search-view-refresher/property-search-view-refresher.service';
 
 import { RebuildPropertySearchViewCommand } from './rebuild-property-search-view.command';
 
@@ -24,9 +24,8 @@ export class RebuildPropertySearchViewHandler implements ICommandHandler<Rebuild
 
   async execute(): Promise<void> {
     await this.transactions.run(async () => {
-      for (const propertyId of await this.listings.listPropertyIds()) {
-        await this.refresher.refresh(propertyId);
-      }
+      const propertyIds = await this.listings.listPropertyIds();
+      await Promise.all(propertyIds.map((propertyId) => this.refresher.refresh(propertyId)));
     });
   }
 }

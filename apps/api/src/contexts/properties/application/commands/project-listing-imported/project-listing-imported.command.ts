@@ -1,8 +1,6 @@
-import { ListingId } from '@house-radar/shared-kernel';
+import type { ListingAttributes } from '@contexts/properties/domain/interfaces/listing-attributes.interface';
 
-import type { ListingAttributes } from '@contexts/properties/domain/interfaces/projected-listing-props.interface';
-
-export interface IProjectListingImportedInput {
+export interface ProjectListingImportedCommandInput {
   /** Id of the `ListingImported` event, used to deduplicate redeliveries. */
   eventId: string;
   listingId: string;
@@ -18,16 +16,16 @@ export interface IProjectListingImportedInput {
 /** Records the attributes of an imported listing in the property search view. */
 export class ProjectListingImportedCommand {
   readonly eventId: string;
-  readonly listingId: ListingId;
+  readonly listingId: string;
   readonly source: string;
   readonly status: string;
   readonly priceCents: number | null;
   readonly attributes: ListingAttributes;
   readonly observedAt: Date;
 
-  constructor(input: IProjectListingImportedInput) {
+  constructor(input: ProjectListingImportedCommandInput) {
     this.eventId = input.eventId;
-    this.listingId = new ListingId(input.listingId);
+    this.listingId = input.listingId;
     this.source = input.source;
     this.status = input.status;
     this.priceCents = input.priceCents;

@@ -13,7 +13,7 @@ import {
   type ITransactionManager,
   TRANSACTION_MANAGER_TOKEN,
 } from '@contexts/properties/application/ports/transaction-manager.port';
-import { PropertySearchViewRefresherService } from '@contexts/properties/application/services/property-search-view-refresher/property-search-view-refresher.service';
+import { PropertySearchViewRefresherService } from '@contexts/properties/application/services/write/property-search-view-refresher/property-search-view-refresher.service';
 
 import { ProjectListingImportedCommand } from './project-listing-imported.command';
 
@@ -33,7 +33,7 @@ export class ProjectListingImportedHandler implements ICommandHandler<ProjectLis
     await this.transactions.run(async () => {
       if (!(await this.processedEvents.claim(command.eventId, PROJECT_LISTING_IMPORTED_CONSUMER))) return;
       await this.listings.applyImported(command);
-      await this.refresher.refreshPropertyOf(command.listingId.value);
+      await this.refresher.refreshPropertyOf(command.listingId);
     });
   }
 }

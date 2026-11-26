@@ -1,14 +1,8 @@
-import type { ListingAttributeValue } from '@contexts/properties/domain/interfaces/projected-listing-props.interface';
-
-/** One listing's value of an attribute that listings disagree on, with where it comes from. */
-export interface IAttributeConflictValuePrimitives {
-  listingId: string;
-  source: string | null;
-  value: ListingAttributeValue;
-}
+import type { IAttributeConflictValueViewModel } from '@contexts/properties/application/view-models/attribute-conflict-value/attribute-conflict-value.view-model';
+import type { ListingAttributeValue } from '@contexts/properties/domain/interfaces/listing-attribute-value.interface';
 
 /** The consolidated read model of one property (D19, D20). Unknown values are null. */
-export interface IPropertySearchViewPrimitives {
+export interface IPropertySearchViewModel {
   propertyId: string;
   title: string | null;
   description: string | null;
@@ -23,7 +17,7 @@ export interface IPropertySearchViewPrimitives {
   /** Additional features by name (garage, garden, ...); unknown ones are absent. */
   features: Readonly<Record<string, ListingAttributeValue>>;
   /** Attributes with more than one distinct known value, by attribute name. */
-  conflicts: Readonly<Record<string, readonly IAttributeConflictValuePrimitives[]>>;
+  conflicts: Readonly<Record<string, readonly IAttributeConflictValueViewModel[]>>;
   /** Euro cents: the lowest price among the active listings; null with none. */
   representativePriceCents: number | null;
   /** Euro cents per m2, from the built area only (D20); null when it is unknown. */

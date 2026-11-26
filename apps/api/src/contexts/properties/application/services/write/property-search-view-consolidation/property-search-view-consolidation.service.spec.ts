@@ -1,10 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import type {
-  IProjectedListingProps,
-  ListingAttributes,
-} from '@contexts/properties/domain/interfaces/projected-listing-props.interface';
-import { PropertySearchViewConsolidationService } from '@contexts/properties/domain/services/property-search-view-consolidation/property-search-view-consolidation.service';
+import { PropertySearchViewConsolidationService } from '@contexts/properties/application/services/write/property-search-view-consolidation/property-search-view-consolidation.service';
+import type { ListingAttributes } from '@contexts/properties/domain/interfaces/listing-attributes.interface';
+import type { IProjectedListingProps } from '@contexts/properties/domain/interfaces/projected-listing-props.interface';
 
 const PROPERTY_ID = 'property-1';
 
@@ -22,7 +20,7 @@ const attrs = (values: ListingAttributes): ListingAttributes => values;
 describe('PropertySearchViewConsolidationService', () => {
   const service = new PropertySearchViewConsolidationService();
 
-  describe('representative price (HR-F002-AC8)', () => {
+  describe('consolidate', () => {
     it('should be the lowest price among the active listings', () => {
       const view = service.consolidate(PROPERTY_ID, [
         listing({ listingId: 'a', priceCents: 20_000_000 }),
@@ -68,9 +66,7 @@ describe('PropertySearchViewConsolidationService', () => {
       expect(view.representativePriceCents).toBeNull();
       expect(view.activeListingCount).toBe(0);
     });
-  });
 
-  describe('price per m2 (HR-F002-AC3, AC4)', () => {
     it('should divide the representative price by the built area', () => {
       const view = service.consolidate(PROPERTY_ID, [
         listing({ listingId: 'a', priceCents: 20_000_000, attributes: attrs({ builtArea: 100 }) }),
@@ -109,9 +105,7 @@ describe('PropertySearchViewConsolidationService', () => {
 
       expect(view.pricePerM2Cents).toBe(200_000);
     });
-  });
 
-  describe('attributes and conflicts (HR-F002-AC7)', () => {
     it('should show the value of the most recently observed listing and list the conflict with its sources', () => {
       const view = service.consolidate(PROPERTY_ID, [
         listing({

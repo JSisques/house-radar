@@ -9,12 +9,13 @@ import { PROCESSED_EVENT_REPOSITORY_TOKEN } from '@contexts/properties/applicati
 import { PROJECTED_LISTING_REPOSITORY_TOKEN } from '@contexts/properties/application/ports/projected-listing-repository.port';
 import { PROPERTY_SEARCH_VIEW_REPOSITORY_TOKEN } from '@contexts/properties/application/ports/property-search-view-repository.port';
 import { TRANSACTION_MANAGER_TOKEN } from '@contexts/properties/application/ports/transaction-manager.port';
-import { PropertySearchViewRefresherService } from '@contexts/properties/application/services/property-search-view-refresher/property-search-view-refresher.service';
+import { PropertySearchViewRefresherService } from '@contexts/properties/application/services/write/property-search-view-refresher/property-search-view-refresher.service';
 import {
   PROPERTY_BUILDER_FACTORY_TOKEN,
   PropertyBuilderFactory,
 } from '@contexts/properties/domain/builders/property/property-builder.factory';
 import { PROPERTY_WRITE_REPOSITORY } from '@contexts/properties/domain/repositories/write/property-write.repository';
+import { ListingEventPayloadMapper } from '@contexts/properties/infrastructure/messaging/listing-event-payload/listing-event-payload.mapper';
 import { ListingEventsWorker } from '@contexts/properties/infrastructure/messaging/listing-events/listing-events.worker';
 import { ListingObservedConsumer } from '@contexts/properties/infrastructure/messaging/listing-observed/listing-observed.consumer';
 import { PropertyRowMapper } from '@contexts/properties/infrastructure/persistence/mikro-orm/mappers/property-row/property-row.mapper';
@@ -38,7 +39,7 @@ const DOMAIN_BUILDER_FACTORIES: Provider[] = [
   { provide: PROPERTY_BUILDER_FACTORY_TOKEN, useClass: PropertyBuilderFactory },
 ];
 
-const INFRASTRUCTURE_MAPPERS: Provider[] = [PropertyRowMapper];
+const INFRASTRUCTURE_MAPPERS: Provider[] = [PropertyRowMapper, ListingEventPayloadMapper];
 
 const INFRASTRUCTURE_REPOSITORIES: Provider[] = [
   { provide: PROPERTY_WRITE_REPOSITORY, useClass: PropertyMikroOrmWriteRepository },

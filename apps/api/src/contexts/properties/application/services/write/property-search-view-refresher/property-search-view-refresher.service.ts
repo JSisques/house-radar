@@ -8,7 +8,7 @@ import {
   type IPropertySearchViewRepository,
   PROPERTY_SEARCH_VIEW_REPOSITORY_TOKEN,
 } from '@contexts/properties/application/ports/property-search-view-repository.port';
-import { PropertySearchViewConsolidationService } from '@contexts/properties/domain/services/property-search-view-consolidation/property-search-view-consolidation.service';
+import { PropertySearchViewConsolidationService } from '@contexts/properties/application/services/write/property-search-view-consolidation/property-search-view-consolidation.service';
 
 /** Recomputes the search view of a property from the state of its listings. */
 @Injectable()

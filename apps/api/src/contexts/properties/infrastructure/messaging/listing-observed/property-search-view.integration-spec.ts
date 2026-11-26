@@ -13,8 +13,9 @@ import { ProjectListingImportedHandler } from '@contexts/properties/application/
 import { ProjectListingObservedHandler } from '@contexts/properties/application/commands/project-listing-observed/project-listing-observed.handler';
 import { RebuildPropertySearchViewCommand } from '@contexts/properties/application/commands/rebuild-property-search-view/rebuild-property-search-view.command';
 import { RebuildPropertySearchViewHandler } from '@contexts/properties/application/commands/rebuild-property-search-view/rebuild-property-search-view.handler';
-import { PropertySearchViewRefresherService } from '@contexts/properties/application/services/property-search-view-refresher/property-search-view-refresher.service';
+import { PropertySearchViewRefresherService } from '@contexts/properties/application/services/write/property-search-view-refresher/property-search-view-refresher.service';
 import { PropertyBuilderFactory } from '@contexts/properties/domain/builders/property/property-builder.factory';
+import { ListingEventPayloadMapper } from '@contexts/properties/infrastructure/messaging/listing-event-payload/listing-event-payload.mapper';
 import { ListingObservedConsumer } from '@contexts/properties/infrastructure/messaging/listing-observed/listing-observed.consumer';
 import { PropertyRowMapper } from '@contexts/properties/infrastructure/persistence/mikro-orm/mappers/property-row/property-row.mapper';
 import { ProcessedEventMikroOrmRepository } from '@contexts/properties/infrastructure/persistence/mikro-orm/repositories/processed-event-mikro-orm/processed-event-mikro-orm.repository';
@@ -68,7 +69,7 @@ describe('relay -> consumer -> property_search_view', () => {
         return (handler as unknown as { execute: (command: object) => Promise<unknown> }).execute(command);
       },
     } as unknown as CommandBus;
-    const consumer = new ListingObservedConsumer(commands);
+    const consumer = new ListingObservedConsumer(commands, new ListingEventPayloadMapper());
     relay = new OutboxRelay(listingsOrm.em, 'listings', (message) => consumer.handle(message));
   });
   afterEach(async () => {

@@ -1,6 +1,4 @@
-import { ListingId } from '@house-radar/shared-kernel';
-
-export interface IProjectListingObservedInput {
+export interface ProjectListingObservedCommandInput {
   /** Id of the `ListingObserved` event, used to deduplicate redeliveries. */
   eventId: string;
   listingId: string;
@@ -13,14 +11,14 @@ export interface IProjectListingObservedInput {
 /** Records the price and status a listing was observed with in the property search view. */
 export class ProjectListingObservedCommand {
   readonly eventId: string;
-  readonly listingId: ListingId;
+  readonly listingId: string;
   readonly status: string;
   readonly priceCents: number | null;
   readonly observedAt: Date;
 
-  constructor(input: IProjectListingObservedInput) {
+  constructor(input: ProjectListingObservedCommandInput) {
     this.eventId = input.eventId;
-    this.listingId = new ListingId(input.listingId);
+    this.listingId = input.listingId;
     this.status = input.status;
     this.priceCents = input.priceCents;
     this.observedAt = input.observedAt;

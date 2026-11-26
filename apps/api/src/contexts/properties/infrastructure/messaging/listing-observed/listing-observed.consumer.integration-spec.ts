@@ -10,6 +10,7 @@ import { type StartedPostgres, startPostgres } from '@house-radar/testing';
 
 import { CreatePropertyFromListingObservedHandler } from '@contexts/properties/application/commands/create-property-from-listing-observed/create-property-from-listing-observed.handler';
 import { PropertyBuilderFactory } from '@contexts/properties/domain/builders/property/property-builder.factory';
+import { ListingEventPayloadMapper } from '@contexts/properties/infrastructure/messaging/listing-event-payload/listing-event-payload.mapper';
 import { ListingObservedConsumer } from '@contexts/properties/infrastructure/messaging/listing-observed/listing-observed.consumer';
 import { PropertyRowMapper } from '@contexts/properties/infrastructure/persistence/mikro-orm/mappers/property-row/property-row.mapper';
 import { ProcessedEventMikroOrmRepository } from '@contexts/properties/infrastructure/persistence/mikro-orm/repositories/processed-event-mikro-orm/processed-event-mikro-orm.repository';
@@ -39,7 +40,7 @@ describe('relay -> ListingObservedConsumer -> properties tables', () => {
       new PropertyBuilderFactory(),
     );
     const commands = { execute: (command: never) => handler.execute(command) } as unknown as CommandBus;
-    const consumer = new ListingObservedConsumer(commands);
+    const consumer = new ListingObservedConsumer(commands, new ListingEventPayloadMapper());
     relay = new OutboxRelay(listingsOrm.em, 'listings', (message) => consumer.handle(message));
   });
   afterEach(async () => {
