@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
+import { IService } from '@house-radar/building-blocks';
 import { asNumber, asString } from '@house-radar/building-blocks';
 import { ADDITIONAL_FEATURE_NAMES } from '@house-radar/shared-kernel';
 
@@ -12,18 +13,26 @@ import type { ListingAttributeValue } from '@contexts/properties/domain/interfac
 import type { ListingAttributes } from '@contexts/properties/domain/interfaces/listing-attributes.interface';
 import type { IProjectedListingProps } from '@contexts/properties/domain/interfaces/projected-listing-props.interface';
 
+export interface PropertySearchViewConsolidationServiceInput {
+  propertyId: string;
+  listings: readonly IProjectedListingProps[];
+}
+
 /**
  * Consolidates the listings of one property into its read model. It holds the rules of D19 and D20, so a rebuild
  * only has to feed it the stored listing state again.
  */
 @Injectable()
-export class PropertySearchViewConsolidationService {
+export class PropertySearchViewConsolidationService implements IService<
+  PropertySearchViewConsolidationServiceInput,
+  IPropertySearchViewModel
+> {
   constructor(
     @Inject(PricePerSquareMeterCalculationService)
     private readonly pricePerSquareMeter: PricePerSquareMeterCalculationService,
   ) {}
 
-  consolidate(propertyId: string, listings: readonly IProjectedListingProps[]): IPropertySearchViewModel {
+  execute({ propertyId, listings }: PropertySearchViewConsolidationServiceInput): IPropertySearchViewModel {
     const observations = this.observationsByAttribute(listings);
     const chosen = (name: string): ListingAttributeValue | undefined => observations.get(name)?.at(-1)?.value;
 
@@ -54,7 +63,7 @@ export class PropertySearchViewConsolidationService {
       features,
       conflicts: this.conflicts(observations),
       representativePriceCents,
-      pricePerM2Cents: this.pricePerSquareMeter.calculate(representativePriceCents, builtAreaM2),
+      pricePerM2Cents: this.pricePerSquareMeter.execute({ priceCents: representativePriceCents, builtAreaM2 }),
       activeListingCount: listings.filter((listing) => listing.status === ACTIVE_LISTING_STATUS).length,
       listingCount: listings.length,
     };

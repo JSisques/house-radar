@@ -5,7 +5,7 @@ import { ProjectListingObservedHandler } from '@contexts/properties/application/
 import type { IProcessedEventRepository } from '@contexts/properties/application/ports/processed-event-repository.port';
 import type { IProjectedListingRepository } from '@contexts/properties/application/ports/projected-listing-repository.port';
 import type { ITransactionManager } from '@contexts/properties/application/ports/transaction-manager.port';
-import type { PropertySearchViewRefresherService } from '@contexts/properties/application/services/write/property-search-view-refresher/property-search-view-refresher.service';
+import type { RefreshPropertySearchViewOfListingService } from '@contexts/properties/application/services/write/refresh-property-search-view-of-listing/refresh-property-search-view-of-listing.service';
 
 const LISTING_ID = '01900000-0000-7000-8000-0000000000aa';
 
@@ -41,11 +41,11 @@ const setup = (claimed = true) => {
     }),
   } as unknown as IProjectedListingRepository;
   const refresher = {
-    refreshPropertyOf: vi.fn(() => {
+    execute: vi.fn(() => {
       calls.push('refresh');
       return Promise.resolve();
     }),
-  } as unknown as PropertySearchViewRefresherService;
+  } as unknown as RefreshPropertySearchViewOfListingService;
   const handler = new ProjectListingObservedHandler(transactions, processedEvents, listings, refresher);
   return { handler, calls, processedEvents, listings, refresher };
 };
@@ -61,7 +61,7 @@ describe('ProjectListingObservedHandler', () => {
       expect(listings.applyObserved).toHaveBeenCalledWith(
         expect.objectContaining({ listingId: LISTING_ID, status: 'disappeared' }),
       );
-      expect(refresher.refreshPropertyOf).toHaveBeenCalledWith(LISTING_ID);
+      expect(refresher.execute).toHaveBeenCalledWith({ listingId: LISTING_ID });
       expect(calls).toEqual(['begin', 'claim', 'apply', 'refresh', 'commit']);
     });
 
@@ -71,7 +71,7 @@ describe('ProjectListingObservedHandler', () => {
       await handler.execute(command());
 
       expect(listings.applyObserved).not.toHaveBeenCalled();
-      expect(refresher.refreshPropertyOf).not.toHaveBeenCalled();
+      expect(refresher.execute).not.toHaveBeenCalled();
     });
   });
 });

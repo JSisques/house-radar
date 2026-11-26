@@ -13,7 +13,7 @@ import {
   type ITransactionManager,
   TRANSACTION_MANAGER_TOKEN,
 } from '@contexts/properties/application/ports/transaction-manager.port';
-import { PropertySearchViewRefresherService } from '@contexts/properties/application/services/write/property-search-view-refresher/property-search-view-refresher.service';
+import { RefreshPropertySearchViewOfListingService } from '@contexts/properties/application/services/write/refresh-property-search-view-of-listing/refresh-property-search-view-of-listing.service';
 
 import { ProjectListingObservedCommand } from './project-listing-observed.command';
 
@@ -29,14 +29,15 @@ export class ProjectListingObservedHandler implements ICommandHandler<ProjectLis
     @Inject(TRANSACTION_MANAGER_TOKEN) private readonly transactions: ITransactionManager,
     @Inject(PROCESSED_EVENT_REPOSITORY_TOKEN) private readonly processedEvents: IProcessedEventRepository,
     @Inject(PROJECTED_LISTING_REPOSITORY_TOKEN) private readonly listings: IProjectedListingRepository,
-    @Inject(PropertySearchViewRefresherService) private readonly refresher: PropertySearchViewRefresherService,
+    @Inject(RefreshPropertySearchViewOfListingService)
+    private readonly refresher: RefreshPropertySearchViewOfListingService,
   ) {}
 
   async execute(command: ProjectListingObservedCommand): Promise<void> {
     await this.transactions.run(async () => {
       if (!(await this.processedEvents.claim(command.eventId, PROJECT_LISTING_OBSERVED_CONSUMER))) return;
       await this.listings.applyObserved(command);
-      await this.refresher.refreshPropertyOf(command.listingId);
+      await this.refresher.execute({ listingId: command.listingId });
     });
   }
 }

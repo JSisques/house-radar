@@ -14,7 +14,7 @@ These conventions apply to `apps/api`, `apps/ingestion`, `apps/web`, `packages/b
 - **Rules are enforced by lint, not by review.** Layer boundaries, import paths and ordering are ESLint rules. A rule that cannot be enforced automatically is a rule that erodes.
 - **No barrel files.** Import from the file that defines the symbol.
 - **One concept per folder.** Every concept lives in a folder named after it, holding its files and its spec (`exceptions/exception-mapping/exception-mapping.registry.ts` next to `exception-mapping.registry.spec.ts` in the backend, `router/app-router/app-router.tsx` next to `app-router.spec.tsx` in the web app), as commands, queries and domain concepts already do.
-- **One type per file.** The only exception is `{Name}CommandInput` / `{Name}QueryInput`, declared in the command or query file.
+- **One type per file.** The only exception is `{Name}CommandInput` / `{Name}QueryInput` / `{Name}ServiceInput`, declared in the command, query, or service file.
 - **Path aliases.** Cross-directory imports use aliases (`@contexts/*`, `@core/*`, `@shared/*`). Relative imports are allowed only inside the same directory.
 
 ## Monorepo packages
@@ -35,6 +35,7 @@ Generic DDD building blocks with no House Radar concepts.
 | Querying | Immutable `Criteria`, `PaginatedResult`, `FilterFieldRegistry`. No `any` in `Filter.value`. |
 | Repository ports | Separate read and write ports. |
 | `DomainException` | Carries a `code` and an optional `cause`. |
+| `IService<TInput, TOutput>` | Standard application service contract: one public method `execute(input)` returning `TOutput` or `Promise<TOutput>`. Every application service implements it with a single `execute`; when a service has two distinct operations, they are split into two services. Inputs are declared as `{Name}ServiceInput` in the service file. |
 
 IDs are UUIDv7, generated with the `uuid` package (`v7()`), so the package also works in the browser (`apps/web`) ([D32](/adr/d32-uuid-v7/)). Project-specific value objects are never added here.
 
@@ -130,7 +131,7 @@ CQRS with `@nestjs/cqrs` ([D25](/adr/d25-cqrs-and-context-structure/)).
 - A command changes state and returns at most `{ id }`. A query reads and never changes state.
 - Handlers go through repositories and services. Transport goes only through `CommandBus` and `QueryBus`.
 - Commands carry primitives, not value objects, and every field the user must supply is typed as optional. The handler calls an injected assert service (for example `AssertManualListingInputService`) that checks presence, collects every missing field and throws one typed exception, so a request missing several fields reports all of them. The handler then builds value objects from the asserted primitives; their domain exceptions are mapped to 400 at the transport layer. DTOs only check shape and types.
-- Services are split into `services/write/` and `services/read/`.
+- Services are split into `services/write/` and `services/read/`. Every application service implements `IService<TInput, TOutput>` with a single `execute(input)` method. When a service conceptually has two distinct operations, they are split into two services (one folder, one spec, one `IService` implementation per operation).
 - Write repositories expose only `save`, `findById` and `delete`. Read repositories are read-only (`findById`, `findByCriteria`).
 - Domain events are consumed by event handlers and projections, for example the representative price read model ([D19](/adr/d19-search-read-model/)). The aggregate records events with `record()`; handlers never publish them ([D31](/adr/d31-transactional-outbox/)):
   - The write repository persists the aggregate and its `peekDomainEvents()` into the context's `outbox_event` table in the same transaction (MikroORM unit of work), and calls `clearDomainEvents()` only after the commit, so a failed save and its retry do not lose events.

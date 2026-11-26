@@ -1,4 +1,6 @@
-﻿import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+
+import { IService } from '@house-radar/building-blocks';
 
 import {
   type IProjectedListingRepository,
@@ -10,9 +12,13 @@ import {
 } from '@contexts/properties/application/ports/property-search-view-repository.port';
 import { PropertySearchViewConsolidationService } from '@contexts/properties/application/services/write/property-search-view-consolidation/property-search-view-consolidation.service';
 
+export interface RefreshPropertySearchViewServiceInput {
+  propertyId: string;
+}
+
 /** Recomputes the search view of a property from the state of its listings. */
 @Injectable()
-export class PropertySearchViewRefresherService {
+export class RefreshPropertySearchViewService implements IService<RefreshPropertySearchViewServiceInput, void> {
   constructor(
     @Inject(PROJECTED_LISTING_REPOSITORY_TOKEN) private readonly listings: IProjectedListingRepository,
     @Inject(PROPERTY_SEARCH_VIEW_REPOSITORY_TOKEN) private readonly views: IPropertySearchViewRepository,
@@ -20,14 +26,8 @@ export class PropertySearchViewRefresherService {
     private readonly consolidation: PropertySearchViewConsolidationService,
   ) {}
 
-  /** Refreshes the property of the listing; a listing without a property yet has no view to refresh. */
-  async refreshPropertyOf(listingId: string): Promise<void> {
-    const propertyId = await this.listings.findPropertyIdOf(listingId);
-    if (propertyId !== null) await this.refresh(propertyId);
-  }
-
-  async refresh(propertyId: string): Promise<void> {
+  async execute({ propertyId }: RefreshPropertySearchViewServiceInput): Promise<void> {
     const listings = await this.listings.findByProperty(propertyId);
-    await this.views.save(this.consolidation.consolidate(propertyId, listings));
+    await this.views.save(this.consolidation.execute({ propertyId, listings }));
   }
 }

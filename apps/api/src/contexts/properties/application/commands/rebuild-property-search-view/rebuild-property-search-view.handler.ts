@@ -9,7 +9,7 @@ import {
   type ITransactionManager,
   TRANSACTION_MANAGER_TOKEN,
 } from '@contexts/properties/application/ports/transaction-manager.port';
-import { PropertySearchViewRefresherService } from '@contexts/properties/application/services/write/property-search-view-refresher/property-search-view-refresher.service';
+import { RefreshPropertySearchViewService } from '@contexts/properties/application/services/write/refresh-property-search-view/refresh-property-search-view.service';
 
 import { RebuildPropertySearchViewCommand } from './rebuild-property-search-view.command';
 
@@ -19,13 +19,13 @@ export class RebuildPropertySearchViewHandler implements ICommandHandler<Rebuild
   constructor(
     @Inject(TRANSACTION_MANAGER_TOKEN) private readonly transactions: ITransactionManager,
     @Inject(PROJECTED_LISTING_REPOSITORY_TOKEN) private readonly listings: IProjectedListingRepository,
-    @Inject(PropertySearchViewRefresherService) private readonly refresher: PropertySearchViewRefresherService,
+    @Inject(RefreshPropertySearchViewService) private readonly refresher: RefreshPropertySearchViewService,
   ) {}
 
   async execute(): Promise<void> {
     await this.transactions.run(async () => {
       const propertyIds = await this.listings.listPropertyIds();
-      await Promise.all(propertyIds.map((propertyId) => this.refresher.refresh(propertyId)));
+      await Promise.all(propertyIds.map((propertyId) => this.refresher.execute({ propertyId })));
     });
   }
 }

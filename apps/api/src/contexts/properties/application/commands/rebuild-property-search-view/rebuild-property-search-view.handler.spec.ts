@@ -3,14 +3,14 @@
 import { RebuildPropertySearchViewHandler } from '@contexts/properties/application/commands/rebuild-property-search-view/rebuild-property-search-view.handler';
 import type { IProjectedListingRepository } from '@contexts/properties/application/ports/projected-listing-repository.port';
 import type { ITransactionManager } from '@contexts/properties/application/ports/transaction-manager.port';
-import type { PropertySearchViewRefresherService } from '@contexts/properties/application/services/write/property-search-view-refresher/property-search-view-refresher.service';
+import type { RefreshPropertySearchViewService } from '@contexts/properties/application/services/write/refresh-property-search-view/refresh-property-search-view.service';
 
 const setup = (propertyIds: string[]) => {
   const transactions: ITransactionManager = { run: (fn) => fn() };
   const listings = {
     listPropertyIds: vi.fn(() => Promise.resolve(propertyIds)),
   } as unknown as IProjectedListingRepository;
-  const refresher = { refresh: vi.fn(() => Promise.resolve()) } as unknown as PropertySearchViewRefresherService;
+  const refresher = { execute: vi.fn(() => Promise.resolve()) } as unknown as RefreshPropertySearchViewService;
   return { handler: new RebuildPropertySearchViewHandler(transactions, listings, refresher), refresher };
 };
 
@@ -21,9 +21,9 @@ describe('RebuildPropertySearchViewHandler', () => {
 
       await handler.execute();
 
-      expect(refresher.refresh).toHaveBeenCalledTimes(2);
-      expect(refresher.refresh).toHaveBeenCalledWith('property-1');
-      expect(refresher.refresh).toHaveBeenCalledWith('property-2');
+      expect(refresher.execute).toHaveBeenCalledTimes(2);
+      expect(refresher.execute).toHaveBeenCalledWith({ propertyId: 'property-1' });
+      expect(refresher.execute).toHaveBeenCalledWith({ propertyId: 'property-2' });
     });
 
     it('should refresh nothing when there are no properties', async () => {
@@ -31,7 +31,7 @@ describe('RebuildPropertySearchViewHandler', () => {
 
       await handler.execute();
 
-      expect(refresher.refresh).not.toHaveBeenCalled();
+      expect(refresher.execute).not.toHaveBeenCalled();
     });
   });
 });

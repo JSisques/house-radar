@@ -11,7 +11,8 @@ import { PROPERTY_SEARCH_VIEW_REPOSITORY_TOKEN } from '@contexts/properties/appl
 import { TRANSACTION_MANAGER_TOKEN } from '@contexts/properties/application/ports/transaction-manager.port';
 import { PricePerSquareMeterCalculationService } from '@contexts/properties/application/services/write/price-per-square-meter-calculation/price-per-square-meter-calculation.service';
 import { PropertySearchViewConsolidationService } from '@contexts/properties/application/services/write/property-search-view-consolidation/property-search-view-consolidation.service';
-import { PropertySearchViewRefresherService } from '@contexts/properties/application/services/write/property-search-view-refresher/property-search-view-refresher.service';
+import { RefreshPropertySearchViewService } from '@contexts/properties/application/services/write/refresh-property-search-view/refresh-property-search-view.service';
+import { RefreshPropertySearchViewOfListingService } from '@contexts/properties/application/services/write/refresh-property-search-view-of-listing/refresh-property-search-view-of-listing.service';
 import {
   PROPERTY_BUILDER_FACTORY_TOKEN,
   PropertyBuilderFactory,
@@ -38,7 +39,8 @@ const COMMAND_HANDLERS: Provider[] = [
 const APPLICATION_SERVICES: Provider[] = [
   PricePerSquareMeterCalculationService,
   PropertySearchViewConsolidationService,
-  PropertySearchViewRefresherService,
+  RefreshPropertySearchViewService,
+  RefreshPropertySearchViewOfListingService,
 ];
 
 const DOMAIN_BUILDER_FACTORIES: Provider[] = [

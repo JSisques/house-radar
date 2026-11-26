@@ -15,7 +15,8 @@ import { RebuildPropertySearchViewCommand } from '@contexts/properties/applicati
 import { RebuildPropertySearchViewHandler } from '@contexts/properties/application/commands/rebuild-property-search-view/rebuild-property-search-view.handler';
 import { PricePerSquareMeterCalculationService } from '@contexts/properties/application/services/write/price-per-square-meter-calculation/price-per-square-meter-calculation.service';
 import { PropertySearchViewConsolidationService } from '@contexts/properties/application/services/write/property-search-view-consolidation/property-search-view-consolidation.service';
-import { PropertySearchViewRefresherService } from '@contexts/properties/application/services/write/property-search-view-refresher/property-search-view-refresher.service';
+import { RefreshPropertySearchViewService } from '@contexts/properties/application/services/write/refresh-property-search-view/refresh-property-search-view.service';
+import { RefreshPropertySearchViewOfListingService } from '@contexts/properties/application/services/write/refresh-property-search-view-of-listing/refresh-property-search-view-of-listing.service';
 import { PropertyBuilderFactory } from '@contexts/properties/domain/builders/property/property-builder.factory';
 import { ListingEventPayloadMapper } from '@contexts/properties/infrastructure/messaging/listing-event-payload/listing-event-payload.mapper';
 import { ListingObservedConsumer } from '@contexts/properties/infrastructure/messaging/listing-observed/listing-observed.consumer';
@@ -50,11 +51,10 @@ describe('relay -> consumer -> property_search_view', () => {
     const transactions = new MikroOrmTransactionManager(em);
     const processedEvents = new ProcessedEventMikroOrmRepository(em);
     const listings = new ProjectedListingMikroOrmRepository(em);
-    const refresher = new PropertySearchViewRefresherService(
-      listings,
-      new PropertySearchViewMikroOrmRepository(em),
-      new PropertySearchViewConsolidationService(new PricePerSquareMeterCalculationService()),
-    );
+    const views = new PropertySearchViewMikroOrmRepository(em);
+    const consolidation = new PropertySearchViewConsolidationService(new PricePerSquareMeterCalculationService());
+    const refresher = new RefreshPropertySearchViewService(listings, views, consolidation);
+    const listingRefresher = new RefreshPropertySearchViewOfListingService(listings, refresher);
     const handlers = [
       new CreatePropertyFromListingObservedHandler(
         transactions,
@@ -62,8 +62,8 @@ describe('relay -> consumer -> property_search_view', () => {
         new PropertyMikroOrmWriteRepository(em, new PropertyRowMapper(new PropertyBuilderFactory())),
         new PropertyBuilderFactory(),
       ),
-      new ProjectListingImportedHandler(transactions, processedEvents, listings, refresher),
-      new ProjectListingObservedHandler(transactions, processedEvents, listings, refresher),
+      new ProjectListingImportedHandler(transactions, processedEvents, listings, listingRefresher),
+      new ProjectListingObservedHandler(transactions, processedEvents, listings, listingRefresher),
       new RebuildPropertySearchViewHandler(transactions, listings, refresher),
     ];
     commands = {

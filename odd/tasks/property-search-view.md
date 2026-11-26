@@ -10,6 +10,7 @@ Branch: `feat/api-property-search-view`. Delivery: single PR. Test runner: vites
 - S3: "Given built areas 100 and 105 in two listings, When read, Then the latest value is shown and the conflict listed with sources (HR-F002-AC7)."
 - S4: "Given a listing with only usable area, When read, Then price per m2 is Unknown (HR-F002-AC4)."
 - S5: "Given a listing that disappears, When projected, Then it no longer counts toward the price and observations remain (HR-F002-AC9)."
+- S6 (review): "Whe shoud habe a IService interface whith a method execute to standardize how we use services". Decisions: `IService<TInput, TOutput>` in building-blocks, applied to every service (properties and ingestion); a service with two operations becomes two services (refresher split by the user's choice); `{Name}ServiceInput` is declared in the service file, as ingestion already does.
 - Out of scope: "Search filters (M2); history series (M3)."
 - Decision (confirmed by the user, "Si"): `ListingObserved` only carries price, status and an untyped snapshot, so attributes and source come from `ListingImported`. The projection consumes both.
 
@@ -18,6 +19,8 @@ Branch: `feat/api-property-search-view`. Delivery: single PR. Test runner: vites
 - [x] T1 (S1-S5) inline: pure consolidation service and listing attribute reader (consolidation spec observed RED then GREEN; reader spec written together with the reader).
 - [x] T2 (S1-S5) inline: ports, commands, handlers, refresher and rebuild command (handler specs written after the handlers).
 - [x] T3 (S1-S5) inline: migration, schemas, repositories, consumer wiring, integration spec relay to view, database-schema docs (EN + ES).
+
+- [ ] T4 (S6) delegated (one bounded writer, routing: a cross-package refactor with its own checks): `IService`, every service implements it, refresher split in two, conventions docs (EN + ES).
 
 ## Log
 
@@ -33,3 +36,4 @@ Branch: `feat/api-property-search-view`. Delivery: single PR. Test runner: vites
 - Review round 1 (PR #204): rebuild uses Promise.all; the in-memory test helper in src was removed (handler specs use manual mocks). Conventions audit: commands carry primitives with {Name}CommandInput; one type per file; consolidation and refresher live in application/services/write; the payload reader became ListingEventPayloadMapper (infrastructure); the read model shape is a .view-model; specs follow one describe per class and one nested describe per method.
 - Review round 2: reads and the view upsert go through the ORM (schemas export entity names, bigint and decimal map to number, explicit field names for the M2 columns); only the two guarded upserts of projected_listing stay SQL, documented in the repository. MikroORM onConflictWhere could express the guards as two upserts per event; not adopted to keep each event one atomic statement.
 Review round 3: type guards (isRecord, asString, asNumber) moved to building-blocks with specs; attribute name catalogs moved to shared-kernel (note: only properties uses them today, listings does not yet); ACTIVE_LISTING_STATUS in its own constants file; price per m2 in its own service on top of the shared-kernel PricePerSquareMeter; IAttributeObservation in its own file; consolidation service is injectable.
+- T4 (S6): added `IService<TInput, TOutput>` to building-blocks (under `src/domain/services/`), all four application services implement it; `PropertySearchViewRefresherService` split into `RefreshPropertySearchViewService` and `RefreshPropertySearchViewOfListingService` (each with its own folder, spec, single `execute`); conventions updated in EN and ES mirrors to document `IService`, the two-services rule, and `{Name}ServiceInput` exception.
