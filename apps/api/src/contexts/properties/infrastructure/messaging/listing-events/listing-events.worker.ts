@@ -3,7 +3,7 @@ import { Worker } from 'bullmq';
 
 import { type OutboxMessage, outboxQueueName } from '@house-radar/outbox';
 
-import { ListingObservedConsumer } from '@contexts/properties/infrastructure/messaging/listing-observed.consumer';
+import { ListingObservedConsumer } from '@contexts/properties/infrastructure/messaging/listing-observed/listing-observed.consumer';
 import { AppConfig } from '@core/config/app-config/app-config.js';
 
 type QueuedMessage = Omit<OutboxMessage, 'occurredAt'> & { occurredAt: string };

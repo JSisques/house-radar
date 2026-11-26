@@ -10,7 +10,7 @@ import { type StartedPostgres, startPostgres } from '@house-radar/testing';
 
 import { CreatePropertyFromListingObservedHandler } from '@contexts/properties/application/commands/create-property-from-listing-observed/create-property-from-listing-observed.handler';
 import { PropertyBuilderFactory } from '@contexts/properties/domain/builders/property/property-builder.factory';
-import { ListingObservedConsumer } from '@contexts/properties/infrastructure/messaging/listing-observed.consumer';
+import { ListingObservedConsumer } from '@contexts/properties/infrastructure/messaging/listing-observed/listing-observed.consumer';
 import { PropertyRowMapper } from '@contexts/properties/infrastructure/persistence/mikro-orm/mappers/property-row/property-row.mapper';
 import { ProcessedEventMikroOrmRepository } from '@contexts/properties/infrastructure/persistence/mikro-orm/repositories/processed-event-mikro-orm/processed-event-mikro-orm.repository';
 import { PropertyMikroOrmWriteRepository } from '@contexts/properties/infrastructure/persistence/mikro-orm/repositories/property-mikro-orm-write/property-mikro-orm-write.repository';

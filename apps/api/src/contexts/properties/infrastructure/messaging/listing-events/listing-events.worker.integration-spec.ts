@@ -4,8 +4,8 @@ import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { bullmqOutboxDispatcher, type OutboxMessage, outboxQueueName } from '@house-radar/outbox';
 import { type StartedRedis, startRedis } from '@house-radar/testing';
 
-import { ListingEventsWorker } from '@contexts/properties/infrastructure/messaging/listing-events.worker';
-import type { ListingObservedConsumer } from '@contexts/properties/infrastructure/messaging/listing-observed.consumer';
+import { ListingEventsWorker } from '@contexts/properties/infrastructure/messaging/listing-events/listing-events.worker';
+import type { ListingObservedConsumer } from '@contexts/properties/infrastructure/messaging/listing-observed/listing-observed.consumer';
 import type { AppConfig } from '@core/config/app-config/app-config.js';
 
 const message: OutboxMessage = {
