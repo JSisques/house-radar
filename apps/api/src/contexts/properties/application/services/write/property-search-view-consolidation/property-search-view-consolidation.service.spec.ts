@@ -1,5 +1,6 @@
-import { describe, expect, it } from 'vitest';
+﻿import { describe, expect, it } from 'vitest';
 
+import { PricePerSquareMeterCalculationService } from '@contexts/properties/application/services/write/price-per-square-meter-calculation/price-per-square-meter-calculation.service';
 import { PropertySearchViewConsolidationService } from '@contexts/properties/application/services/write/property-search-view-consolidation/property-search-view-consolidation.service';
 import type { ListingAttributes } from '@contexts/properties/domain/interfaces/listing-attributes.interface';
 import type { IProjectedListingProps } from '@contexts/properties/domain/interfaces/projected-listing-props.interface';
@@ -18,7 +19,7 @@ const listing = (overrides: Partial<IProjectedListingProps> & { listingId: strin
 const attrs = (values: ListingAttributes): ListingAttributes => values;
 
 describe('PropertySearchViewConsolidationService', () => {
-  const service = new PropertySearchViewConsolidationService();
+  const service = new PropertySearchViewConsolidationService(new PricePerSquareMeterCalculationService());
 
   describe('consolidate', () => {
     it('should be the lowest price among the active listings', () => {

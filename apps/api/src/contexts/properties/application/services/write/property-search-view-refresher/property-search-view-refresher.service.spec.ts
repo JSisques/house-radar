@@ -1,7 +1,9 @@
-import { describe, expect, it, vi } from 'vitest';
+﻿import { describe, expect, it, vi } from 'vitest';
 
 import type { IProjectedListingRepository } from '@contexts/properties/application/ports/projected-listing-repository.port';
 import type { IPropertySearchViewRepository } from '@contexts/properties/application/ports/property-search-view-repository.port';
+import { PricePerSquareMeterCalculationService } from '@contexts/properties/application/services/write/price-per-square-meter-calculation/price-per-square-meter-calculation.service';
+import { PropertySearchViewConsolidationService } from '@contexts/properties/application/services/write/property-search-view-consolidation/property-search-view-consolidation.service';
 import { PropertySearchViewRefresherService } from '@contexts/properties/application/services/write/property-search-view-refresher/property-search-view-refresher.service';
 import type { IProjectedListingProps } from '@contexts/properties/domain/interfaces/projected-listing-props.interface';
 
@@ -20,7 +22,15 @@ const setup = (propertyId: string | null) => {
     findByProperty: vi.fn(() => Promise.resolve([LISTING])),
   } as unknown as IProjectedListingRepository;
   const views: IPropertySearchViewRepository = { save: vi.fn(() => Promise.resolve()) };
-  return { service: new PropertySearchViewRefresherService(listings, views), listings, views };
+  return {
+    service: new PropertySearchViewRefresherService(
+      listings,
+      views,
+      new PropertySearchViewConsolidationService(new PricePerSquareMeterCalculationService()),
+    ),
+    listings,
+    views,
+  };
 };
 
 describe('PropertySearchViewRefresherService', () => {

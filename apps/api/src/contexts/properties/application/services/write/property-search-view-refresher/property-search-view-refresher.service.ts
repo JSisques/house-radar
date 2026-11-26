@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+﻿import { Inject, Injectable } from '@nestjs/common';
 
 import {
   type IProjectedListingRepository,
@@ -13,11 +13,11 @@ import { PropertySearchViewConsolidationService } from '@contexts/properties/app
 /** Recomputes the search view of a property from the state of its listings. */
 @Injectable()
 export class PropertySearchViewRefresherService {
-  private readonly consolidation = new PropertySearchViewConsolidationService();
-
   constructor(
     @Inject(PROJECTED_LISTING_REPOSITORY_TOKEN) private readonly listings: IProjectedListingRepository,
     @Inject(PROPERTY_SEARCH_VIEW_REPOSITORY_TOKEN) private readonly views: IPropertySearchViewRepository,
+    @Inject(PropertySearchViewConsolidationService)
+    private readonly consolidation: PropertySearchViewConsolidationService,
   ) {}
 
   /** Refreshes the property of the listing; a listing without a property yet has no view to refresh. */

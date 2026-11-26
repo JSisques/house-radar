@@ -1,4 +1,4 @@
-import { MikroORM } from '@mikro-orm/postgresql';
+﻿import { MikroORM } from '@mikro-orm/postgresql';
 import type { CommandBus } from '@nestjs/cqrs';
 import pg from 'pg';
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
@@ -13,6 +13,8 @@ import { ProjectListingImportedHandler } from '@contexts/properties/application/
 import { ProjectListingObservedHandler } from '@contexts/properties/application/commands/project-listing-observed/project-listing-observed.handler';
 import { RebuildPropertySearchViewCommand } from '@contexts/properties/application/commands/rebuild-property-search-view/rebuild-property-search-view.command';
 import { RebuildPropertySearchViewHandler } from '@contexts/properties/application/commands/rebuild-property-search-view/rebuild-property-search-view.handler';
+import { PricePerSquareMeterCalculationService } from '@contexts/properties/application/services/write/price-per-square-meter-calculation/price-per-square-meter-calculation.service';
+import { PropertySearchViewConsolidationService } from '@contexts/properties/application/services/write/property-search-view-consolidation/property-search-view-consolidation.service';
 import { PropertySearchViewRefresherService } from '@contexts/properties/application/services/write/property-search-view-refresher/property-search-view-refresher.service';
 import { PropertyBuilderFactory } from '@contexts/properties/domain/builders/property/property-builder.factory';
 import { ListingEventPayloadMapper } from '@contexts/properties/infrastructure/messaging/listing-event-payload/listing-event-payload.mapper';
@@ -48,7 +50,11 @@ describe('relay -> consumer -> property_search_view', () => {
     const transactions = new MikroOrmTransactionManager(em);
     const processedEvents = new ProcessedEventMikroOrmRepository(em);
     const listings = new ProjectedListingMikroOrmRepository(em);
-    const refresher = new PropertySearchViewRefresherService(listings, new PropertySearchViewMikroOrmRepository(em));
+    const refresher = new PropertySearchViewRefresherService(
+      listings,
+      new PropertySearchViewMikroOrmRepository(em),
+      new PropertySearchViewConsolidationService(new PricePerSquareMeterCalculationService()),
+    );
     const handlers = [
       new CreatePropertyFromListingObservedHandler(
         transactions,

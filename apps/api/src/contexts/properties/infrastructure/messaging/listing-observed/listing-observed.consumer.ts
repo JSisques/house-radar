@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+﻿import { Inject, Injectable } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 
 import type { OutboxMessage } from '@house-radar/outbox';
@@ -10,8 +10,6 @@ import { ListingEventPayloadMapper } from '@contexts/properties/infrastructure/m
 
 export const LISTING_OBSERVED_EVENT_TYPE = 'ListingObservedEvent';
 export const LISTING_IMPORTED_EVENT_TYPE = 'ListingImportedEvent';
-
-type Payload = Readonly<Record<string, unknown>>;
 
 /**
  * Receives the listings outbox stream (from the relay or a queue worker). A `ListingObserved` gives the listing a
@@ -26,7 +24,7 @@ export class ListingObservedConsumer {
   ) {}
 
   async handle(message: OutboxMessage): Promise<void> {
-    const payload = message.payload as Payload;
+    const payload = message.payload;
     if (message.eventType === LISTING_OBSERVED_EVENT_TYPE) {
       const listingId = payload['listingId'] as string;
       // The property comes first: the view is refreshed per property, so the listing must belong to one.

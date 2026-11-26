@@ -1,44 +1,28 @@
+import { Inject, Injectable } from '@nestjs/common';
+
+import { asNumber, asString } from '@house-radar/building-blocks';
+import { ADDITIONAL_FEATURE_NAMES } from '@house-radar/shared-kernel';
+
+import { PricePerSquareMeterCalculationService } from '@contexts/properties/application/services/write/price-per-square-meter-calculation/price-per-square-meter-calculation.service';
 import type { IAttributeConflictValueViewModel } from '@contexts/properties/application/view-models/attribute-conflict-value/attribute-conflict-value.view-model';
 import type { IPropertySearchViewModel } from '@contexts/properties/application/view-models/property-search-view/property-search-view.view-model';
+import { ACTIVE_LISTING_STATUS } from '@contexts/properties/domain/constants/active-listing-status/active-listing-status.constant';
+import type { IAttributeObservation } from '@contexts/properties/domain/interfaces/attribute-observation.interface';
 import type { ListingAttributeValue } from '@contexts/properties/domain/interfaces/listing-attribute-value.interface';
 import type { ListingAttributes } from '@contexts/properties/domain/interfaces/listing-attributes.interface';
 import type { IProjectedListingProps } from '@contexts/properties/domain/interfaces/projected-listing-props.interface';
 
-/** Additional features of HR-F002-BR3: they are kept apart from the general fields in the view. */
-export const ADDITIONAL_FEATURE_NAMES = [
-  'garage',
-  'garden',
-  'swimmingPool',
-  'terrace',
-  'balcony',
-  'heating',
-  'elevator',
-  'energyCertificate',
-  'landType',
-  'water',
-  'electricity',
-  'sanitation',
-] as const;
-
-const ACTIVE_STATUS = 'active';
-
-interface IAttributeObservation {
-  listingId: string;
-  source: string | null;
-  value: ListingAttributeValue;
-}
-
-const asString = (value: ListingAttributeValue | undefined): string | null =>
-  typeof value === 'string' ? value : null;
-
-const asNumber = (value: ListingAttributeValue | undefined): number | null =>
-  typeof value === 'number' ? value : null;
-
 /**
- * Consolidates the listings of one property into its read model. Pure: it holds the rules of D19 and D20, so a rebuild
+ * Consolidates the listings of one property into its read model. It holds the rules of D19 and D20, so a rebuild
  * only has to feed it the stored listing state again.
  */
+@Injectable()
 export class PropertySearchViewConsolidationService {
+  constructor(
+    @Inject(PricePerSquareMeterCalculationService)
+    private readonly pricePerSquareMeter: PricePerSquareMeterCalculationService,
+  ) {}
+
   consolidate(propertyId: string, listings: readonly IProjectedListingProps[]): IPropertySearchViewModel {
     const observations = this.observationsByAttribute(listings);
     const chosen = (name: string): ListingAttributeValue | undefined => observations.get(name)?.at(-1)?.value;
@@ -50,7 +34,7 @@ export class PropertySearchViewConsolidationService {
     }
 
     const activePrices = listings
-      .filter((listing) => listing.status === ACTIVE_STATUS && listing.priceCents !== null)
+      .filter((listing) => listing.status === ACTIVE_LISTING_STATUS && listing.priceCents !== null)
       .map((listing) => listing.priceCents as number);
     const representativePriceCents = activePrices.length === 0 ? null : Math.min(...activePrices);
     const builtAreaM2 = asNumber(chosen('builtArea'));
@@ -70,16 +54,10 @@ export class PropertySearchViewConsolidationService {
       features,
       conflicts: this.conflicts(observations),
       representativePriceCents,
-      pricePerM2Cents: this.pricePerM2(representativePriceCents, builtAreaM2),
-      activeListingCount: listings.filter((listing) => listing.status === ACTIVE_STATUS).length,
+      pricePerM2Cents: this.pricePerSquareMeter.calculate(representativePriceCents, builtAreaM2),
+      activeListingCount: listings.filter((listing) => listing.status === ACTIVE_LISTING_STATUS).length,
       listingCount: listings.length,
     };
-  }
-
-  /** D20: the price per m2 uses the built area only; without it, or without a price, it is unknown. */
-  private pricePerM2(priceCents: number | null, builtAreaM2: number | null): number | null {
-    if (priceCents === null || builtAreaM2 === null || builtAreaM2 <= 0) return null;
-    return Math.round(priceCents / builtAreaM2);
   }
 
   /**

@@ -1,4 +1,4 @@
-import { EntityManager, MikroORM } from '@mikro-orm/postgresql';
+﻿import { EntityManager, MikroORM } from '@mikro-orm/postgresql';
 import { Inject, Module, type OnApplicationShutdown, type Provider } from '@nestjs/common';
 
 import { CreatePropertyFromListingObservedHandler } from '@contexts/properties/application/commands/create-property-from-listing-observed/create-property-from-listing-observed.handler';
@@ -9,6 +9,8 @@ import { PROCESSED_EVENT_REPOSITORY_TOKEN } from '@contexts/properties/applicati
 import { PROJECTED_LISTING_REPOSITORY_TOKEN } from '@contexts/properties/application/ports/projected-listing-repository.port';
 import { PROPERTY_SEARCH_VIEW_REPOSITORY_TOKEN } from '@contexts/properties/application/ports/property-search-view-repository.port';
 import { TRANSACTION_MANAGER_TOKEN } from '@contexts/properties/application/ports/transaction-manager.port';
+import { PricePerSquareMeterCalculationService } from '@contexts/properties/application/services/write/price-per-square-meter-calculation/price-per-square-meter-calculation.service';
+import { PropertySearchViewConsolidationService } from '@contexts/properties/application/services/write/property-search-view-consolidation/property-search-view-consolidation.service';
 import { PropertySearchViewRefresherService } from '@contexts/properties/application/services/write/property-search-view-refresher/property-search-view-refresher.service';
 import {
   PROPERTY_BUILDER_FACTORY_TOKEN,
@@ -33,7 +35,11 @@ const COMMAND_HANDLERS: Provider[] = [
   RebuildPropertySearchViewHandler,
 ];
 
-const APPLICATION_SERVICES: Provider[] = [PropertySearchViewRefresherService];
+const APPLICATION_SERVICES: Provider[] = [
+  PricePerSquareMeterCalculationService,
+  PropertySearchViewConsolidationService,
+  PropertySearchViewRefresherService,
+];
 
 const DOMAIN_BUILDER_FACTORIES: Provider[] = [
   { provide: PROPERTY_BUILDER_FACTORY_TOKEN, useClass: PropertyBuilderFactory },
