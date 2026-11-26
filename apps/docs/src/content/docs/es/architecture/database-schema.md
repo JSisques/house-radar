@@ -182,6 +182,8 @@ Agregado mínimo.
 | `created_at` | `timestamptz not null` | Momento de creación de la fila. |
 | `updated_at` | `timestamptz not null` | Momento de la última actualización. |
 
+`chosen_location` y `chosen_location_precision` se añaden con el trabajo de ubicación: el agregado aún no los modela. La fila cambia `updated_at` cada vez que cambia la versión aplicada de un anuncio, lo que incrementa `version`.
+
 #### `properties.property_listing`
 
 Pertenencia de anuncios a propiedades.
@@ -191,6 +193,7 @@ Pertenencia de anuncios a propiedades.
 | `id` | `uuid` | Clave primaria (UUIDv7). |
 | `property_id` | `uuid not null` | Clave foránea a `property` (mismo esquema). |
 | `listing_id` | `uuid not null` | Anuncio (referencia por ID, sin clave foránea entre esquemas). Único: un anuncio pertenece a exactamente una propiedad. |
+| `applied_version` | `int not null` | Última versión de evento del anuncio aplicada, para ignorar eventos tardíos ([D31](/adr/d31-transactional-outbox/)). |
 | `created_at` | `timestamptz not null` | Momento de creación de la fila. |
 
 Restricciones e índices:
