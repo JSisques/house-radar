@@ -63,7 +63,17 @@ describe('relay -> ListingObservedConsumer -> properties tables', () => {
       `insert into listings.outbox_event
          (id, aggregate_type, aggregate_id, aggregate_version, event_type, schema_version, payload, metadata, occurred_at)
        values ($1, 'Observation', $2, 1, $3, 1, $4, '{}', now())`,
-      [eventId, generateUuidV7(), eventType, JSON.stringify({ listingId })],
+      [
+        eventId,
+        generateUuidV7(),
+        eventType,
+        JSON.stringify({
+          listingId,
+          status: 'active',
+          observedAt: '2026-11-01T10:00:00.000Z',
+          price: { kind: 'unknown' },
+        }),
+      ],
     );
     return eventId;
   }

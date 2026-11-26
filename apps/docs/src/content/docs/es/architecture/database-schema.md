@@ -222,40 +222,41 @@ Restricciones e índices:
 
 #### `properties.property_search_view`
 
-Proyección usada por la búsqueda, la ficha y el dashboard ([D19](/es/adr/d19-search-read-model/)); reconstruible desde eventos.
+Proyección usada por la búsqueda, la ficha y el dashboard ([D19](/es/adr/d19-search-read-model/)); reconstruible desde `projected_listing`. Una fila por propiedad, calculada con las reglas de consolidación de [D20](/es/adr/d20-listing-consolidation-rules/).
 
 | Columna | Tipo | Notas |
 | --- | --- | --- |
-| `property_id` | `uuid` | Clave primaria. |
-| (consolidated attributes) | `several` | Tipo, superficies, dormitorios, baños, características, etc., consolidados entre anuncios. |
-| `conflicts` | `jsonb` | Conflictos de atributos con cada valor y su fuente ([D20](/es/adr/d20-listing-consolidation-rules/)). |
-| `representative_price_cents` | `bigint null` | Menor precio entre los anuncios activos. |
+| `property_id` | `uuid` | Clave primaria; referencia a `property` (cascade). |
+| `title`, `description` | `text null` | Valor observado más recientemente. |
+| `property_type`, `condition` | `text null` | Valor observado más recientemente. |
+| `built_area_m2`, `usable_area_m2`, `plot_area_m2` | `numeric null` | Valor observado más recientemente. |
+| `bedrooms`, `bathrooms`, `year_built` | `int null` | Valor observado más recientemente. |
+| `features` | `jsonb not null` | Características adicionales por nombre; las desconocidas no aparecen. |
+| `conflicts` | `jsonb not null` | Atributos en los que los anuncios discrepan, por nombre, cada uno con `listingId`, `source` y `value` ([D20](/es/adr/d20-listing-consolidation-rules/)). |
+| `representative_price_cents` | `bigint null` | Menor precio entre los anuncios activos; nulo si no hay ninguno. |
+| `price_per_m2_cents` | `bigint null` | Calculado con el precio representativo y la superficie construida únicamente; nulo si alguno es desconocido. |
 | `active_listing_count` | `int not null` | Anuncios activos. |
 | `listing_count` | `int not null` | Todos los anuncios. |
-| `municipality_code` | `text` | Código INE (referencia por ID). |
-| `province_code` | `text` | Código de provincia (referencia por ID). |
-| `location` | `geography` | Ubicación elegida. |
-| `location_precision` | `text` | Precisión. |
-| `price_per_m2_cents` | `bigint null` | Calculado solo con la superficie construida. |
-| `first_seen_at` | `timestamptz` | Primera observación de sus anuncios. |
-| `last_updated_at` | `timestamptz` | Última actualización de la proyección. |
+| `last_updated_at` | `timestamptz not null` | Última actualización de la proyección. |
 
-Restricciones e índices:
-
-- Índice GiST sobre `location`.
-- Índices B-tree sobre precio, superficies, tipo y municipio.
+Índices: B-tree sobre `representative_price_cents` y `property_type`. Municipio, provincia, ubicación y `first_seen_at` llegan con el trabajo de ubicación y los filtros de búsqueda.
 
 #### `properties.projected_listing`
 
-Estado por anuncio tal como lo aplicaron por última vez las proyecciones; las filas de propiedad de `property_search_view` se recalculan a partir de él. Protección de orden: un evento de anuncio se aplica solo si su `aggregate_version` es mayor que `version`.
+Estado por anuncio tal como lo aplicaron por última vez las proyecciones; las filas de `property_search_view` se recalculan a partir de él. Lo alimentan `ListingImported` (fuente, atributos, precio y estado) y `ListingObserved` (precio y estado). No tiene clave foránea: una fila puede llegar antes de que el anuncio tenga propiedad, y la propietaria se encuentra a través de `property_listing`.
+
+Protección de orden: `aggregate_version` no es comparable entre los agregados `Listing` y `Observation`, así que cada cambio lleva el momento en que se observó. El precio y el estado solo los reemplaza una observación igual o más reciente que `state_observed_at`; la fuente y los atributos, solo una comprobación igual o más reciente que `attributes_observed_at`.
 
 | Columna | Tipo | Notas |
-|---|---|---|
+| --- | --- | --- |
 | `listing_id` | `uuid pk` | Anuncio (de `listings`, sin FK). |
-| `property_id` | `uuid not null` | Propiedad a la que pertenece. |
-| `version` | `int not null` | Última versión aplicada del anuncio. |
-| `price_cents` | `bigint null` | Último precio aplicado. |
-| `status` | `text not null` | Último estado aplicado. |
+| `source` | `text null` | Fuente del anuncio; nula hasta que llega `ListingImported`. |
+| `status` | `text null` | Último estado aplicado. |
+| `price_cents` | `bigint null` | Último precio aplicado; nulo si es desconocido. |
+| `state_observed_at` | `timestamptz null` | Cuándo se observaron el precio y el estado. |
+| `attributes` | `jsonb null` | Atributos conocidos por nombre; los desconocidos no aparecen. |
+| `attributes_observed_at` | `timestamptz null` | Cuándo se observaron los atributos; ordena los anuncios de una propiedad. |
+| `created_at`, `updated_at` | `timestamptz not null` | Control de la fila. |
 
 #### `properties.property_price_point`
 

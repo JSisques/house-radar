@@ -222,40 +222,41 @@ Constraints and indexes:
 
 #### `properties.property_search_view`
 
-Projection used by search, detail and dashboard ([D19](/adr/d19-search-read-model/)); rebuildable from events.
+Projection used by search, detail and dashboard ([D19](/adr/d19-search-read-model/)); rebuildable from `projected_listing`. One row per property, computed by the consolidation rules of [D20](/adr/d20-listing-consolidation-rules/).
 
 | Column | Type | Notes |
 | --- | --- | --- |
-| `property_id` | `uuid` | Primary key. |
-| (consolidated attributes) | `several` | Property type, areas, bedrooms, bathrooms, features and so on, consolidated across listings. |
-| `conflicts` | `jsonb` | Attribute conflicts with each value and its source ([D20](/adr/d20-listing-consolidation-rules/)). |
-| `representative_price_cents` | `bigint null` | Lowest price among active listings. |
+| `property_id` | `uuid` | Primary key; references `property` (cascade). |
+| `title`, `description` | `text null` | Most recently observed value. |
+| `property_type`, `condition` | `text null` | Most recently observed value. |
+| `built_area_m2`, `usable_area_m2`, `plot_area_m2` | `numeric null` | Most recently observed value. |
+| `bedrooms`, `bathrooms`, `year_built` | `int null` | Most recently observed value. |
+| `features` | `jsonb not null` | Additional features by name; unknown ones are absent. |
+| `conflicts` | `jsonb not null` | Attributes the listings disagree on, by name, each with `listingId`, `source` and `value` ([D20](/adr/d20-listing-consolidation-rules/)). |
+| `representative_price_cents` | `bigint null` | Lowest price among active listings; null with none. |
+| `price_per_m2_cents` | `bigint null` | Calculated from the representative price and the built area only; null when either is unknown. |
 | `active_listing_count` | `int not null` | Active listings. |
 | `listing_count` | `int not null` | All listings. |
-| `municipality_code` | `text` | INE code (reference by ID). |
-| `province_code` | `text` | Province code (reference by ID). |
-| `location` | `geography` | Chosen location. |
-| `location_precision` | `text` | Precision. |
-| `price_per_m2_cents` | `bigint null` | Calculated on built area only. |
-| `first_seen_at` | `timestamptz` | Earliest listing observation. |
-| `last_updated_at` | `timestamptz` | Last projection update. |
+| `last_updated_at` | `timestamptz not null` | Last projection update. |
 
-Constraints and indexes:
-
-- GiST index on `location`.
-- B-tree indexes on price, areas, type and municipality.
+Indexes: B-tree on `representative_price_cents` and `property_type`. Municipality, province, location and `first_seen_at` arrive with the location work and the search filters.
 
 #### `properties.projected_listing`
 
-Per-listing state as last applied by the projections; the property rows in `property_search_view` are recomputed from it. Ordering guard: a listing event is applied only if its `aggregate_version` is greater than `version`.
+Per-listing state as last applied by the projections; the rows of `property_search_view` are recomputed from it. It is fed by `ListingImported` (source, attributes, price, status) and `ListingObserved` (price, status). It has no foreign key: a row can arrive before the listing has a property, and the owner is found through `property_listing`.
+
+Ordering guard: `aggregate_version` is not comparable across the `Listing` and `Observation` aggregates, so each change carries the time it was observed. Price and status are replaced only by an observation at least as recent as `state_observed_at`; source and attributes only by a check at least as recent as `attributes_observed_at`.
 
 | Column | Type | Notes |
-|---|---|---|
+| --- | --- | --- |
 | `listing_id` | `uuid pk` | Listing (from `listings`, no FK). |
-| `property_id` | `uuid not null` | Owning property. |
-| `version` | `int not null` | Last applied listing version. |
-| `price_cents` | `bigint null` | Last applied price. |
-| `status` | `text not null` | Last applied status. |
+| `source` | `text null` | Source of the listing; null until `ListingImported` arrives. |
+| `status` | `text null` | Last applied status. |
+| `price_cents` | `bigint null` | Last applied price; null when unknown. |
+| `state_observed_at` | `timestamptz null` | When the price and status were observed. |
+| `attributes` | `jsonb null` | Known attributes by name; unknown ones are absent. |
+| `attributes_observed_at` | `timestamptz null` | When the attributes were observed; orders the listings of a property. |
+| `created_at`, `updated_at` | `timestamptz not null` | Row bookkeeping. |
 
 #### `properties.property_price_point`
 
